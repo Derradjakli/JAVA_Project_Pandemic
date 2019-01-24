@@ -1,5 +1,7 @@
 package fr.dauphine.ja.student.pandemiage.gameengine;
 
+import java.util.List;
+
 import fr.dauphine.ja.pandemiage.common.Disease;
 import fr.dauphine.ja.pandemiage.common.PlayerCardInterface;
 
@@ -8,6 +10,7 @@ public class PlayerCard implements PlayerCardInterface {
 	private int r;
 	private int g;
 	private int b;
+	private static List<PlayerCardInterface> defauss;
 	
 
 	public PlayerCard(City c){
@@ -21,6 +24,12 @@ public class PlayerCard implements PlayerCardInterface {
 	public String getCityName() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	public static void addToDefauss(PlayerCardInterface playerCardInterface) {
+		defauss.add(playerCardInterface);
+	}
+	public City getCity() {
+		return city;
 	}
 /*
  A FINIR

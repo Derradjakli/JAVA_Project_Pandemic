@@ -1,6 +1,7 @@
 package fr.dauphine.ja.student.pandemiage.gameengine;
 
 import java.util.List;
+import java.util.Map;
 
 import fr.dauphine.ja.pandemiage.common.Disease;
 
@@ -17,13 +18,16 @@ public class City {
 	private String edge_ID;
 	private String edge_Label;
 	private int degree; // Neighbours number
-	private int nbCubes;
+	/*private int nbCubes;
 	private boolean eclosion;
 	private Disease disease;
-	
+	*/
+	private Map<Disease,Integer> m; // Permet de recuperer le nombre de cube sur chaque ville et sr chaque malade
+	private Map<Disease,Boolean> m_ec;// Permet de recuperer quelle maladie a eclos sur une ville
+	private static Map<Disease,Boolean> m_cure; // Permet de savoir pour chaque remede si l'entidote a été decouvert
 	private List<City> list;
 	
-	public City(String CityName, int r	,int g, int b, double weight, float x, float y, float size,double eigenvector_Centrality	,String edge_ID,String edge_Label	, int degree , List<City> list, int nbCubes,boolean eclosion) {
+	public City(String CityName, int r	,int g, int b, double weight, float x, float y, float size,double eigenvector_Centrality	,String edge_ID,String edge_Label	, int degree , List<City> list) {
 		this.CityName=CityName;
 		this.r=r;// The Red color of RGB
 		this.g=g;// The GREEN color of RGB
@@ -37,12 +41,15 @@ public class City {
 		this.edge_Label=edge_Label;
 		this.degree=degree; // Neighbours number
 		this.list=list;
-		this.nbCubes=nbCubes;
-		this.eclosion=eclosion;
+		
+		
 	}
 	
 	public String getName() {
 		return CityName;
+	}
+	public List<City> getNeighbours(){
+		return this.list;
 	}
 	public int getR() {
 		return r;
@@ -95,29 +102,35 @@ public class City {
 	public void setDegree(int d) {
 		this.degree=d;
 	}
-	public int getNbCubes() {
-		return nbCubes;
+	public int getNbCubes(Disease d) {
+		return m.get(d);
 	}
 
-	public void setNbCubes(int nbCubes) {
-		this.nbCubes = nbCubes;
+	public void setNbCubes(int nbCubes,Disease d) {
+		this.m.put(d, nbCubes);
 	}
 
-	public boolean isEclosion() {
-		return eclosion;
+	public boolean isEclosion(Disease d) {
+		return this.m_ec.get(d);
 	}
 
-	public void setEclosion(boolean eclosion) {
-		this.eclosion = eclosion;
+	public void setEclosion(boolean eclosion,Disease d) {
+		this.m_ec.put(d, eclosion);
+	}
+	public boolean isCure(Disease d) {
+		return this.m_cure.get(d);
+	}
+	public void setCure(Disease d) {
+		this.m_cure.put(d, true);
 	}
 
-	public Disease getDisease() {
+	/*public Disease getDisease() {
 		return disease;
 	}
 
 	public void setDisease(Disease disease) {
 		this.disease = disease;
-	}
+	}*/
 	
 	
 	
