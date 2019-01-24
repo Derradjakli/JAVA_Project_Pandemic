@@ -2,6 +2,8 @@ package fr.dauphine.ja.student.pandemiage.gameengine;
 
 import java.util.List;
 
+import fr.dauphine.ja.pandemiage.common.Disease;
+
 public class City {
 	private String CityName;
 	private int r;// The Red color of RGB
@@ -15,10 +17,13 @@ public class City {
 	private String edge_ID;
 	private String edge_Label;
 	private int degree; // Neighbours number
+	private int nbCubes;
+	private boolean eclosion;
+	private Disease disease;
 	
 	private List<City> list;
 	
-	public City(String CityName, int r	,int g, int b, double weight, float x, float y, float size,double eigenvector_Centrality	,String edge_ID,String edge_Label	, int degree , List<City> list) {
+	public City(String CityName, int r	,int g, int b, double weight, float x, float y, float size,double eigenvector_Centrality	,String edge_ID,String edge_Label	, int degree , List<City> list, int nbCubes,boolean eclosion) {
 		this.CityName=CityName;
 		this.r=r;// The Red color of RGB
 		this.g=g;// The GREEN color of RGB
@@ -31,9 +36,9 @@ public class City {
 		this.edge_ID=edge_ID;
 		this.edge_Label=edge_Label;
 		this.degree=degree; // Neighbours number
-		
 		this.list=list;
-		
+		this.nbCubes=nbCubes;
+		this.eclosion=eclosion;
 	}
 	
 	public String getName() {
@@ -90,5 +95,30 @@ public class City {
 	public void setDegree(int d) {
 		this.degree=d;
 	}
+	public int getNbCubes() {
+		return nbCubes;
+	}
+
+	public void setNbCubes(int nbCubes) {
+		this.nbCubes = nbCubes;
+	}
+
+	public boolean isEclosion() {
+		return eclosion;
+	}
+
+	public void setEclosion(boolean eclosion) {
+		this.eclosion = eclosion;
+	}
+
+	public Disease getDisease() {
+		return disease;
+	}
+
+	public void setDisease(Disease disease) {
+		this.disease = disease;
+	}
+	
+	
 	
 }
