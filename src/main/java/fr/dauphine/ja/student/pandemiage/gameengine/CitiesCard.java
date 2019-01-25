@@ -1,60 +1,23 @@
 package fr.dauphine.ja.student.pandemiage.gameengine;
 
-import java.util.List;
-
 import fr.dauphine.ja.pandemiage.common.Disease;
 import fr.dauphine.ja.pandemiage.common.PlayerCardInterface;
 
-public class PlayerCard  implements PlayerCardInterface{
+public class CitiesCard extends PlayerCard {
 
-	private static List<PlayerCardInterface> defauss;
-	
-	
-	
-	public static void addToDefauss(PlayerCardInterface playerCardInterface) {
-		defauss.add(playerCardInterface);
-	}
-	
-	
-	public static void addToDefauss(PlayerCard playerCard) {
-		defauss.add(playerCard);
-	}
-
-
-	@Override
-	public String getCityName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public Disease getDisease() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public City getCity() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	
-	
-	
-	/*
 	private City city;
 	private int r;
 	private int g;
 	private int b;
+	private boolean epidemic;
+	
+	public CitiesCard (City c){
 
-	public PlayerCard(City c){
 		this.city=c;
 		this.r=c.getR();
 		this.g=c.getG();
 		this.b=c.getB();
+		this.epidemic=false;
 	}
 
 	public String getCityName() {
@@ -79,6 +42,44 @@ public class PlayerCard  implements PlayerCardInterface{
 	public City getCity(){
 		return this.city;
 	}
-*/
-	
+
+	public int getR() {
+		return r;
+	}
+
+	public void setR(int r) {
+		this.r = r;
+	}
+
+	public int getG() {
+		return g;
+	}
+
+	public void setG(int g) {
+		this.g = g;
+	}
+
+	public int getB() {
+		return b;
+	}
+
+	public void setB(int b) {
+		this.b = b;
+	}
+
+	public void setCity(City city) {
+		this.city = city;
+	}
+
+	public boolean isEpidemic() {
+		return epidemic;
+	}
+
+	public void setEpidemic(boolean epidemic) {
+		this.epidemic = epidemic;
+	}
+
+
+
+
 }

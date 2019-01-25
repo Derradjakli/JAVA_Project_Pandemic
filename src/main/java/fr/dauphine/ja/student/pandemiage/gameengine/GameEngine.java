@@ -65,10 +65,15 @@ public class GameEngine implements GameInterface{
 		this.cityGraphFilename = cityGraphFilename; 
 		this.aiJar = aiJar; 
 		this.gameStatus = GameStatus.ONGOING;
-		this.list_s=new List<String>();
+		//this.list_s=new List<String>();
+		List<String> s;
+		
 
 		/* ... */
 
+	}
+	public static void Eclosion(){
+		
 	}
 
 

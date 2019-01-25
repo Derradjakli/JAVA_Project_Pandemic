@@ -18,7 +18,7 @@ public class City {
 	private String edge_ID;
 	private String edge_Label;
 	private int degree; //    Neighbours number
-	
+	private Disease disease;
 	private Map<Disease,Integer> m; // Permet de recuperer le nombre de cube sur chaque ville et sr chaque malade
 	private Map<Disease,Boolean> m_ec;// Permet de recuperer quelle maladie a eclos sur une ville
 	private static Map<Disease,Boolean> m_cure; // Permet de savoir pour chaque maladie si l'entidote a été decouvert
@@ -120,6 +120,14 @@ public class City {
 	}
 	public void setCure(Disease d) {
 		this.m_cure.put(d, true);
+	}
+
+	public Disease getDisease() {
+		return disease;
+	}
+
+	public void setDisease(Disease disease) {
+		this.disease = disease;
 	}
 	
 	
