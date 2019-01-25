@@ -9,7 +9,7 @@ import fr.dauphine.ja.pandemiage.common.UnauthorizedActionException;
 
 public class Player implements PlayerInterface{
 	private List<City> listCity;
-	private List<PlayerCardInterface> listCardHand;
+	static List<PlayerCardInterface> listCardHand;
 	private City currentCity;
 	//PlayerCardInterface c=new PlayerCard(currentCity);
 	
@@ -151,7 +151,8 @@ public class Player implements PlayerInterface{
 	@Override
 	public List<PlayerCardInterface> playerHand() {
 		// TODO Auto-generated method stub
-		return this.listCardHand;
+		return listCardHand;
 	}
 
 }
+
