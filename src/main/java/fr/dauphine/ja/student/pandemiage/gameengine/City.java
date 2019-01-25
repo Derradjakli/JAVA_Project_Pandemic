@@ -23,6 +23,7 @@ public class City {
 	private Map<Disease,Boolean> m_ec;// Permet de recuperer quelle maladie a eclos sur une ville
 	private static Map<Disease,Boolean> m_cure; // Permet de savoir pour chaque maladie si l'entidote a été decouvert
 	private List<City> list;
+	private List<String> list_s;
 	
 	public City(String CityName, int r	,int g, int b, double weight, float x, float y, float size,double eigenvector_Centrality	,String edge_ID,String edge_Label	, int degree , List<City> list) {
 		this.CityName=CityName;
@@ -41,9 +42,7 @@ public class City {
 		
 		
 	}
-	public static List<String> translate_tostring(List<City> list){
-		List<String> l;
-	}
+	
 	public String getName() {
 		return CityName;
 	}
