@@ -20,7 +20,7 @@ public class PropagationCard {
 		Disease d= city.getDisease();
 		if(city.getNbCubes(d)==3){
 			city.setEclosion(true, d);
-			GameEngine.Eclosion();
+			GameEngine.Eclosion(city,d);
 		}
 		else{
 		city.setNbCubes(city.getNbCubes(d)+1,d);
