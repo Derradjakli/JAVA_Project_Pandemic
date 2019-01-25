@@ -11,9 +11,11 @@ public class Player implements PlayerInterface{
 	private List<City> listCity;
 	private List<PlayerCardInterface> listCardHand;
 	private City currentCity;
+	//PlayerCardInterface c=new PlayerCard(currentCity);
+	
 	private int action=4;
 	private boolean switchturn=false; // boolean permet de savoir si les 4 actions sont fini
-	private boolean myturn=false;
+	private boolean myturn=false; //Boolean permet de savoir si c mon tour
 	public Player(City depart,List<City> listc) {
 		currentCity=depart;
 		listCity=listc;
