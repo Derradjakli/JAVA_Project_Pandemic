@@ -1,5 +1,7 @@
 package fr.dauphine.ja.student.pandemiage.gameengine;
 
+import fr.dauphine.ja.pandemiage.common.Disease;
+
 public class PropagationCard {
 	private City city;
 	private int r;
@@ -12,25 +14,20 @@ public class PropagationCard {
 		this.g=c.getG();
 		this.b=c.getB();
 	}
-/*
+
 	public void Propagation(){
-		if(tour==1){
-			city.setNbCubes(city.getNbCubes()+3);
-		}
-		else if(tour ==2){
-			if(city.getNbCubes()<=1){
-				city.setNbCubes(city.getNbCubes()+2);
-			}
-			else{
-				city.setEclosion(true);
-				city.
-			}
 
-			else{
-
-			}
+		Disease d= city.getDisease();
+		if(city.getNbCubes(d)==3){
+			city.setEclosion(true, d);
+			GameEngine.Eclosion(city,d);
 		}
-*/
+		else{
+		city.setNbCubes(city.getNbCubes(d)+1,d);
+		}
+	}
+
+
 
 		public City getCity() {
 			return city;

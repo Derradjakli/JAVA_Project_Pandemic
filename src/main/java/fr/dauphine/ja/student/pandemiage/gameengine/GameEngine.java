@@ -25,7 +25,12 @@ public class GameEngine implements GameInterface{
 	private List<String> list_s;
 	private static int vit_prop=2;// vitesse de propagation actuelle du jeu
 	private static int nb_epidcard=0;// nombre de carte epidemie tiré
+
 	private static int marqueur_prog=1;
+
+	private static Map<Disease,Integer> reserve;
+	
+	
 	// Do not change!
 	private void setDefeated(String msg, DefeatReason dr) {		
 		gameStatus = GameStatus.DEFEATED;
@@ -66,12 +71,23 @@ public class GameEngine implements GameInterface{
 		this.cityGraphFilename = cityGraphFilename; 
 		this.aiJar = aiJar; 
 		this.gameStatus = GameStatus.ONGOING;
+		//this.list_s=new List<String>();
 		
 
-		/* ... */
 
 	}
-
+	public static void Eclosion(City city, Disease d){
+		for(City c : city.getNeighbours()){
+			if(!c.isEclosion(d)){
+				if(c.getNbCubes(d)==3){
+					Eclosion(c,d);
+				}
+				else{
+					c.setNbCubes(c.getNbCubes(city.getDisease())+1, city.getDisease());
+				}
+			}
+		}
+	}
 
 	public void loop()  {
 		// Load Ai from Jar file
@@ -90,6 +106,7 @@ public class GameEngine implements GameInterface{
 
 	@Override
 	public List<String> allCityNames() {
+
 		
 		ArrayList<String> s=new ArrayList<String>();
 		int n=list.size();
@@ -99,6 +116,10 @@ public class GameEngine implements GameInterface{
 		}
 		return s;
 		//throw new UnsupportedOperationException(); 
+
+		// TODO
+
+	//	throw new UnsupportedOperationException(); 
 	}
 
 	@Override
@@ -117,12 +138,15 @@ public class GameEngine implements GameInterface{
 	@Override
 	public int infectionLevel(String cityName, Disease d) {
 		// TODO
+
 		int n=this.list.size();
 		for(int i=0;i<n;i++) {
 			if(list.get(i).getName()==cityName) {
 				return list.get(i).getNbCubes(d);
 			}
 		}
+
+
 		throw new UnsupportedOperationException(); 
 	}
 
@@ -170,5 +194,5 @@ public class GameEngine implements GameInterface{
 		return Player.listCardHand.size();
 		//throw new UnsupportedOperationException(); 
 	}
-	
+
 }
