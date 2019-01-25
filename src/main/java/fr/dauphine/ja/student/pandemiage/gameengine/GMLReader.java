@@ -1,13 +1,14 @@
 package fr.dauphine.ja.student.pandemiage.gameengine;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-// The blueprints Library is used here to manipulate and read GML files
-//https://github.com/tinkerpop/blueprints/wiki/GraphML-Reader-and-Writer-Library
-//Do not forget to add to the Java build path the library
+
+import com.tinkerpop.blueprints.Direction;
 import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.Vertex;
@@ -16,9 +17,13 @@ import com.tinkerpop.blueprints.util.io.graphml.GraphMLReader;
  
 
 public class GMLReader {
+	
+	
+	
+	
 	// Usage : GMLReader.readGML( The file goes here) in main in GameEngine.java. 
 	// Returns a list of all cities that we can exploit (
-	public ArrayList<City> readGML(String XML_file) {
+	public ArrayList<City> readGML(String XML_file) throws IOException {
 		
 		//Class City to be created
 		ArrayList<City> cityList = new ArrayList();
@@ -32,25 +37,25 @@ public class GMLReader {
 		Graph graph = new TinkerGraph();
 	    GraphMLReader reader = new GraphMLReader(graph);
 	 
-	    InputStream is = new BufferedInputStream(new FileInputStream(XML_file));
+	    InputStream is = new BufferedInputStream(new FileInputStream("pandemic.graphml"));
 	    reader.inputGraph(is);
 	    
 	    // In order to be able to browse through the GML
 	    Iterable<Vertex> vertices = graph.getVertices();
 	    Iterator<Vertex> verticesIterator = vertices.iterator();
 	    
-	    // Loops over Vertices than Edges, The given GML has only one edge but it doesn't matter
+	    // Loops over Vertices than Edges, the Edges represent a connexion between two cities(source->target)
 	    while (verticesIterator.hasNext()) {
 	    	 
 	        Vertex vertex = verticesIterator.next();
-	        Iterable<Edge> edges = vertex.getInEdges();
+	        Iterable<Edge> edges = vertex.getEdges(Direction.BOTH , " ");
 	        Iterator<Edge> edgesIterator = edges.iterator();
 	   
 	        while (edgesIterator.hasNext()) {
 	   
 	          Edge edge = edgesIterator.next();
-	          Vertex outVertex = edge.getOutVertex();
-	          Vertex inVertex = edge.getInVertex();
+	          Vertex outVertex = edge.getVertex(Direction.IN);
+	          Vertex inVertex = edge.getVertex(Direction.OUT);
 	          
 	          //Attributes assignement
 	          label = (String) outVertex.getProperty("label");
@@ -60,16 +65,21 @@ public class GMLReader {
 	          r = (int)outVertex.getProperty("r");
 	          g = (int)outVertex.getProperty("g");
 	          b = (int)outVertex.getProperty("b");
-	          x = (float)outVertex.getProperty("r");
+	          x = (float)outVertex.getProperty("x");
 	          y = (float)outVertex.getProperty("y");
 	          
-	          cityList<City>.add(new City(label, eigencentrality, degree, size, r, g, b, x, y));
+	          List<City> a = new ArrayList();
+	          City paris = new City(label, r, g, b, 0.0, x, y, size, eigencentrality	," ", " ", degree , a);
+	          cityList.add(paris);
 	          
 	        }
 	          
-		return cityList;
+		
 	
 	    }
-	    }
+	    return cityList;    
+	}
+
+	
 
 }
