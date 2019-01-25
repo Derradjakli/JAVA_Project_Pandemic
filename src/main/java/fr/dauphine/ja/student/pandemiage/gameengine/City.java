@@ -17,7 +17,7 @@ public class City {
 	private double eigenvector_Centrality;
 	private String edge_ID;
 	private String edge_Label;
-	private int degree; // Neighbours number
+	private int degree; //    Neighbours number
 	
 	private Map<Disease,Integer> m; // Permet de recuperer le nombre de cube sur chaque ville et sr chaque malade
 	private Map<Disease,Boolean> m_ec;// Permet de recuperer quelle maladie a eclos sur une ville

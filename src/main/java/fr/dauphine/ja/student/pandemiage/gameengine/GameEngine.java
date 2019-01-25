@@ -20,7 +20,11 @@ public class GameEngine implements GameInterface{
 	private final String aiJar;
 	private final String cityGraphFilename; 	
 	private GameStatus gameStatus;
-
+	private List<City> list;
+	private List<String> list_s;
+	private static int vit_prop=2;// vitesse de propagation actuelle du jeu
+	private static int nb_epidcard=0;// nombre de carte epidemie tiré
+	
 	// Do not change!
 	private void setDefeated(String msg, DefeatReason dr) {		
 		gameStatus = GameStatus.DEFEATED;
@@ -61,7 +65,7 @@ public class GameEngine implements GameInterface{
 		this.cityGraphFilename = cityGraphFilename; 
 		this.aiJar = aiJar; 
 		this.gameStatus = GameStatus.ONGOING;
-
+		this.list_s=new List<String>();
 
 		/* ... */
 
@@ -100,6 +104,7 @@ public class GameEngine implements GameInterface{
 	@Override
 	public int infectionLevel(String cityName, Disease d) {
 		// TODO
+		
 		throw new UnsupportedOperationException(); 
 	}
 
