@@ -28,14 +28,14 @@ public class GMLReader {
 	public static ArrayList<City> readGML(String XML_file) throws IOException {
 		
 		//Class City to be created
-		ArrayList<City> cityList = new ArrayList();
+		ArrayList<City> cityList = new ArrayList<City>();
 		
 		//Declaration of City attributes
 		String label;
 		double eigencentrality;
 		int r, g, b, degree;
 		float x, y, size;
-		List<City> neighboursList = new ArrayList();
+		
 		Graph graph = new TinkerGraph();
 	    GraphMLReader reader = new GraphMLReader(graph);
 	 
@@ -64,7 +64,7 @@ public class GMLReader {
 	          
 	          Iterable<Edge> edges = vertex.getEdges(Direction.BOTH);
 	          Iterator<Edge> edgesIterator = edges.iterator();
-	          neighboursList.clear();
+	          List<City> neighboursList = new ArrayList<City>();
 	         
 	          while (edgesIterator.hasNext()) {
 	        	  Edge c= edgesIterator.next();
@@ -73,9 +73,11 @@ public class GMLReader {
 
 	        	  if(a.getName()!=vertexToCity(vertex).getName()) {
 	        		  neighboursList.add(a);
+	        		 
 	        	  }
 	        	  if(a1.getName()!=vertexToCity(vertex).getName()) {
-	        		  neighboursList.add(a);
+	        		  neighboursList.add(a1);
+	        		
 	        	  }
 	        		  
 	        	  
@@ -106,6 +108,7 @@ public class GMLReader {
         
         return Oran;
 	}
+	
 	
 
 	
