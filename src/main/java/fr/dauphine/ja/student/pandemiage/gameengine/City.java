@@ -1,5 +1,6 @@
 package fr.dauphine.ja.student.pandemiage.gameengine;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,17 +18,18 @@ public class City {
 	private double eigenvector_Centrality;
 	private String edge_ID;
 	private String edge_Label;
-	private int degree; // Neighbours number
-	/*private int nbCubes;
-	private boolean eclosion;
+	private int degree; //    Neighbours number
+
+
+	private static Map<Disease,Integer> m; // Permet de recuperer le nombre de cube sur chaque ville et sr chaque malade
+	private static Map<Disease,Boolean> m_ec;// Permet de recuperer quelle maladie a eclos sur une ville
+
 	private Disease disease;
-	*/
-	private Map<Disease,Integer> m; // Permet de recuperer le nombre de cube sur chaque ville et sr chaque malade
-	private Map<Disease,Boolean> m_ec;// Permet de recuperer quelle maladie a eclos sur une ville
-	private static Map<Disease,Boolean> m_cure; // Permet de savoir pour chaque remede si l'entidote a été decouvert
-	private List<City> list;
-	
-	public City(String CityName, int r	,int g, int b, double weight, float x, float y, float size,double eigenvector_Centrality	,String edge_ID,String edge_Label	, int degree , List<City> list) {
+	private static Map<Disease,Boolean> m_cure; // Permet de savoir pour chaque maladie si l'entidote a été decouvert
+	private static List<City> list;
+
+
+	public City(String CityName, int r	,int g, int b, double weight, float x, float y, float size,double eigenvector_Centrality	,String edge_ID,String edge_Label	, int degree , List<City> list,List<String> s) {
 		this.CityName=CityName;
 		this.r=r;// The Red color of RGB
 		this.g=g;// The GREEN color of RGB
@@ -42,15 +44,30 @@ public class City {
 		this.degree=degree; // Neighbours number
 		this.list=list;
 		
-		
+
+
 	}
-	
+
 	public String getName() {
 		return CityName;
 	}
 	public List<City> getNeighbours(){
 		return this.list;
 	}
+
+	public static List<String> getNeighbours_s(){
+		int n=list.size();
+		ArrayList<String> s=new ArrayList<String>();
+		if(n==0) {
+			for(int i=0;i<n;i++) {
+				s.add(list.get(i).getName());
+			}
+		}
+		return s;
+
+
+	}
+
 	public int getR() {
 		return r;
 	}
@@ -118,20 +135,25 @@ public class City {
 		this.m_ec.put(d, eclosion);
 	}
 	public boolean isCure(Disease d) {
-		return this.m_cure.get(d);
+		return m_cure.get(d);
 	}
 	public void setCure(Disease d) {
 		this.m_cure.put(d, true);
 	}
 
-	/*public Disease getDisease() {
+
+
+
+
+	public Disease getDisease() {
 		return disease;
 	}
 
 	public void setDisease(Disease disease) {
 		this.disease = disease;
-	}*/
+	}
 	
 	
 	
+
 }

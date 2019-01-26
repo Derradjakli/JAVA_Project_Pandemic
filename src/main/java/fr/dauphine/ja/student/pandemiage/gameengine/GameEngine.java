@@ -1,5 +1,6 @@
 package fr.dauphine.ja.student.pandemiage.gameengine;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,14 @@ public class GameEngine implements GameInterface{
 	private final String aiJar;
 	private final String cityGraphFilename; 	
 	private GameStatus gameStatus;
+	private List<City> list;
+	private static int vit_prop=2;// vitesse de propagation actuelle du jeu
+	private static int nb_epidcard=0;// nombre de carte epidemie tiré
+
+	private static int marqueur_prog=1;
+
+	private static Map<Disease,Integer> reserve;
+	private static boolean bool;
 
 	// Do not change!
 	private void setDefeated(String msg, DefeatReason dr) {		
@@ -61,21 +70,55 @@ public class GameEngine implements GameInterface{
 		this.cityGraphFilename = cityGraphFilename; 
 		this.aiJar = aiJar; 
 		this.gameStatus = GameStatus.ONGOING;
-
-
-		/* ... */
-
+		this.reserve = new HashMap<Disease,Integer>(); 
+		for(Disease d :Disease.values()){
+			reserve.put(d, 24);
+		}
 	}
 
+	public static void Outbreaks(City city, Disease d){
+		for(City c : city.getNeighbours()){
+			if(!c.isEclosion(d)){
+				if(c.getNbCubes(d)==3){
+					Outbreaks(c,d);
+				}
+				else{
+					c.setNbCubes(c.getNbCubes(city.getDisease())+1, city.getDisease());
+				}
+			}
+		}
+	}
 
+	public static void GiveMeBlockFromReserve(Disease d){
+		reserve.replace(d,reserve.get(d)-1);
+	}
+
+	
+	
+	public static void AvalaibleBLocks(Integer i){
+		for(Disease d :Disease.values()){
+			//if(reserve.get(d)==-1){
+			if((reserve.get(d)-i)<0){
+				setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
+				
+			}
+		}
+	}
+	
+	
 	public void loop()  {
 		// Load Ai from Jar file
 		System.out.println("Loading AI Jar file " + aiJar);		
 		AiInterface ai = AiLoader.loadAi(aiJar);		
 
-
 		// Very basic game loop
 		while(gameStatus == GameStatus.ONGOING) {
+
+			for(Disease d :Disease.values()){
+				if(reserve.get(d)<0){
+					setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
+				}
+			}
 
 			if(Math.random() < 0.5)		
 				setDefeated("Game not implemented.", DefeatReason.UNKN);
@@ -84,41 +127,77 @@ public class GameEngine implements GameInterface{
 		}
 	}						
 
+
+
 	@Override
 	public List<String> allCityNames() {
+
+
+		ArrayList<String> s=new ArrayList<String>();
+		int n=list.size();
+
+		for(int i=0;i<n;i++) {
+			s.add(list.get(i).getName());
+		}
+		return s;
+		//throw new UnsupportedOperationException(); 
+
 		// TODO
-		
-		throw new UnsupportedOperationException(); 
+
+		//	throw new UnsupportedOperationException(); 
 	}
 
 	@Override
 	public List<String> neighbours(String cityName) {
 		// TODO
+
+		int n=list.size();
+		for(int i=0;i<n;i++) {
+			if(list.get(i).getName()==cityName) {
+				return City.getNeighbours_s();
+			}
+		}
 		throw new UnsupportedOperationException(); 
 	}
 
 	@Override
 	public int infectionLevel(String cityName, Disease d) {
 		// TODO
+
+		int n=this.list.size();
+		for(int i=0;i<n;i++) {
+			if(list.get(i).getName()==cityName) {
+				return list.get(i).getNbCubes(d);
+			}
+		}
+
+
 		throw new UnsupportedOperationException(); 
 	}
 
 	@Override
 	public boolean isCured(Disease d) {
-		// TODO
-		throw new UnsupportedOperationException(); 
+		for(City c: list) {
+			if(c.isCure(d)) {
+				return true;
+			}
+		}
+		return false;
+		//throw new UnsupportedOperationException(); 
 	}
 
 	@Override
 	public int infectionRate() {
 		// TODO
-		throw new UnsupportedOperationException(); 
+		return this.vit_prop;
+		//throw new UnsupportedOperationException(); 
 	}
 
 	@Override
 	public GameStatus gameStatus() {
 		// TODO
-		throw new UnsupportedOperationException(); 
+		return this.gameStatus;
+		//throw new UnsupportedOperationException(); 
 	}
 
 	@Override 
@@ -130,19 +209,45 @@ public class GameEngine implements GameInterface{
 	@Override
 	public boolean isEradicated(Disease d) {
 		// TODO
-		throw new UnsupportedOperationException(); 
+		int n=list.size();
+		for(int i=0;i<n;i++) {
+			if(list.get(i).getNbCubes(d)!=0) {
+				return false;
+			}
+		}
+		return true;
+		//throw new UnsupportedOperationException(); 
 	}
 
 	@Override
 	public int getNbOutbreaks() {
 		// TODO 
-		throw new UnsupportedOperationException(); 
+		return this.marqueur_prog;
+		//throw new UnsupportedOperationException(); 
 	}
 
 	@Override
 	public int getNbPlayerCardsLeft() {
 		// TODO 
-		throw new UnsupportedOperationException(); 
+		return Player.listCardHand.size();
+		//throw new UnsupportedOperationException(); 
+	}
+
+	public static Map<Disease, Integer> getReserve() {
+		return reserve;
+	}
+
+	public static void setReserve(Map<Disease, Integer> reserve) {
+		GameEngine.reserve = reserve;
+	}
+
+	public static boolean isBool() {
+		return bool;
+	}
+
+	public static void setBool(boolean bool) {
+		GameEngine.bool = bool;
 	}
 	
+
 }

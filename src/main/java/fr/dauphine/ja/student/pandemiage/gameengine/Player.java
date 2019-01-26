@@ -9,11 +9,13 @@ import fr.dauphine.ja.pandemiage.common.UnauthorizedActionException;
 
 public class Player implements PlayerInterface{
 	private List<City> listCity;
-	private List<PlayerCardInterface> listCardHand;
+	static List<PlayerCardInterface> listCardHand;
 	private City currentCity;
+	//PlayerCardInterface c=new PlayerCard(currentCity);
+	
 	private int action=4;
 	private boolean switchturn=false; // boolean permet de savoir si les 4 actions sont fini
-	private boolean myturn=false;
+	
 	public Player(City depart,List<City> listc) {
 		currentCity=depart;
 		listCity=listc;
@@ -97,7 +99,7 @@ public class Player implements PlayerInterface{
 	@Override
 	public void skipTurn() {
 		// TODO Auto-generated method stub
-		this.myturn=false;
+		this.switchturn=false;
 
 	}
 
@@ -149,7 +151,8 @@ public class Player implements PlayerInterface{
 	@Override
 	public List<PlayerCardInterface> playerHand() {
 		// TODO Auto-generated method stub
-		return this.listCardHand;
+		return listCardHand;
 	}
 
 }
+
