@@ -12,7 +12,7 @@ public class PropagationDeck {
 	public PropagationDeck(){
 		propagationdeck=new LinkedList<PropagationCard>();
 	}
-
+ 
 	public static void lastDeckCard(){
 		PropagationCard pc= propagationdeck.remove(propagationdeck.size());
 		Disease d=pc.getCity().getDisease();

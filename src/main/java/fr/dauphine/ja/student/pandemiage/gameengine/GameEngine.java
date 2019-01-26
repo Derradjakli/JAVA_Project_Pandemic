@@ -66,18 +66,6 @@ public class GameEngine implements GameInterface{
 		System.err.println("Nb-player-cards-left:"+getNbPlayerCardsLeft());
 	}
 
-	public void Tour(){
-		for(Disease d:Disease.values()){
-			for(City c:list){
-				c.setEclosion(false, d);
-			}
-		}
-		
-		
-		
-	}
-
-
 	public GameEngine(String cityGraphFilename, String aiJar){
 		this.cityGraphFilename = cityGraphFilename; 
 		this.aiJar = aiJar; 
@@ -106,19 +94,22 @@ public class GameEngine implements GameInterface{
 		reserve.replace(d,reserve.get(d)-n);
 	}
 
-
-
+	
+	
 	public static void AvalaibleBLocks(Integer i){
 		for(Disease d :Disease.values()){
 			//if(reserve.get(d)==-1){
 			if((reserve.get(d)-i)<0){
-				//setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
 
+			//	setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
+
+			//	setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
+				
 			}
 		}
 	}
-
-
+	
+	
 	public void loop()  {
 		// Load Ai from Jar file
 		System.out.println("Loading AI Jar file " + aiJar);		
@@ -132,9 +123,6 @@ public class GameEngine implements GameInterface{
 					setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
 				}
 			}
-
-			//ACTIONS A FAIRE
-
 
 			if(Math.random() < 0.5)		
 				setDefeated("Game not implemented.", DefeatReason.UNKN);
@@ -170,7 +158,7 @@ public class GameEngine implements GameInterface{
 		int n=list.size();
 		for(int i=0;i<n;i++) {
 			if(list.get(i).getName()==cityName) {
-				return City.getNeighbours_s();
+				return list.get(i).getNeighbours_s();
 			}
 		}
 		throw new UnsupportedOperationException(); 
@@ -264,7 +252,6 @@ public class GameEngine implements GameInterface{
 	public static void setBool(boolean bool) {
 		GameEngine.bool = bool;
 	}
-
 	public static int getVit_prop() {
 		return vit_prop;
 	}
@@ -300,5 +287,6 @@ public class GameEngine implements GameInterface{
 	public static void setCptprop(int cptprop) {
 		GameEngine.cptprop = cptprop;
 	}
+	
 
 }

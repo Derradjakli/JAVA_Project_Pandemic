@@ -15,7 +15,7 @@ public class PropagationCard {
 		this.g=c.getG();
 		this.b=c.getB();
 	}
-
+ 
 	public void Propagation(){
 
 		Disease d= city.getDisease();

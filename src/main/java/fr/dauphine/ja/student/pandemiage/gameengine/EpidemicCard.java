@@ -13,7 +13,7 @@ public class EpidemicCard extends PlayerCard {
 		epidemic=true;
 	}
 
-
+ 
 	public void Acceleration() { // DONNE LE NOMBRES DE CARTES PROPAGATION QUE JE VAIS TIRER
 		if(GameEngine.getCptprop()<5){
 		GameEngine.setCptprop(GameEngine.getCptprop()+1);
