@@ -152,7 +152,12 @@ public class GameEngine implements GameInterface{
 
 	@Override
 	public boolean isCured(Disease d) {
-		return City.isCure(d);
+		for(City c: list) {
+			if(c.isCure(d)) {
+				return true;
+			}
+		}
+		return false;
 		//throw new UnsupportedOperationException(); 
 	}
 
@@ -179,13 +184,21 @@ public class GameEngine implements GameInterface{
 	@Override
 	public boolean isEradicated(Disease d) {
 		// TODO
-		throw new UnsupportedOperationException(); 
+		int n=list.size();
+		for(int i=0;i<n;i++) {
+			if(list.get(i).getNbCubes(d)!=0) {
+				return false;
+			}
+		}
+		return true;
+		//throw new UnsupportedOperationException(); 
 	}
 
 	@Override
 	public int getNbOutbreaks() {
 		// TODO 
-		throw new UnsupportedOperationException(); 
+		return this.marqueur_prog;
+		//throw new UnsupportedOperationException(); 
 	}
 
 	@Override

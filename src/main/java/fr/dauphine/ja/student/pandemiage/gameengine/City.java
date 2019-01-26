@@ -134,7 +134,7 @@ public class City {
 	public void setEclosion(boolean eclosion,Disease d) {
 		this.m_ec.put(d, eclosion);
 	}
-	public static boolean isCure(Disease d) {
+	public boolean isCure(Disease d) {
 		return m_cure.get(d);
 	}
 	public void setCure(Disease d) {
