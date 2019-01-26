@@ -77,7 +77,6 @@ public class GameEngine implements GameInterface{
 	}
 
 	public static void Outbreaks(City city, Disease d){
-
 		for(City c : city.getNeighbours()){
 			if(!c.isEclosion(d)){
 				if(c.getNbCubes(d)==3){
@@ -100,6 +99,9 @@ public class GameEngine implements GameInterface{
 		for(Disease d :Disease.values()){
 			//if(reserve.get(d)==-1){
 			if((reserve.get(d)-i)<0){
+
+			//	setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
+
 			//	setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
 				
 			}

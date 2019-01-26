@@ -20,41 +20,49 @@ public class PropagationCard {
 		Disease d= city.getDisease();
 		if(city.getNbCubes(d)==3){
 			city.setEclosion(true, d);
-			GameEngine.Eclosion(city,d);
+			GameEngine.Outbreaks(city,d);
 		}
 		else{
-		city.setNbCubes(city.getNbCubes(d)+1,d);
+			
+			if(GameEngine.getReserve().get(d)==0){
+				GameEngine.setBool(false);
+				return;
+			}
+			
+			GameEngine.AvalaibleBLocks(1);
+			GameEngine.GiveMeBlockFromReserve(d);
+			city.setNbCubes(city.getNbCubes(d)+1,d);
 		}
 	}
 
 
 
-		public City getCity() {
-			return city;
-		}
-		public void setCity(City city) {
-			this.city = city;
-		}
-		public int getR() {
-			return r;
-		}
-		public void setR(int r) {
-			this.r = r;
-		}
-		public int getG() {
-			return g;
-		}
-		public void setG(int g) {
-			this.g = g;
-		}
-		public int getB() {
-			return b;
-		}
-		public void setB(int b) {
-			this.b = b;
-		}
-
-
-
-
+	public City getCity() {
+		return city;
 	}
+	public void setCity(City city) {
+		this.city = city;
+	}
+	public int getR() {
+		return r;
+	}
+	public void setR(int r) {
+		this.r = r;
+	}
+	public int getG() {
+		return g;
+	}
+	public void setG(int g) {
+		this.g = g;
+	}
+	public int getB() {
+		return b;
+	}
+	public void setB(int b) {
+		this.b = b;
+	}
+
+
+
+
+}

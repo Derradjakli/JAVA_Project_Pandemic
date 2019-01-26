@@ -29,7 +29,7 @@ public class City {
 	private List<City> list;
 
 
-	public City(String CityName, int r	,int g, int b, double weight, float x, float y, float size,double eigenvector_Centrality	,String edge_ID,String edge_Label	, int degree , List<City> list,List<String> s) {
+	public City(String CityName, int r	,int g, int b, double weight, float x, float y, float size,double eigenvector_Centrality	,String edge_ID,String edge_Label	, int degree , List<City> list) {
 		this.CityName=CityName;
 		this.r=r;// The Red color of RGB
 		this.g=g;// The GREEN color of RGB
