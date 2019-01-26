@@ -21,16 +21,13 @@ public class GameEngine implements GameInterface{
 	private final String aiJar;
 	private final String cityGraphFilename; 	
 	private GameStatus gameStatus;
-	private List<City> list;
-	private List<String> list_s;
+	private List<City> list; // liste de ville du jeu
 	private static int vit_prop=2;// vitesse de propagation actuelle du jeu
 	private static int nb_epidcard=0;// nombre de carte epidemie tiré
-
 	private static int marqueur_prog=1;
-
 	private static Map<Disease,Integer> reserve;
-	
-	
+
+
 	// Do not change!
 	private void setDefeated(String msg, DefeatReason dr) {		
 		gameStatus = GameStatus.DEFEATED;
@@ -72,7 +69,7 @@ public class GameEngine implements GameInterface{
 		this.aiJar = aiJar; 
 		this.gameStatus = GameStatus.ONGOING;
 		//this.list_s=new List<String>();
-		
+
 
 
 	}
@@ -102,15 +99,17 @@ public class GameEngine implements GameInterface{
 			else
 				setVictorious();			
 		}
+
+
 	}						
 
 	@Override
 	public List<String> allCityNames() {
 
-		
+
 		ArrayList<String> s=new ArrayList<String>();
 		int n=list.size();
-		
+
 		for(int i=0;i<n;i++) {
 			s.add(list.get(i).getName());
 		}
@@ -119,17 +118,17 @@ public class GameEngine implements GameInterface{
 
 		// TODO
 
-	//	throw new UnsupportedOperationException(); 
+		//	throw new UnsupportedOperationException(); 
 	}
 
 	@Override
 	public List<String> neighbours(String cityName) {
 		// TODO
-		
+
 		int n=list.size();
 		for(int i=0;i<n;i++) {
 			if(list.get(i).getName()==cityName) {
-				return City.getNeighbours_s();
+				return list.get(i).getNeighbours_s();
 			}
 		}
 		throw new UnsupportedOperationException(); 
@@ -164,7 +163,7 @@ public class GameEngine implements GameInterface{
 	@Override
 	public int infectionRate() {
 		// TODO
-		return this.vit_prop;
+		return GameEngine.vit_prop;
 		//throw new UnsupportedOperationException(); 
 	}
 
@@ -197,7 +196,7 @@ public class GameEngine implements GameInterface{
 	@Override
 	public int getNbOutbreaks() {
 		// TODO 
-		return this.marqueur_prog;
+		return GameEngine.marqueur_prog;
 		//throw new UnsupportedOperationException(); 
 	}
 
