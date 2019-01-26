@@ -15,7 +15,7 @@ public class Player implements PlayerInterface{
 	
 	private int action=4;
 	private boolean switchturn=false; // boolean permet de savoir si les 4 actions sont fini
-	private boolean myturn=false; //Boolean permet de savoir si c mon tour
+	
 	public Player(City depart,List<City> listc) {
 		currentCity=depart;
 		listCity=listc;
@@ -99,7 +99,7 @@ public class Player implements PlayerInterface{
 	@Override
 	public void skipTurn() {
 		// TODO Auto-generated method stub
-		this.myturn=false;
+		this.switchturn=false;
 
 	}
 
