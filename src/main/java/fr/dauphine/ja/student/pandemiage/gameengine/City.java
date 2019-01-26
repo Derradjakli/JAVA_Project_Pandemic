@@ -56,10 +56,10 @@ public class City {
 	}
 
 	public List<String> getNeighbours_s(){
-		int n=list.size();
-		ArrayList<String> s=new ArrayList<String>();
+		int n = this.getNeighbours().size();
+		ArrayList<String> s = new ArrayList<String>();
 		for(int i=0;i<n;i++) {
-			s.add(list.get(i).getName());
+			s.add(this.getNeighbours().get(i).getName());
 		}
 
 		return s;
