@@ -22,13 +22,13 @@ public class GameEngine implements GameInterface{
 	private final String cityGraphFilename; 	
 	private GameStatus gameStatus;
 	private List<City> list;
-	private static int vit_prop=2;// vitesse de propagation actuelle du jeu
+	private static int vit_prop;// vitesse de propagation actuelle du jeu
 	private static int nb_epidcard=0;// nombre de carte epidemie tiré
-
 	private static int marqueur_prog=1;
-
 	private static Map<Disease,Integer> reserve;
 	private static boolean bool;
+	private static int[]vitprop= {2,2,3,3,4,4};
+	private static int cptprop=0;
 
 	// Do not change!
 	private void setDefeated(String msg, DefeatReason dr) {		
@@ -66,6 +66,18 @@ public class GameEngine implements GameInterface{
 		System.err.println("Nb-player-cards-left:"+getNbPlayerCardsLeft());
 	}
 
+	public void Tour(){
+		for(Disease d:Disease.values()){
+			for(City c:list){
+				c.setEclosion(false, d);
+			}
+		}
+		
+		
+		
+	}
+
+
 	public GameEngine(String cityGraphFilename, String aiJar){
 		this.cityGraphFilename = cityGraphFilename; 
 		this.aiJar = aiJar; 
@@ -74,6 +86,7 @@ public class GameEngine implements GameInterface{
 		for(Disease d :Disease.values()){
 			reserve.put(d, 24);
 		}
+		this.vit_prop=vitprop[cptprop];
 	}
 
 	public static void Outbreaks(City city, Disease d){
@@ -89,23 +102,23 @@ public class GameEngine implements GameInterface{
 		}
 	}
 
-	public static void GiveMeBlockFromReserve(Disease d){
-		reserve.replace(d,reserve.get(d)-1);
+	public static void GiveMeBlockFromReserve(Disease d, Integer n){
+		reserve.replace(d,reserve.get(d)-n);
 	}
 
-	
-	
+
+
 	public static void AvalaibleBLocks(Integer i){
 		for(Disease d :Disease.values()){
 			//if(reserve.get(d)==-1){
 			if((reserve.get(d)-i)<0){
-				setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
-				
+				//setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
+
 			}
 		}
 	}
-	
-	
+
+
 	public void loop()  {
 		// Load Ai from Jar file
 		System.out.println("Loading AI Jar file " + aiJar);		
@@ -119,6 +132,9 @@ public class GameEngine implements GameInterface{
 					setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
 				}
 			}
+
+			//ACTIONS A FAIRE
+
 
 			if(Math.random() < 0.5)		
 				setDefeated("Game not implemented.", DefeatReason.UNKN);
@@ -248,6 +264,41 @@ public class GameEngine implements GameInterface{
 	public static void setBool(boolean bool) {
 		GameEngine.bool = bool;
 	}
-	
+
+	public static int getVit_prop() {
+		return vit_prop;
+	}
+
+	public static void setVit_prop(int vit_prop) {
+		GameEngine.vit_prop = vit_prop;
+	}
+
+	public static int getNb_epidcard() {
+		return nb_epidcard;
+	}
+
+	public static void setNb_epidcard(int nb_epidcard) {
+		GameEngine.nb_epidcard = nb_epidcard;
+	}
+
+	public static int indice (int[] tab){
+
+		return 0;
+	}
+	public static int[] getVitprop() {
+		return vitprop;
+	}
+
+	public static void setVitprop(int[] vitprop) {
+		GameEngine.vitprop = vitprop;
+	}
+
+	public static int getCptprop() {
+		return cptprop;
+	}
+
+	public static void setCptprop(int cptprop) {
+		GameEngine.cptprop = cptprop;
+	}
 
 }

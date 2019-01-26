@@ -7,6 +7,7 @@ public class PropagationCard {
 	private int r;
 	private int g;
 	private int b;
+	
 
 	public PropagationCard(City c){
 		this.city=c;
@@ -30,7 +31,7 @@ public class PropagationCard {
 			}
 			
 			GameEngine.AvalaibleBLocks(1);
-			GameEngine.GiveMeBlockFromReserve(d);
+			GameEngine.GiveMeBlockFromReserve(d,1);
 			city.setNbCubes(city.getNbCubes(d)+1,d);
 		}
 	}
