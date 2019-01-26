@@ -99,7 +99,10 @@ public class GameEngine implements GameInterface{
 		for(Disease d :Disease.values()){
 			//if(reserve.get(d)==-1){
 			if((reserve.get(d)-i)<0){
-				setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
+
+			//	setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
+
+			//	setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
 				
 			}
 		}
@@ -154,7 +157,7 @@ public class GameEngine implements GameInterface{
 		int n=list.size();
 		for(int i=0;i<n;i++) {
 			if(list.get(i).getName()==cityName) {
-				return City.getNeighbours_s();
+				return list.get(i).getNeighbours_s();
 			}
 		}
 		throw new UnsupportedOperationException(); 
