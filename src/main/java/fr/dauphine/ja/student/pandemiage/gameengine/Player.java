@@ -2,6 +2,7 @@ package fr.dauphine.ja.student.pandemiage.gameengine;
 
 import java.util.List;
 
+import fr.dauphine.ja.pandemiage.common.DefeatReason;
 import fr.dauphine.ja.pandemiage.common.Disease;
 import fr.dauphine.ja.pandemiage.common.PlayerCardInterface;
 import fr.dauphine.ja.pandemiage.common.PlayerInterface;
@@ -12,10 +13,10 @@ public class Player implements PlayerInterface{
 	static List<PlayerCardInterface> listCardHand;
 	private City currentCity;
 	//PlayerCardInterface c=new PlayerCard(currentCity);
-	
+
 	private int action=4;
 	private boolean switchturn=false; // boolean permet de savoir si les 4 actions sont fini
-	
+
 	public Player(City depart,List<City> listc) {
 		currentCity=depart;
 		listCity=listc;
@@ -46,11 +47,11 @@ public class Player implements PlayerInterface{
 			int n=listCardHand.size();
 			for(int i=0;i<n;i++) {
 				if(listCardHand.get(i).getCityName()==cityName) {
-					
+
 					this.currentCity=listCardHand.get(i).getCity(); // a voir comment recuperer la ville a partir du nom
 					PlayerCard.addToDefauss(listCardHand.get(i));
 					listCardHand.remove(i);// listcarddefaussé.add(
-					
+
 					action--;
 					if(action==0)
 						switchturn=true;
@@ -61,8 +62,8 @@ public class Player implements PlayerInterface{
 			}
 		}
 		throw new UnauthorizedActionException("I can't FlyTo"+cityName+"Cause it's not my Neighbour");
-		
-		
+
+
 
 	}
 
@@ -88,12 +89,12 @@ public class Player implements PlayerInterface{
 				}
 				i++;
 			}
-			
+
 		}
 		throw new UnauthorizedActionException("I can't FlyToCharter"+cityName+"Cause it's not my Neighbour");
-		
-		
-		
+
+
+
 	}
 
 	@Override
@@ -106,6 +107,7 @@ public class Player implements PlayerInterface{
 	@Override
 	public void treatDisease(Disease d) throws UnauthorizedActionException {
 		// TODO Auto-generated method stub
+
 		if(!this.switchturn) {
 			if(this.currentCity.getNbCubes(d)>0) {
 				if(!this.currentCity.isCure(d))
@@ -119,8 +121,9 @@ public class Player implements PlayerInterface{
 			}
 		}
 		throw new UnauthorizedActionException("I can't treadDisease "+d+" on the city "+this.currentCity.getName());
-		
-		
+
+
+
 	}
 
 	@Override
@@ -135,10 +138,10 @@ public class Player implements PlayerInterface{
 			if(!this.switchturn) {
 				this.currentCity.setCure(d);
 			}
-			
+
 		}
 		throw new UnauthorizedActionException("There is no action left or the list of card is not of the correct size");
-		
+
 
 	}
 

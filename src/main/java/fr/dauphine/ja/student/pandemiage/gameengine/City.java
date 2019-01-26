@@ -26,10 +26,10 @@ public class City {
 
 	private Disease disease;
 	private static Map<Disease,Boolean> m_cure; // Permet de savoir pour chaque maladie si l'entidote a été decouvert
-	private static List<City> list;
+	private List<City> list;
 
 
-	public City(String CityName, int r	,int g, int b, double weight, float x, float y, float size,double eigenvector_Centrality	,String edge_ID,String edge_Label	, int degree , List<City> list,List<String> s) {
+	public City(String CityName, int r	,int g, int b, double weight, float x, float y, float size,double eigenvector_Centrality	,String edge_ID,String edge_Label	, int degree , List<City> list) {
 		this.CityName=CityName;
 		this.r=r;// The Red color of RGB
 		this.g=g;// The GREEN color of RGB
@@ -43,7 +43,7 @@ public class City {
 		this.edge_Label=edge_Label;
 		this.degree=degree; // Neighbours number
 		this.list=list;
-		
+
 
 
 	}
@@ -55,14 +55,13 @@ public class City {
 		return this.list;
 	}
 
-	public static List<String> getNeighbours_s(){
+	public List<String> getNeighbours_s(){
 		int n=list.size();
 		ArrayList<String> s=new ArrayList<String>();
-		if(n==0) {
-			for(int i=0;i<n;i++) {
-				s.add(list.get(i).getName());
-			}
+		for(int i=0;i<n;i++) {
+			s.add(list.get(i).getName());
 		}
+
 		return s;
 
 
@@ -152,8 +151,8 @@ public class City {
 	public void setDisease(Disease disease) {
 		this.disease = disease;
 	}
-	
-	
-	
+
+
+
 
 }
