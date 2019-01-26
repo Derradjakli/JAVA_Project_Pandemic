@@ -1,5 +1,6 @@
 package fr.dauphine.ja.student.pandemiage.gameengine;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -250,6 +251,21 @@ public class GameEngine implements GameInterface{
 
 	public static void setBool(boolean bool) {
 		GameEngine.bool = bool;
+	}
+	
+public static void main(String [] args) throws IOException   {
+		
+		ArrayList<City> liste = new ArrayList<City>();
+		liste = GMLReader.readGML("");
+		System.out.println(liste.size());
+		
+		for(int i = 0; i < liste.size(); i++) {
+			System.out.println("City Name : " +liste.get(i).getName());
+			System.out.println("City Degree : " +liste.get(i).getDegree());
+			System.out.println("City Neighbours :			 " +liste.get(i).getNeighbours_s());
+		}
+		
+		
 	}
 	
 
