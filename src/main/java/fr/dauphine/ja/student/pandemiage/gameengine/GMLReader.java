@@ -39,7 +39,7 @@ public class GMLReader {
 		Graph graph = new TinkerGraph();
 	    GraphMLReader reader = new GraphMLReader(graph);
 	 
-	    InputStream is = new BufferedInputStream(new FileInputStream("pandemic.graphml"));
+	    InputStream is = new BufferedInputStream(new FileInputStream(XML_file));
 	    reader.inputGraph(is);
 	    
 	    // In order to be able to browse through the GML

@@ -1,6 +1,7 @@
 package fr.dauphine.ja.student.pandemiage.gameengine;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,13 +20,13 @@ public class City {
 	private String edge_ID;
 	private String edge_Label;
 	private int degree; //    Neighbours number
+	private boolean isOutBreaks=false;
 
-
-	private static Map<Disease,Integer> m; // Permet de recuperer le nombre de cube sur chaque ville et sr chaque malade
-	private static Map<Disease,Boolean> m_ec;// Permet de recuperer quelle maladie a eclos sur une ville
+	private static Map<Disease,Integer> m=new HashMap<Disease,Integer>(); // Permet de recuperer le nombre de cube sur chaque ville et sr chaque malade
+	private static Map<Disease,Boolean> m_ec=new HashMap<Disease,Boolean>();// Permet de recuperer quelle maladie a eclos sur une ville
 
 	private Disease disease;
-	private static Map<Disease,Boolean> m_cure; // Permet de savoir pour chaque maladie si l'entidote a été decouvert
+	private static Map<Disease,Boolean> m_cure=new HashMap<Disease,Boolean>(); // Permet de savoir pour chaque maladie si l'entidote a été decouvert
 	private List<City> list; // list of neighbours
 
 

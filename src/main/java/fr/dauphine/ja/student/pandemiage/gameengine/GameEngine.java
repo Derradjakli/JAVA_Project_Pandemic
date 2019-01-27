@@ -28,11 +28,12 @@ public class GameEngine implements GameInterface{
 	private static int vit_prop;// vitesse de propagation actuelle du jeu
 	private static int nb_epidcard=0;// nombre de carte epidemie tiré
 	private static int marqueur_prog=1;
-	private static Map<Disease,Integer> reserve;
+	private static Map<Disease,Integer> reserve=new HashMap<Disease,Integer>();
 	private static boolean bool;
 	private static int[] vitprop= {2,2,3,3,4,4};
 	private static int cptprop=0;
-	private static GameLevel level;
+	private static GameLevel level=GameLevel.Easy;
+	private static Map<Disease, HashMap<City, Boolean>> outBreaksForEachCity=new HashMap<Disease,HashMap<City,Boolean>>();// Permet de recuperer quelle maladie a eclos sur une ville
 
 	// Do not change!
 	private void setDefeated(String msg, DefeatReason dr) {		
@@ -79,7 +80,8 @@ public class GameEngine implements GameInterface{
 			reserve.put(d, 24);
 		}
 		this.vit_prop=vitprop[cptprop];
-		this.list=GMLReader.readGML("");
+		System.out.println("je suis la");
+		this.list=GMLReader.readGML(cityGraphFilename);
 		for(City c:list) {
 			System.out.println("Ville :"+c.getName());
 		}
@@ -102,16 +104,16 @@ public class GameEngine implements GameInterface{
 		reserve.replace(d,reserve.get(d)-n);
 	}
 
-	
-	
+
+
 	public static boolean AvalaibleBLocks(int i,Disease d){
-			if(reserve.get(d)-i<0) {
-				return false;
-			}
-			return true;
+		if(reserve.get(d)-i<0) {
+			return false;
+		}
+		return true;
 	}
-	
-	
+
+
 	public void loop() throws UnauthorizedActionException  {
 		// Load Ai from Jar file
 		System.out.println("Loading AI Jar file " + aiJar);		
@@ -132,6 +134,7 @@ public class GameEngine implements GameInterface{
 			}
 			listcard.add(new CitiesCard(list.get(i)));
 		}
+
 		//Create the Epidemic Card
 		int j=4;
 		if(level.equals(GameLevel.Easy)) {
@@ -146,16 +149,16 @@ public class GameEngine implements GameInterface{
 		for(int i=0;i<j;i++) {
 			listcard.add(new EpidemicCard());
 		}
-		
-		Collections.shuffle(listcard);
+
+		//Collections.shuffle(listcard);
 		System.out.println("je suis la");
 		p.addToPlayerHand(listcard.get(4));
 		System.out.println("je suis ici");
-		
+
 		PlayerCardInterface c1=p.playerHand().get(0);
 		System.out.println(p.playerHand());
 		//PlayerCardInterface c2=p.playerHand().get(1);
-		
+
 		System.out.println("Card ville "+c1.getCity().getName());
 		p.flyTo(c1.getCity().getName());
 		System.out.println(p.getCurrentCity().getName());
@@ -163,7 +166,7 @@ public class GameEngine implements GameInterface{
 		System.out.println(p.getCurrentCity().getNeighbours_s());
 		p.moveTo(p.getCurrentCity().getNeighbours().get(1).getName());
 		System.out.println(p.getCurrentCity().getName());
-			
+
 		p.addToPlayerHand(listcard.get(cpt));
 		System.out.println("Mes cartes en main");
 		for(PlayerCardInterface c2:p.playerHand()) {
@@ -172,9 +175,9 @@ public class GameEngine implements GameInterface{
 		System.out.println("je suis a "+p.getCurrentCity().getName());
 		p.flyToCharter("Algiers");
 		System.out.println(p.getCurrentCity().getName());
-		
-		
-		
+
+
+
 		// Very basic game loop
 		while(gameStatus == GameStatus.ONGOING) {
 
@@ -354,16 +357,79 @@ public class GameEngine implements GameInterface{
 	public static void setCptprop(int cptprop) {
 		GameEngine.cptprop = cptprop;
 	}
-	
-public static void main(String [] args) throws IOException, UnauthorizedActionException   {
+
+
+	/**Return for each Disease, the number of cubes associated in the map**/
+	public Map<Disease,Integer> scoreOfEachDisease(){
+		Map<Disease,Integer> m=new HashMap<Disease,Integer>();
+		for(City c:list) {
+			if(c.getDisease()==Disease.BLACK) {
+				m.put(Disease.BLACK, m.get(Disease.BLACK)+c.getNbCubes(Disease.BLACK));
+			}
+			if(c.getDisease()==Disease.BLUE) {
+				m.put(Disease.BLUE, m.get(Disease.BLUE)+c.getNbCubes(Disease.BLUE));
+			}
+			if(c.getDisease()==Disease.RED) {
+				m.put(Disease.RED, m.get(Disease.RED)+c.getNbCubes(Disease.RED));
+			}
+			if(c.getDisease()==Disease.YELLOW) {
+				m.put(Disease.YELLOW, m.get(Disease.YELLOW)+c.getNbCubes(Disease.YELLOW));
+			}
+		}
+		return m;
+	}
+
+	public int[] scoreOfMyLocation(Player p) {
+		City c=p.getCurrentCity();
+		return scoreOfEachRegion(c.getDisease(),c.getNeighbours());
+	}
+
+	public List<City> getListCityWithDisease(Disease d){
+		List<City> res =new ArrayList<City>();
+		for(City c: list) {
+			if(c.getDisease()==d)
+				res.add(c);
+		}
+		return res;
+	}
+	/**Return the number of eclosion for the disease d in the same turn. Take the list of the region**/
+	public int[] scoreOfEachRegion(Disease d,List<City> liste) {
+		int cpt=0;
+		int nbcubes=0;
+		int[] tab=new int[2];
+		for(City c:liste) {
+			if(c.getNbCubes(d)>0) {
+				if(c.isEclosion(d)) 
+					nbcubes+=3;
+
+				if(c.getNbCubes(d)==3) 
+					nbcubes+=3;
+
+				if(c.getNbCubes(d)==2) 
+					nbcubes+=2;
+
+				if(c.getNbCubes(d)==1) 
+					nbcubes+=1;
+				cpt++;
+			}
+		}
+		tab[0]=cpt;
+		tab[1]=nbcubes;
+		return tab;
+	}
+
+
+
+
+	public static void main(String [] args) throws IOException, UnauthorizedActionException   {
 		/*
 		ArrayList<City> liste = new ArrayList<City>();
 		liste = GMLReader.readGML("");
 		System.out.println(liste.size());
-		*/
+		 */
 		// Faire rentrer en paramètre le nom du graph, le jar et le niveau de difficulté
-		GameEngine g=new GameEngine("","");
-		
+		GameEngine g=new GameEngine("pandemic.graphml","");
+
 		g.loop();
 		/*
 		for(int i = 0; i < liste.size(); i++) {
@@ -371,9 +437,9 @@ public static void main(String [] args) throws IOException, UnauthorizedActionEx
 			System.out.println("City Degree : " +liste.get(i).getDegree());
 			System.out.println("City Neighbours :			 " +liste.get(i).getNeighbours_s());
 		}*/
-		
-		
+
+
 	}
-	
+
 
 }

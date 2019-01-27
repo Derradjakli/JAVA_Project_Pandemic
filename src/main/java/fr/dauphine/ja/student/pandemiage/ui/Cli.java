@@ -71,8 +71,6 @@ public class Cli {
 			System.exit(1);
 	    }
 		
-		GameEngine g = new GameEngine(cityGraphFile, aijar);
-		/*...*/
-		g.loop();		
+		
 	}
 }
