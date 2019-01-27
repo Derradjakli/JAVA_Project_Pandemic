@@ -38,9 +38,8 @@ public class PlayerCard  implements PlayerCardInterface{
 		return null;
 	}
 
-
 	public City getCity() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 	

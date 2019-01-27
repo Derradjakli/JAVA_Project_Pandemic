@@ -1,7 +1,11 @@
 package fr.dauphine.ja.student.pandemiage.gameengine;
 
 import java.time.Clock;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import fr.dauphine.ja.pandemiage.common.AiInterface;
 import fr.dauphine.ja.pandemiage.common.Disease;
@@ -35,28 +39,29 @@ public class Ai implements AiInterface{
 	 */
 	@Override
 	public List<PlayerCardInterface> discard(GameInterface g, PlayerInterface p, int maxHandSize, int nbEpidemicCards) {
-		if(p.playerHand().size()>maxHandSize) {
-		int compteurRed=0;
-		int compteurBlue=0;
-		int compteurYellow=0;
-		int compteurBlack=0;
-		
-		for(PlayerCardInterface c: p.playerHand()) {
-			if(c.getDisease()==Disease.BLACK)
-				compteurBlack++;
-			if(c.getDisease()==Disease.BLUE)
-				compteurBlue++;
-			if(c.getDisease()==Disease.RED)
-				compteurRed++;
-			if(c.getDisease()==Disease.YELLOW)
-				compteurYellow++;
+		List<PlayerCardInterface> listeR=new ArrayList<PlayerCardInterface>();
+		while(p.playerHand().size()>maxHandSize) {
+			ArrayList<Double> tri=new ArrayList<Double>();
+			for(PlayerCardInterface c:p.playerHand()) {
+				tri.add(((Player)p).scoreOfTheCard(c));
+			}
+			Double tmp=tri.get(0);
+			int indice=0;
+			for(int i=1;i<tri.size();i++) {
+				if(tri.get(i)<tmp) {
+					tmp=tri.get(i);
+					indice=i;
+				}
+			}
 			
+			PlayerCardInterface def=p.playerHand().get(indice);
+			PlayerCard.addToDefauss(def);
+			p.playerHand().remove(indice);
+			listeR.add(def);
 		}
-		
-		}
-		
-		
-		return null;
+
+
+		return listeR;
 	}
 
 }

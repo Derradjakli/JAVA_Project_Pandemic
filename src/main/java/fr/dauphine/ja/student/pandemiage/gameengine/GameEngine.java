@@ -33,10 +33,10 @@ public class GameEngine implements GameInterface{
 	private static boolean bool;
 	private static int[] vitprop= {2,2,3,3,4,4};
 	private static int cptprop=0;
-
+	private Player p;
 	private static GameLevel level=GameLevel.Easy;
 	private static Map<Disease, HashMap<City, Boolean>> outBreaksForEachCity=new HashMap<Disease,HashMap<City,Boolean>>();// Permet de recuperer quelle maladie a eclos sur une ville
-
+	private int turnduration=0;
 
 
 	// Do not change!
@@ -84,15 +84,22 @@ public class GameEngine implements GameInterface{
 			reserve.put(d, 24);
 		}
 		this.vit_prop=vitprop[cptprop];
-
+		
 		System.out.println("je suis la");
 
 		this.list=GMLReader.readGML(cityGraphFilename);
-		for(City c:list) {
-			System.out.println("Ville :"+c.getName());
-		}
+		City atlanta=getCityString("Atlanta",list);
+		p=new Player(atlanta,list);
 	}
 
+	public City getCityString(String name,List<City> liste) {
+		
+		for(City c:liste) {
+			if(c.getName().equals(name))
+				return c;
+		}
+		throw new UnsupportedOperationException("Name "+name+" for a city doesn't exist in the Map");
+	}
 	public static void Outbreaks(City city, Disease d){
 		for(City c : city.getNeighbours()){
 			if(!c.isEclosion(d)){
@@ -250,11 +257,10 @@ public class GameEngine implements GameInterface{
 				pc.Propagation();
 				vit_prop--;
 			}
-			
 		}
 	}
-		
 }
+	
 	public void loop() throws UnauthorizedActionException  {
 		// Load Ai from Jar file
 		System.out.println("Loading AI Jar file " + aiJar);		
@@ -425,7 +431,8 @@ public class GameEngine implements GameInterface{
 	@Override 
 	public int turnDuration() {
 		// TODO
-		throw new UnsupportedOperationException(); 
+		return this.turnduration;
+		//throw new UnsupportedOperationException(); 
 	}
 
 	@Override
@@ -451,7 +458,7 @@ public class GameEngine implements GameInterface{
 	@Override
 	public int getNbPlayerCardsLeft() {
 		// TODO 
-		return Player.listCardHand.size();
+		return p.playerHand().size();
 		//throw new UnsupportedOperationException(); 
 	}
 
@@ -533,7 +540,7 @@ public class GameEngine implements GameInterface{
 		return scoreOfEachRegion(c.getDisease(),c.getNeighbours());
 	}
 
-	public List<City> getListCityWithDisease(Disease d){
+	public static List<City> getListCityWithDisease(Disease d){
 		List<City> res =new ArrayList<City>();
 		for(City c: list) {
 			if(c.getDisease()==d)
@@ -543,7 +550,7 @@ public class GameEngine implements GameInterface{
 	}
 	
 	/**Return the number of eclosion for the disease d in the same turn. Take the list of the region**/
-	public int[] scoreOfEachRegion(Disease d,List<City> liste) {
+	public static int[] scoreOfEachRegion(Disease d,List<City> liste) {
 		int cpt=0;
 		int nbcubes=0;
 		int[] tab=new int[2];
