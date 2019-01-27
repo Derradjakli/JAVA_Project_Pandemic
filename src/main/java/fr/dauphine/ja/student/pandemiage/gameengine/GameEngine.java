@@ -14,7 +14,7 @@ import fr.dauphine.ja.pandemiage.common.GameInterface;
 import fr.dauphine.ja.pandemiage.common.GameStatus;
 import fr.dauphine.ja.pandemiage.common.PlayerCardInterface;
 import fr.dauphine.ja.pandemiage.common.UnauthorizedActionException;
-
+import java.util.Collections;
 /**
  * Empty GameEngine implementing GameInterface
  *
@@ -32,6 +32,7 @@ public class GameEngine implements GameInterface{
 	private static boolean bool;
 	private static int[] vitprop= {2,2,3,3,4,4};
 	private static int cptprop=0;
+	private static GameLevel level;
 
 	// Do not change!
 	private void setDefeated(String msg, DefeatReason dr) {		
@@ -123,23 +124,57 @@ public class GameEngine implements GameInterface{
 		System.out.println(p.playerHand());
 		// Create the player Card
 		List<PlayerCardInterface> listcard=new ArrayList<PlayerCardInterface>();
+		int cpt=0;
 		for(int i=0;i<48;i++) {
+			if(list.get(i).getName().equals("Delhi")) {
+				System.out.println("j'ai trouvé la carte");
+				cpt=i;
+			}
 			listcard.add(new CitiesCard(list.get(i)));
 		}
 		//Create the Epidemic Card
-		for(int i=0;i<6;i++) {
+		int j=4;
+		if(level.equals(GameLevel.Easy)) {
+			j=4;
+		}
+		if(level.equals(GameLevel.Medium)) {
+			j=5;
+		}
+		if(level.equals(GameLevel.Hard)) {
+			j=6;
+		}
+		for(int i=0;i<j;i++) {
 			listcard.add(new EpidemicCard());
 		}
+		
+		Collections.shuffle(listcard);
 		System.out.println("je suis la");
-		p.addToPlayerHand(listcard.get(3));
+		p.addToPlayerHand(listcard.get(4));
 		System.out.println("je suis ici");
 		
 		PlayerCardInterface c1=p.playerHand().get(0);
+		System.out.println(p.playerHand());
+		//PlayerCardInterface c2=p.playerHand().get(1);
+		
 		System.out.println("Card ville "+c1.getCity().getName());
 		p.flyTo(c1.getCity().getName());
 		System.out.println(p.getCurrentCity().getName());
 		System.out.println("action left "+p.getActionLeft());
-		p.flyToCharter("Atlanta");
+		System.out.println(p.getCurrentCity().getNeighbours_s());
+		p.moveTo(p.getCurrentCity().getNeighbours().get(1).getName());
+		System.out.println(p.getCurrentCity().getName());
+			
+		p.addToPlayerHand(listcard.get(cpt));
+		System.out.println("Mes cartes en main");
+		for(PlayerCardInterface c2:p.playerHand()) {
+			System.out.println(c2.getCityName());
+		}
+		System.out.println("je suis a "+p.getCurrentCity().getName());
+		p.flyToCharter("Algiers");
+		System.out.println(p.getCurrentCity().getName());
+		
+		
+		
 		// Very basic game loop
 		while(gameStatus == GameStatus.ONGOING) {
 
@@ -182,7 +217,7 @@ public class GameEngine implements GameInterface{
 
 		int n=list.size();
 		for(int i=0;i<n;i++) {
-			if(list.get(i).getName()==cityName) {
+			if(list.get(i).getName().equals(cityName)) {
 				return list.get(i).getNeighbours_s();
 			}
 		}
@@ -195,7 +230,7 @@ public class GameEngine implements GameInterface{
 
 		int n=this.list.size();
 		for(int i=0;i<n;i++) {
-			if(list.get(i).getName()==cityName) {
+			if(list.get(i).getName().equals(cityName)) {
 				return list.get(i).getNbCubes(d);
 			}
 		}
@@ -325,7 +360,10 @@ public static void main(String [] args) throws IOException, UnauthorizedActionEx
 		ArrayList<City> liste = new ArrayList<City>();
 		liste = GMLReader.readGML("");
 		System.out.println(liste.size());
-		*/GameEngine g=new GameEngine("","");
+		*/
+		// Faire rentrer en paramètre le nom du graph, le jar et le niveau de difficulté
+		GameEngine g=new GameEngine("","");
+		
 		g.loop();
 		/*
 		for(int i = 0; i < liste.size(); i++) {

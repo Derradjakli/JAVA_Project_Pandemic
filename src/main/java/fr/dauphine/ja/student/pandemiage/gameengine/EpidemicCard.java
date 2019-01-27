@@ -16,23 +16,23 @@ public class EpidemicCard extends PlayerCard {
  
 	public void Acceleration() { // DONNE LE NOMBRES DE CARTES PROPAGATION QUE JE VAIS TIRER
 		if(GameEngine.getCptprop()<5){
-		GameEngine.setCptprop(GameEngine.getCptprop()+1);
-		GameEngine.setVit_prop(GameEngine.getVitprop()[GameEngine.getCptprop()]);
+			GameEngine.setCptprop(GameEngine.getCptprop()+1);
+			GameEngine.setVit_prop(GameEngine.getVitprop()[GameEngine.getCptprop()]);
 		}
 	}
 	
 	public void Infection(PropagationDeck pc) {
-		pc.lastDeckCard();
+		PropagationDeck.lastDeckCard();
 	}
 	
 	public void Intensification(PropagationDeck pc1,PropagationDeck propdefauss) {
-		Collections.shuffle(propdefauss.getPropagationdeck());
+		Collections.shuffle(PropagationDeck.getPropagationdeck());
 		for(PropagationCard pc :propdefauss.getPropagationdeck()){
-			pc1.setPropagationdeck(pc1.getPropagationdeck());
+			PropagationDeck.setPropagationdeck(PropagationDeck.getPropagationdeck());
 			List<PropagationCard> ls;
-			ls=pc1.getPropagationdeck();
-			ls.addAll(propdefauss.getPropagationdeck());
-			pc1.setPropagationdeck(ls);
+			ls=PropagationDeck.getPropagationdeck();
+			ls.addAll(PropagationDeck.getPropagationdeck());
+			PropagationDeck.setPropagationdeck(ls);
 		}		
 	}
 

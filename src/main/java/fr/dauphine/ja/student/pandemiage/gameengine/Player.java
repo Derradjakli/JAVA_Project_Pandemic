@@ -27,7 +27,7 @@ public class Player implements PlayerInterface{
 	public void moveTo(String cityName) throws UnauthorizedActionException {
 		if(!switchturn) {
 			for(City i:currentCity.getNeighbours()) {
-				if(i.getName()==cityName) {
+				if(i.getName().equals(cityName)) {
 					this.currentCity=i;
 					action--;
 					if(action==0) {
@@ -55,7 +55,7 @@ public class Player implements PlayerInterface{
 		if(!switchturn) {
 			int n=listCardHand.size();
 			for(int i=0;i<n;i++) {
-				if(listCardHand.get(i).getCityName()==cityName) {
+				if(listCardHand.get(i).getCityName().equals(cityName)) {
 
 					this.currentCity=listCardHand.get(i).getCity(); // a voir comment recuperer la ville a partir du nom
 					PlayerCard.addToDefauss(listCardHand.get(i));
@@ -83,9 +83,9 @@ public class Player implements PlayerInterface{
 		if(!switchturn) {
 			int n=listCardHand.size();
 			for(int i=0;i<n;i++)  {
-				if(listCardHand.get(i).getCityName()==this.currentCity.getName()) {
+				if(listCardHand.get(i).getCityName().equals(this.currentCity.getName())) {
 					for(City ci:listCity) {
-						if(ci.getName()==cityName) {
+						if(ci.getName().equals(cityName)) {
 							this.currentCity=ci;
 							action--;
 							PlayerCard.addToDefauss(listCardHand.get(i));// Add my card to the discarded cards list
@@ -141,7 +141,7 @@ public class Player implements PlayerInterface{
 		Disease d=cardNames.get(0).getDisease();
 		if(cardNames.size()<5) {
 			for(PlayerCardInterface c:cardNames) {
-				if(d!=c.getDisease())
+				if(!d.equals(c.getDisease()))
 					throw new UnauthorizedActionException("The list of card is not of the correct colors");
 			}
 			if(!this.switchturn) {
