@@ -11,7 +11,7 @@ import fr.dauphine.ja.pandemiage.common.UnauthorizedActionException;
 
 public class Player implements PlayerInterface{
 	private List<City> listCity;
-	static List<PlayerCardInterface> listCardHand;
+	private static List<PlayerCardInterface> listCardHand;
 	private City currentCity;
 	//PlayerCardInterface c=new PlayerCard(currentCity);
 
@@ -165,10 +165,49 @@ public class Player implements PlayerInterface{
 		// TODO Auto-generated method stub
 		return listCardHand;
 	}
-	public int[] scoreOfEachCard(PlayerCardInterface c) {
+	public double scoreOfEachCardInRegion(PlayerCardInterface c) {
 		int[] tab=new int[2];
 		
-		return tab;
+		tab=GameEngine.scoreOfEachRegion(c.getDisease(),GameEngine.getListCityWithDisease(c.getDisease()));
+		double res=(double)(tab[1])/(double)(tab[0]);
+		return res;
+	}
+	public int scoreOfEachCardInCure(PlayerCardInterface c1) {
+		int cpt=0;
+		for(PlayerCardInterface c: this.playerHand()) {
+			if(c1.getDisease()==c.getDisease())
+				cpt++;
+		}
+		switch(cpt) {
+		case 1: return 1;
+		case 2: return 3;
+		case 3: return 5;
+		case 4: return 8;
+		case 5: return 12;
+		case 6: // voir si on peut faire charter avec ou bien voir si elle peut nous mener a une region blindé de maladie
+		}
+		return cpt;
+	}
+	
+	public int scoreOfEachCardInMove(PlayerCardInterface c) {
+		if(c.getCityName().equals(currentCity.getName()))
+			return 10;
+		else {
+			for(City c1:currentCity.getNeighbours()) {
+				if(c1.getName().equals(c.getCityName())) {
+					return 7;
+				}
+			}
+		}
+		return 1;
+	}
+	
+	public double scoreOfTheCard(PlayerCardInterface c) {
+		double move=scoreOfEachCardInMove(c);
+		double cure=scoreOfEachCardInCure(c);
+		double region=scoreOfEachCardInRegion(c);
+		return move+cure+region*3;
+		
 	}
 	public void addToPlayerHand(PlayerCardInterface c) {
 		listCardHand.add(c);
