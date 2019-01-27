@@ -125,7 +125,7 @@ public class GameEngine implements GameInterface{
 		ArrayList<PlayerCardInterface>t3=new ArrayList<>();
 		ArrayList<PlayerCardInterface>t4=new ArrayList<>();
 		for(PlayerCardInterface p : lc){
-			if(p.isEpidemic()){
+			if(((PlayerCard) p).isEpidemic()){
 				reserve.add(p);
 				lc.remove(p);
 			}
@@ -221,8 +221,8 @@ public class GameEngine implements GameInterface{
 		System.out.println(p.playerHand());
 		//PlayerCardInterface c2=p.playerHand().get(1);
 
-		System.out.println("Card ville "+c1.getCity().getName());
-		p.flyTo(c1.getCity().getName());
+		System.out.println("Card ville "+((PlayerCard)c1).getCity().getName());
+		p.flyTo(((PlayerCard)c1).getCity().getName());
 		System.out.println(p.getCurrentCity().getName());
 		System.out.println("action left "+p.getActionLeft());
 		System.out.println(p.getCurrentCity().getNeighbours_s());
@@ -483,6 +483,8 @@ public class GameEngine implements GameInterface{
 		tab[1]=nbcubes;
 		return tab;
 	}
+	
+	
 
 
 

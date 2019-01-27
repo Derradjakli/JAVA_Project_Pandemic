@@ -57,7 +57,7 @@ public class Player implements PlayerInterface{
 			for(int i=0;i<n;i++) {
 				if(listCardHand.get(i).getCityName().equals(cityName)) {
 
-					this.currentCity=listCardHand.get(i).getCity(); // a voir comment recuperer la ville a partir du nom
+					this.currentCity=((PlayerCard) (listCardHand.get(i))).getCity(); // a voir comment recuperer la ville a partir du nom
 					PlayerCard.addToDefauss(listCardHand.get(i));
 					listCardHand.remove(i);// listcarddefaussé.add(
 

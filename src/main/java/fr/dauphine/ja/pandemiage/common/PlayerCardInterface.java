@@ -20,7 +20,6 @@ public interface PlayerCardInterface {
 	 * @return Type of disease associated to this card
 	 */
 	public Disease getDisease(); 	
-	public City getCity();
-	public Boolean isEpidemic();
+	
 
 }
