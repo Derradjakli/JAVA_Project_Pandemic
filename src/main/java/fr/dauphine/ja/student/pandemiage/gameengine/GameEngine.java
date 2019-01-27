@@ -12,6 +12,8 @@ import fr.dauphine.ja.pandemiage.common.DefeatReason;
 import fr.dauphine.ja.pandemiage.common.Disease;
 import fr.dauphine.ja.pandemiage.common.GameInterface;
 import fr.dauphine.ja.pandemiage.common.GameStatus;
+import fr.dauphine.ja.pandemiage.common.PlayerCardInterface;
+import fr.dauphine.ja.pandemiage.common.UnauthorizedActionException;
 
 /**
  * Empty GameEngine implementing GameInterface
@@ -22,13 +24,13 @@ public class GameEngine implements GameInterface{
 	private final String aiJar;
 	private final String cityGraphFilename; 	
 	private GameStatus gameStatus;
-	private List<City> list;
+	private static List<City> list;
 	private static int vit_prop;// vitesse de propagation actuelle du jeu
 	private static int nb_epidcard=0;// nombre de carte epidemie tiré
 	private static int marqueur_prog=1;
 	private static Map<Disease,Integer> reserve;
 	private static boolean bool;
-	private static int[]vitprop= {2,2,3,3,4,4};
+	private static int[] vitprop= {2,2,3,3,4,4};
 	private static int cptprop=0;
 
 	// Do not change!
@@ -67,7 +69,7 @@ public class GameEngine implements GameInterface{
 		System.err.println("Nb-player-cards-left:"+getNbPlayerCardsLeft());
 	}
 
-	public GameEngine(String cityGraphFilename, String aiJar){
+	public GameEngine(String cityGraphFilename, String aiJar) throws IOException{
 		this.cityGraphFilename = cityGraphFilename; 
 		this.aiJar = aiJar; 
 		this.gameStatus = GameStatus.ONGOING;
@@ -76,6 +78,10 @@ public class GameEngine implements GameInterface{
 			reserve.put(d, 24);
 		}
 		this.vit_prop=vitprop[cptprop];
+		this.list=GMLReader.readGML("");
+		for(City c:list) {
+			System.out.println("Ville :"+c.getName());
+		}
 	}
 
 	public static void Outbreaks(City city, Disease d){
@@ -97,25 +103,43 @@ public class GameEngine implements GameInterface{
 
 	
 	
-	public static void AvalaibleBLocks(Integer i){
-		for(Disease d :Disease.values()){
-			//if(reserve.get(d)==-1){
-			if((reserve.get(d)-i)<0){
-
-			//	setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
-
-			//	setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
-				
+	public static boolean AvalaibleBLocks(int i,Disease d){
+			if(reserve.get(d)-i<0) {
+				return false;
 			}
-		}
+			return true;
 	}
 	
 	
-	public void loop()  {
+	public void loop() throws UnauthorizedActionException  {
 		// Load Ai from Jar file
 		System.out.println("Loading AI Jar file " + aiJar);		
-		AiInterface ai = AiLoader.loadAi(aiJar);		
-
+		//AiInterface ai = AiLoader.loadAi(aiJar);	
+		City c=this.getCity("Atlanta");
+		Player p=new Player(c,list);
+		System.out.println("Je suis dans "+p.getCurrentCity().getName());
+		p.moveTo(p.getCurrentCity().getNeighbours().get(0).getName());
+		System.out.println("Je suis dans "+p.getCurrentCity().getName());
+		System.out.println(p.playerHand());
+		// Create the player Card
+		List<PlayerCardInterface> listcard=new ArrayList<PlayerCardInterface>();
+		for(int i=0;i<48;i++) {
+			listcard.add(new CitiesCard(list.get(i)));
+		}
+		//Create the Epidemic Card
+		for(int i=0;i<6;i++) {
+			listcard.add(new EpidemicCard());
+		}
+		System.out.println("je suis la");
+		p.addToPlayerHand(listcard.get(3));
+		System.out.println("je suis ici");
+		
+		PlayerCardInterface c1=p.playerHand().get(0);
+		System.out.println("Card ville "+c1.getCity().getName());
+		p.flyTo(c1.getCity().getName());
+		System.out.println(p.getCurrentCity().getName());
+		System.out.println("action left "+p.getActionLeft());
+		p.flyToCharter("Atlanta");
 		// Very basic game loop
 		while(gameStatus == GameStatus.ONGOING) {
 
@@ -194,10 +218,17 @@ public class GameEngine implements GameInterface{
 	@Override
 	public int infectionRate() {
 		// TODO
-		return this.vit_prop;
+		return vitprop[cptprop];
 		//throw new UnsupportedOperationException(); 
 	}
+	public City getCity(String cityName) {
+		for(City c:list) {
+			if(c.getName().equals(cityName)) 
+				return c;
 
+		}
+		throw new UnsupportedOperationException("There is no city for the name "+cityName);
+	}
 	@Override
 	public GameStatus gameStatus() {
 		// TODO
@@ -289,17 +320,19 @@ public class GameEngine implements GameInterface{
 		GameEngine.cptprop = cptprop;
 	}
 	
-public static void main(String [] args) throws IOException   {
-		
+public static void main(String [] args) throws IOException, UnauthorizedActionException   {
+		/*
 		ArrayList<City> liste = new ArrayList<City>();
 		liste = GMLReader.readGML("");
 		System.out.println(liste.size());
-		
+		*/GameEngine g=new GameEngine("","");
+		g.loop();
+		/*
 		for(int i = 0; i < liste.size(); i++) {
 			System.out.println("City Name : " +liste.get(i).getName());
 			System.out.println("City Degree : " +liste.get(i).getDegree());
 			System.out.println("City Neighbours :			 " +liste.get(i).getNeighbours_s());
-		}
+		}*/
 		
 		
 	}

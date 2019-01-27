@@ -26,7 +26,7 @@ public class City {
 
 	private Disease disease;
 	private static Map<Disease,Boolean> m_cure; // Permet de savoir pour chaque maladie si l'entidote a été decouvert
-	private List<City> list;
+	private List<City> list; // list of neighbours
 
 
 	public City(String CityName, int r	,int g, int b, double weight, float x, float y, float size,double eigenvector_Centrality	,String edge_ID,String edge_Label	, int degree , List<City> list) {

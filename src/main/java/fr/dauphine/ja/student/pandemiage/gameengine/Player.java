@@ -1,5 +1,6 @@
 package fr.dauphine.ja.student.pandemiage.gameengine;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.dauphine.ja.pandemiage.common.DefeatReason;
@@ -20,6 +21,7 @@ public class Player implements PlayerInterface{
 	public Player(City depart,List<City> listc) {
 		currentCity=depart;
 		listCity=listc;
+		listCardHand=new ArrayList<PlayerCardInterface>();
 	}
 	@Override
 	public void moveTo(String cityName) throws UnauthorizedActionException {
@@ -39,6 +41,13 @@ public class Player implements PlayerInterface{
 			throw new UnauthorizedActionException("I can't moveTo"+cityName+"Cause it's not my Neighbour");
 		}
 
+	}
+	
+	public City getCurrentCity() {
+		return this.currentCity;
+	}
+	public int getActionLeft() {
+		return action;
 	}
 
 	@Override
@@ -61,7 +70,7 @@ public class Player implements PlayerInterface{
 				i++;
 			}
 		}
-		throw new UnauthorizedActionException("I can't FlyTo"+cityName+"Cause it's not my Neighbour");
+		throw new UnauthorizedActionException("I can't FlyTo"+cityName+"Cause there's no card in my hand of this city or no more action left");
 
 
 
@@ -91,7 +100,7 @@ public class Player implements PlayerInterface{
 			}
 
 		}
-		throw new UnauthorizedActionException("I can't FlyToCharter"+cityName+"Cause it's not my Neighbour");
+		throw new UnauthorizedActionException("I can't FlyToCharter "+cityName+" Cause there's no card of my currentCity in my hand or no more action left");
 
 
 
@@ -155,6 +164,10 @@ public class Player implements PlayerInterface{
 	public List<PlayerCardInterface> playerHand() {
 		// TODO Auto-generated method stub
 		return listCardHand;
+	}
+	
+	public void addToPlayerHand(PlayerCardInterface c) {
+		listCardHand.add(c);
 	}
 
 }
