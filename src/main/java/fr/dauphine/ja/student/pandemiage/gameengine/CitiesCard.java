@@ -9,7 +9,7 @@ public class CitiesCard extends PlayerCard {
 	private int r;
 	private int g;
 	private int b;
-	private boolean epidemic;
+	private Boolean epidemic;
 	
 	public CitiesCard (City c){
 
@@ -71,11 +71,11 @@ public class CitiesCard extends PlayerCard {
 		this.city = city;
 	}
 
-	public boolean isEpidemic() {
+	public Boolean isEpidemic() {
 		return epidemic;
 	}
 
-	public void setEpidemic(boolean epidemic) {
+	public void setEpidemic(Boolean epidemic) {
 		this.epidemic = epidemic;
 	}
 

@@ -21,5 +21,6 @@ public interface PlayerCardInterface {
 	 */
 	public Disease getDisease(); 	
 	public City getCity();
+	public Boolean isEpidemic();
 
 }

@@ -102,16 +102,76 @@ public class GameEngine implements GameInterface{
 		reserve.replace(d,reserve.get(d)-n);
 	}
 
-	
-	
+
+
 	public static boolean AvalaibleBLocks(int i,Disease d){
-			if(reserve.get(d)-i<0) {
-				return false;
-			}
-			return true;
+		if(reserve.get(d)-i<0) {
+			return false;
+		}
+		return true;
 	}
-	
-	
+	public List<PlayerCardInterface> Shuffle(List<PlayerCardInterface>lc){
+		ArrayList<PlayerCardInterface>reserve=new ArrayList<>();
+		ArrayList<PlayerCardInterface>t1=new ArrayList<>();
+		ArrayList<PlayerCardInterface>t2=new ArrayList<>();
+		ArrayList<PlayerCardInterface>t3=new ArrayList<>();
+		ArrayList<PlayerCardInterface>t4=new ArrayList<>();
+		for(PlayerCardInterface p : lc){
+			if(p.isEpidemic()){
+				reserve.add(p);
+				lc.remove(p);
+			}
+		}
+		for(int i=0;i<(lc.size())/4;i++){
+			t1.add(lc.get(i));
+			lc.remove(i);
+		}
+		for(int i=(lc.size())/4;i<(lc.size())/2;i++){
+			t2.add(lc.get(i));
+			lc.remove(i);
+		}
+		for(int i=(lc.size())/2;i<(lc.size()-(lc.size())/4);i++){
+			t3.add(lc.get(i));
+			lc.remove(i);
+		}
+		for(int i=(lc.size()-(lc.size())/4);i<lc.size();i++){
+			t4.add(lc.get(i));
+			lc.remove(i);
+		}
+
+		int j=4;
+		if(level.equals(GameLevel.Easy)) {
+			j=4;
+		}
+		if(level.equals(GameLevel.Medium)) {
+			j=5;
+		}
+		if(level.equals(GameLevel.Hard)) {
+			j=6;
+		}
+		t1.add(new EpidemicCard());Collections.shuffle(t1);
+		t2.add(new EpidemicCard());Collections.shuffle(t2);
+		t3.add(new EpidemicCard());Collections.shuffle(t3);
+		t4.add(new EpidemicCard());Collections.shuffle(t4);
+		j=j-4;
+
+		if(j==1){
+			t1.add(new EpidemicCard());
+		}
+		else{
+			t1.add(new EpidemicCard());
+			t2.add(new EpidemicCard());
+		}
+		System.out.println(lc.size());
+		lc.addAll(t1);
+		lc.addAll(t2);
+		lc.addAll(t3);
+		lc.addAll(t4);
+
+		return lc;
+	}
+
+
 	public void loop() throws UnauthorizedActionException  {
 		// Load Ai from Jar file
 		System.out.println("Loading AI Jar file " + aiJar);		
@@ -122,8 +182,10 @@ public class GameEngine implements GameInterface{
 		p.moveTo(p.getCurrentCity().getNeighbours().get(0).getName());
 		System.out.println("Je suis dans "+p.getCurrentCity().getName());
 		System.out.println(p.playerHand());
+		PropagationDeck pdeck=new PropagationDeck();
 		// Create the player Card
 		List<PlayerCardInterface> listcard=new ArrayList<PlayerCardInterface>();
+		
 		int cpt=0;
 		for(int i=0;i<48;i++) {
 			if(list.get(i).getName().equals("Delhi")) {
@@ -131,7 +193,9 @@ public class GameEngine implements GameInterface{
 				cpt=i;
 			}
 			listcard.add(new CitiesCard(list.get(i)));
+			pdeck.getPropagationdeck().add(new PropagationCard(list.get(i)));
 		}
+		/*
 		//Create the Epidemic Card
 		int j=4;
 		if(level.equals(GameLevel.Easy)) {
@@ -146,16 +210,23 @@ public class GameEngine implements GameInterface{
 		for(int i=0;i<j;i++) {
 			listcard.add(new EpidemicCard());
 		}
-		
+		 */
 		//Collections.shuffle(listcard);
+		
+		System.out.println("taille ma pile de cartejoueurs : "+listcard.size());
+		Shuffle(listcard);
+
+		System.out.println(" Mon deck nouvelle taille "+listcard.size());
+		
 		System.out.println("je suis la");
+		
 		p.addToPlayerHand(listcard.get(4));
 		System.out.println("je suis ici");
-		
+
 		PlayerCardInterface c1=p.playerHand().get(0);
 		System.out.println(p.playerHand());
 		//PlayerCardInterface c2=p.playerHand().get(1);
-		
+
 		System.out.println("Card ville "+c1.getCity().getName());
 		p.flyTo(c1.getCity().getName());
 		System.out.println(p.getCurrentCity().getName());
@@ -163,18 +234,19 @@ public class GameEngine implements GameInterface{
 		System.out.println(p.getCurrentCity().getNeighbours_s());
 		p.moveTo(p.getCurrentCity().getNeighbours().get(1).getName());
 		System.out.println(p.getCurrentCity().getName());
-			
+
 		p.addToPlayerHand(listcard.get(cpt));
 		System.out.println("Mes cartes en main");
 		for(PlayerCardInterface c2:p.playerHand()) {
-			System.out.println(c2.getCityName());
+			System.out.println(c2.getCityName()+" - "+c2.getDisease());
 		}
+		
 		System.out.println("je suis a "+p.getCurrentCity().getName());
 		p.flyToCharter("Algiers");
 		System.out.println(p.getCurrentCity().getName());
-		
-		
-		
+
+
+
 		// Very basic game loop
 		while(gameStatus == GameStatus.ONGOING) {
 
@@ -183,12 +255,14 @@ public class GameEngine implements GameInterface{
 					setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
 				}
 			}
-
+			/*
 			if(Math.random() < 0.5)		
 				setDefeated("Game not implemented.", DefeatReason.UNKN);
 			else
 				setVictorious();			
-		}
+			 */
+
+		}		
 	}						
 
 
@@ -354,16 +428,16 @@ public class GameEngine implements GameInterface{
 	public static void setCptprop(int cptprop) {
 		GameEngine.cptprop = cptprop;
 	}
-	
-public static void main(String [] args) throws IOException, UnauthorizedActionException   {
+
+	public static void main(String [] args) throws IOException, UnauthorizedActionException   {
 		/*
 		ArrayList<City> liste = new ArrayList<City>();
 		liste = GMLReader.readGML("");
 		System.out.println(liste.size());
-		*/
+		 */
 		// Faire rentrer en paramètre le nom du graph, le jar et le niveau de difficulté
 		GameEngine g=new GameEngine("pandemic.graphml","");
-		
+
 		g.loop();
 		/*
 		for(int i = 0; i < liste.size(); i++) {
@@ -371,9 +445,9 @@ public static void main(String [] args) throws IOException, UnauthorizedActionEx
 			System.out.println("City Degree : " +liste.get(i).getDegree());
 			System.out.println("City Neighbours :			 " +liste.get(i).getNeighbours_s());
 		}*/
-		
-		
+
+
 	}
-	
+
 
 }
