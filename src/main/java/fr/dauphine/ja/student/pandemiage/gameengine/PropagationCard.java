@@ -30,7 +30,7 @@ public class PropagationCard {
 				return;
 			}
 			
-			GameEngine.AvalaibleBLocks(1);
+			GameEngine.AvalaibleBLocks(1,d);
 			GameEngine.GiveMeBlockFromReserve(d,1);
 			city.setNbCubes(city.getNbCubes(d)+1,d);
 		}

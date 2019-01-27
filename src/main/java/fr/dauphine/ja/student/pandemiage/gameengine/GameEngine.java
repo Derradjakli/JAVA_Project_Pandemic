@@ -32,7 +32,7 @@ public class GameEngine implements GameInterface{
 	private static boolean bool;
 	private static int[] vitprop= {2,2,3,3,4,4};
 	private static int cptprop=0;
-	private static GameLevel level;
+	private static GameLevel level = GameLevel.Easy;
 
 	// Do not change!
 	private void setDefeated(String msg, DefeatReason dr) {		
@@ -71,7 +71,7 @@ public class GameEngine implements GameInterface{
 	}
 
 	public GameEngine(String cityGraphFilename, String aiJar) throws IOException{
-		this.cityGraphFilename = cityGraphFilename; 
+		this.cityGraphFilename = cityGraphFilename;
 		this.aiJar = aiJar; 
 		this.gameStatus = GameStatus.ONGOING;
 		this.reserve = new HashMap<Disease,Integer>(); 
@@ -79,7 +79,7 @@ public class GameEngine implements GameInterface{
 			reserve.put(d, 24);
 		}
 		this.vit_prop=vitprop[cptprop];
-		this.list=GMLReader.readGML("");
+		this.list=GMLReader.readGML(cityGraphFilename);
 		for(City c:list) {
 			System.out.println("Ville :"+c.getName());
 		}
@@ -147,7 +147,7 @@ public class GameEngine implements GameInterface{
 			listcard.add(new EpidemicCard());
 		}
 		
-		Collections.shuffle(listcard);
+		//Collections.shuffle(listcard);
 		System.out.println("je suis la");
 		p.addToPlayerHand(listcard.get(4));
 		System.out.println("je suis ici");
@@ -362,7 +362,7 @@ public static void main(String [] args) throws IOException, UnauthorizedActionEx
 		System.out.println(liste.size());
 		*/
 		// Faire rentrer en paramètre le nom du graph, le jar et le niveau de difficulté
-		GameEngine g=new GameEngine("","");
+		GameEngine g=new GameEngine("pandemic.graphml","");
 		
 		g.loop();
 		/*
