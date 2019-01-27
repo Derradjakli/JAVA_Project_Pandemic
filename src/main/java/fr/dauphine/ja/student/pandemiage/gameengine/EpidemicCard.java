@@ -6,7 +6,7 @@ import java.util.List;
 import fr.dauphine.ja.pandemiage.common.Disease;
 
 public class EpidemicCard extends PlayerCard {
-	private boolean epidemic;
+	private Boolean epidemic;
 	
 
 	public EpidemicCard(){
@@ -37,12 +37,12 @@ public class EpidemicCard extends PlayerCard {
 	}
 
 
-	public boolean isEpidemic() {
+	public Boolean isEpidemic() {
 		return epidemic;
 	}
 
 
-	public void setEpidemic(boolean epidemic) {
+	public void setEpidemic(Boolean epidemic) {
 		this.epidemic = epidemic;
 	}
 

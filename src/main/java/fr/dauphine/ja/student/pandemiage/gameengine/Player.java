@@ -165,7 +165,11 @@ public class Player implements PlayerInterface{
 		// TODO Auto-generated method stub
 		return listCardHand;
 	}
-	
+	public int[] scoreOfEachCard(PlayerCardInterface c) {
+		int[] tab=new int[2];
+		
+		return tab;
+	}
 	public void addToPlayerHand(PlayerCardInterface c) {
 		listCardHand.add(c);
 	}

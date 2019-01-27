@@ -6,12 +6,11 @@ import java.util.List;
 import fr.dauphine.ja.pandemiage.common.Disease;
 import fr.dauphine.ja.pandemiage.common.PlayerCardInterface;
 
+
 public class PlayerCard  implements PlayerCardInterface{
 
 	private static List<PlayerCardInterface> defauss=new ArrayList<PlayerCardInterface>();
-	
-	
-	
+		
 	public static void addToDefauss(PlayerCardInterface playerCardInterface) {
 		defauss.add(playerCardInterface);
 	}
@@ -21,6 +20,10 @@ public class PlayerCard  implements PlayerCardInterface{
 		defauss.add(playerCard);
 	}
 
+
+	public Boolean isEpidemic() {
+		return null;
+	}
 
 	@Override
 	public String getCityName() {

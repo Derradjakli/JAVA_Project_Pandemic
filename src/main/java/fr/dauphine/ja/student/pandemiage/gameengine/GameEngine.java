@@ -194,7 +194,7 @@ public class GameEngine implements GameInterface{
 		PropagationDeck pdeck=new PropagationDeck();
 		// Create the player Card
 		List<PlayerCardInterface> listcard=new ArrayList<PlayerCardInterface>();
-		
+
 		int cpt=0;
 		for(int i=0;i<48;i++) {
 			if(list.get(i).getName().equals("Delhi")) {
@@ -205,37 +205,15 @@ public class GameEngine implements GameInterface{
 			pdeck.getPropagationdeck().add(new PropagationCard(list.get(i)));
 		}
 
-		/*
->>>>>>> refs/remotes/origin/master
-		//Create the Epidemic Card
-		int j=4;
-		if(level.equals(GameLevel.Easy)) {
-			j=4;
-		}
-		if(level.equals(GameLevel.Medium)) {
-			j=5;
-		}
-		if(level.equals(GameLevel.Hard)) {
-			j=6;
-		}
-		for(int i=0;i<j;i++) {
-			listcard.add(new EpidemicCard());
-		}
-<<<<<<< HEAD
-
-		//Collections.shuffle(listcard);
-=======
-		 */
-		//Collections.shuffle(listcard);
 		
 		System.out.println("taille ma pile de cartejoueurs : "+listcard.size());
 		Shuffle(listcard);
 
 		System.out.println(" Mon deck nouvelle taille "+listcard.size());
-		
+
 
 		System.out.println("je suis la");
-		
+
 		p.addToPlayerHand(listcard.get(4));
 		System.out.println("je suis ici");
 
@@ -256,7 +234,7 @@ public class GameEngine implements GameInterface{
 		for(PlayerCardInterface c2:p.playerHand()) {
 			System.out.println(c2.getCityName()+" - "+c2.getDisease());
 		}
-		
+
 		System.out.println("je suis a "+p.getCurrentCity().getName());
 		p.flyToCharter("Algiers");
 		System.out.println(p.getCurrentCity().getName());
@@ -527,6 +505,6 @@ public class GameEngine implements GameInterface{
 
 	}
 
-	}
+}
 
 
