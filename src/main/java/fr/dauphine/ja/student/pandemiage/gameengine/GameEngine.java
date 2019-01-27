@@ -32,8 +32,11 @@ public class GameEngine implements GameInterface{
 	private static boolean bool;
 	private static int[] vitprop= {2,2,3,3,4,4};
 	private static int cptprop=0;
+
 	private static GameLevel level=GameLevel.Easy;
 	private static Map<Disease, HashMap<City, Boolean>> outBreaksForEachCity=new HashMap<Disease,HashMap<City,Boolean>>();// Permet de recuperer quelle maladie a eclos sur une ville
+
+
 
 	// Do not change!
 	private void setDefeated(String msg, DefeatReason dr) {		
@@ -72,7 +75,7 @@ public class GameEngine implements GameInterface{
 	}
 
 	public GameEngine(String cityGraphFilename, String aiJar) throws IOException{
-		this.cityGraphFilename = cityGraphFilename; 
+		this.cityGraphFilename = cityGraphFilename;
 		this.aiJar = aiJar; 
 		this.gameStatus = GameStatus.ONGOING;
 		this.reserve = new HashMap<Disease,Integer>(); 
@@ -80,7 +83,9 @@ public class GameEngine implements GameInterface{
 			reserve.put(d, 24);
 		}
 		this.vit_prop=vitprop[cptprop];
+
 		System.out.println("je suis la");
+
 		this.list=GMLReader.readGML(cityGraphFilename);
 		for(City c:list) {
 			System.out.println("Ville :"+c.getName());
@@ -113,6 +118,68 @@ public class GameEngine implements GameInterface{
 		return true;
 	}
 
+	public List<PlayerCardInterface> Shuffle(List<PlayerCardInterface>lc){
+		ArrayList<PlayerCardInterface>reserve=new ArrayList<>();
+		ArrayList<PlayerCardInterface>t1=new ArrayList<>();
+		ArrayList<PlayerCardInterface>t2=new ArrayList<>();
+		ArrayList<PlayerCardInterface>t3=new ArrayList<>();
+		ArrayList<PlayerCardInterface>t4=new ArrayList<>();
+		for(PlayerCardInterface p : lc){
+			if(p.isEpidemic()){
+				reserve.add(p);
+				lc.remove(p);
+			}
+		}
+		for(int i=0;i<(lc.size())/4;i++){
+			t1.add(lc.get(i));
+			lc.remove(i);
+		}
+		for(int i=(lc.size())/4;i<(lc.size())/2;i++){
+			t2.add(lc.get(i));
+			lc.remove(i);
+		}
+		for(int i=(lc.size())/2;i<(lc.size()-(lc.size())/4);i++){
+			t3.add(lc.get(i));
+			lc.remove(i);
+		}
+		for(int i=(lc.size()-(lc.size())/4);i<lc.size();i++){
+			t4.add(lc.get(i));
+			lc.remove(i);
+		}
+
+		int j=4;
+		if(level.equals(GameLevel.Easy)) {
+			j=4;
+		}
+		if(level.equals(GameLevel.Medium)) {
+			j=5;
+		}
+		if(level.equals(GameLevel.Hard)) {
+			j=6;
+		}
+		t1.add(new EpidemicCard());Collections.shuffle(t1);
+		t2.add(new EpidemicCard());Collections.shuffle(t2);
+		t3.add(new EpidemicCard());Collections.shuffle(t3);
+		t4.add(new EpidemicCard());Collections.shuffle(t4);
+		j=j-4;
+
+		if(j==1){
+			t1.add(new EpidemicCard());
+		}
+		else{
+			t1.add(new EpidemicCard());
+			t2.add(new EpidemicCard());
+		}
+		System.out.println(lc.size());
+		lc.addAll(t1);
+		lc.addAll(t2);
+		lc.addAll(t3);
+		lc.addAll(t4);
+
+		return lc;
+	}
+
+
 
 	public void loop() throws UnauthorizedActionException  {
 		// Load Ai from Jar file
@@ -124,8 +191,10 @@ public class GameEngine implements GameInterface{
 		p.moveTo(p.getCurrentCity().getNeighbours().get(0).getName());
 		System.out.println("Je suis dans "+p.getCurrentCity().getName());
 		System.out.println(p.playerHand());
+		PropagationDeck pdeck=new PropagationDeck();
 		// Create the player Card
 		List<PlayerCardInterface> listcard=new ArrayList<PlayerCardInterface>();
+		
 		int cpt=0;
 		for(int i=0;i<48;i++) {
 			if(list.get(i).getName().equals("Delhi")) {
@@ -133,8 +202,11 @@ public class GameEngine implements GameInterface{
 				cpt=i;
 			}
 			listcard.add(new CitiesCard(list.get(i)));
+			pdeck.getPropagationdeck().add(new PropagationCard(list.get(i)));
 		}
 
+		/*
+>>>>>>> refs/remotes/origin/master
 		//Create the Epidemic Card
 		int j=4;
 		if(level.equals(GameLevel.Easy)) {
@@ -149,9 +221,21 @@ public class GameEngine implements GameInterface{
 		for(int i=0;i<j;i++) {
 			listcard.add(new EpidemicCard());
 		}
+<<<<<<< HEAD
 
 		//Collections.shuffle(listcard);
+=======
+		 */
+		//Collections.shuffle(listcard);
+		
+		System.out.println("taille ma pile de cartejoueurs : "+listcard.size());
+		Shuffle(listcard);
+
+		System.out.println(" Mon deck nouvelle taille "+listcard.size());
+		
+
 		System.out.println("je suis la");
+		
 		p.addToPlayerHand(listcard.get(4));
 		System.out.println("je suis ici");
 
@@ -170,8 +254,9 @@ public class GameEngine implements GameInterface{
 		p.addToPlayerHand(listcard.get(cpt));
 		System.out.println("Mes cartes en main");
 		for(PlayerCardInterface c2:p.playerHand()) {
-			System.out.println(c2.getCityName());
+			System.out.println(c2.getCityName()+" - "+c2.getDisease());
 		}
+		
 		System.out.println("je suis a "+p.getCurrentCity().getName());
 		p.flyToCharter("Algiers");
 		System.out.println(p.getCurrentCity().getName());
@@ -186,12 +271,14 @@ public class GameEngine implements GameInterface{
 					setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
 				}
 			}
-
+			/*
 			if(Math.random() < 0.5)		
 				setDefeated("Game not implemented.", DefeatReason.UNKN);
 			else
 				setVictorious();			
-		}
+			 */
+
+		}		
 	}						
 
 
@@ -359,6 +446,7 @@ public class GameEngine implements GameInterface{
 	}
 
 
+
 	/**Return for each Disease, the number of cubes associated in the map**/
 	public Map<Disease,Integer> scoreOfEachDisease(){
 		Map<Disease,Integer> m=new HashMap<Disease,Integer>();
@@ -420,7 +508,6 @@ public class GameEngine implements GameInterface{
 
 
 
-
 	public static void main(String [] args) throws IOException, UnauthorizedActionException   {
 		/*
 		ArrayList<City> liste = new ArrayList<City>();
@@ -438,8 +525,8 @@ public class GameEngine implements GameInterface{
 			System.out.println("City Neighbours :			 " +liste.get(i).getNeighbours_s());
 		}*/
 
+	}
 
 	}
 
 
-}
