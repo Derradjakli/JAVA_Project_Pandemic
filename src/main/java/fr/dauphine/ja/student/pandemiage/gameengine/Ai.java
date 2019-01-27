@@ -40,7 +40,7 @@ public class Ai implements AiInterface{
 	@Override
 	public List<PlayerCardInterface> discard(GameInterface g, PlayerInterface p, int maxHandSize, int nbEpidemicCards) {
 		List<PlayerCardInterface> listeR=new ArrayList<PlayerCardInterface>();
-		while(p.playerHand().size()>maxHandSize) {
+		while(p.playerHand().size()>maxHandSize) { // Tant que j'ai pas defaussé les cartes en trop
 			ArrayList<Double> tri=new ArrayList<Double>();
 			for(PlayerCardInterface c:p.playerHand()) {
 				tri.add(((Player)p).scoreOfTheCard(c));
