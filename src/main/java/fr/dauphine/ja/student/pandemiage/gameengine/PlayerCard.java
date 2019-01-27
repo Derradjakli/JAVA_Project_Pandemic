@@ -39,11 +39,12 @@ public class PlayerCard  implements PlayerCardInterface{
 	}
 
 
-	@Override
 	public City getCity() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	
 }
 	
 	

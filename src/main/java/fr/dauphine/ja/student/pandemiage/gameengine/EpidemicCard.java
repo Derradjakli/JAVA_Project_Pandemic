@@ -21,12 +21,12 @@ public class EpidemicCard extends PlayerCard {
 		}
 	}
 	
-	public void Infection(PropagationDeck pc) {
-		PropagationDeck.lastDeckCard();
+	public void Infection(PropagationDeck pc,PropagationDeck propdefauss) {
+		pc.lastDeckCard(propdefauss);
 	}
 	
 	public void Intensification(PropagationDeck pc1,PropagationDeck propdefauss) {
-		Collections.shuffle(PropagationDeck.getPropagationdeck());
+		Collections.shuffle(propdefauss.getPropagationdeck());
 		for(PropagationCard pc :propdefauss.getPropagationdeck()){
 			PropagationDeck.setPropagationdeck(PropagationDeck.getPropagationdeck());
 			List<PropagationCard> ls;

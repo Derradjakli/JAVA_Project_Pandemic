@@ -23,6 +23,7 @@ public class Player implements PlayerInterface{
 		listCity=listc;
 		listCardHand=new ArrayList<PlayerCardInterface>();
 	}
+	
 	@Override
 	public void moveTo(String cityName) throws UnauthorizedActionException {
 		if(!switchturn) {
@@ -165,6 +166,12 @@ public class Player implements PlayerInterface{
 		// TODO Auto-generated method stub
 		return listCardHand;
 	}
+	
+	public void SeeCards(){
+		for(PlayerCardInterface pc: listCardHand){
+			pc.getCityName();
+		}
+	}
 	public int[] scoreOfEachCard(PlayerCardInterface c) {
 		int[] tab=new int[2];
 		
@@ -172,6 +179,33 @@ public class Player implements PlayerInterface{
 	}
 	public void addToPlayerHand(PlayerCardInterface c) {
 		listCardHand.add(c);
+	}
+	public List<City> getListCity() {
+		return listCity;
+	}
+	public void setListCity(List<City> listCity) {
+		this.listCity = listCity;
+	}
+	public static List<PlayerCardInterface> getListCardHand() {
+		return listCardHand;
+	}
+	public static void setListCardHand(List<PlayerCardInterface> listCardHand) {
+		Player.listCardHand = listCardHand;
+	}
+	public int getAction() {
+		return action;
+	}
+	public void setAction(int action) {
+		this.action = action;
+	}
+	public boolean isSwitchturn() {
+		return switchturn;
+	}
+	public void setSwitchturn(boolean switchturn) {
+		this.switchturn = switchturn;
+	}
+	public void setCurrentCity(City currentCity) {
+		this.currentCity = currentCity;
 	}
 
 }
