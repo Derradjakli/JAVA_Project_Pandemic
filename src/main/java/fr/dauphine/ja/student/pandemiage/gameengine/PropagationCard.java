@@ -29,12 +29,12 @@ public class PropagationCard {
 				GameEngine.setBool(false);
 				return;
 			}
-			GameEngine.AvalaibleBLocks(1,d);
+			//if(GameEngine.AvalaibleBLocks(1,d)){
 			GameEngine.GiveMeBlockFromReserve(d,1);
 			city.setNbCubes(city.getNbCubes(d)+1,d);
-		}
 		System.out.println("nb de cubes dans la ville APRES propagation "+city.getNbCubes(d));
-
+			}
+			
 	}
 	
 	public Disease getDisease() {
