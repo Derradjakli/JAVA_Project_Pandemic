@@ -58,6 +58,27 @@ public class City {
 		return this.list;
 	}
 
+	public void setCubesChoiceDiseaseToCure() {// 
+		int diseaseToCure=this.getNbCubes(Disease.BLACK);
+		Disease d=Disease.BLACK;
+		if(diseaseToCure<this.getNbCubes(Disease.RED)) {
+			diseaseToCure=this.getNbCubes(Disease.RED);	
+			d=Disease.RED;
+		}
+		if(diseaseToCure<this.getNbCubes(Disease.YELLOW)) {
+			d=Disease.YELLOW;
+			diseaseToCure=this.getNbCubes(Disease.YELLOW);
+
+		}
+		
+		if(diseaseToCure<this.getNbCubes(Disease.BLUE)) {
+			d=Disease.BLUE;
+			
+			diseaseToCure=this.getNbCubes(Disease.BLUE);
+		}
+		this.setNbCubes(diseaseToCure-1, d);
+	}
+	
 	public List<String> getNeighbours_s(){
 		int n = this.getNeighbours().size();
 		ArrayList<String> s = new ArrayList<String>();

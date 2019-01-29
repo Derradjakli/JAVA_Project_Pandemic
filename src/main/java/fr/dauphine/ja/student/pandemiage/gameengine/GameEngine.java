@@ -145,7 +145,9 @@ public class GameEngine implements GameInterface{
 	}
 
 
-
+	public static List<City >getListCity() {
+		return list;
+	}
 	public static boolean AvalaibleBLocks(int i,Disease d){
 		if(reserve.get(d)-i<0) {
 			return false;
@@ -882,7 +884,7 @@ public class GameEngine implements GameInterface{
 		return m;
 	}
 
-	public int[] scoreOfMyLocation(Player p) {
+	public static int[] scoreOfMyLocation(Player p) {
 		City c=p.getCurrentCity();
 		return scoreOfEachRegion(c.getDisease(),c.getNeighbours());
 	}
@@ -894,6 +896,34 @@ public class GameEngine implements GameInterface{
 				res.add(c);
 		}
 		return res;
+	}
+	
+	public static City chooseCityMostInfected(List <City> liste) {
+		for(City c:liste) {
+			if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=7) {
+				return c;
+			}
+			if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=6) {
+				return c;
+			}
+			if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=5) {
+				return c;
+			}
+			if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=4) {
+				return c;
+			}
+			if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=3) {
+				return c;
+			}
+			if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=2) {
+				return c;
+			}
+			if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=1) {
+				return c;
+			}
+		}
+		return liste.get((int)(Math.random()*liste.size()));
+		
 	}
 
 	/**Return the number of eclosion for the disease d in the same turn. Take the list of the region**/
@@ -929,7 +959,8 @@ public class GameEngine implements GameInterface{
 	public static void main(String [] args) throws IOException, UnauthorizedActionException   {
 
 
-
+		// Faire rentrer en paramètre le nom du graph, le jar et le niveau de difficulté
+		
 		String aijar = DEFAULT_AIJAR; 
 		String cityGraphFile = DEFAULT_CITYGRAPH_FILE; 
 		int difficulty = DEFAULT_DIFFICULTY; 
@@ -986,13 +1017,19 @@ public class GameEngine implements GameInterface{
 
 		GameEngine g=new GameEngine(cityGraphFile, aijar);
 
-		/*LinkedList<PlayerCardInterface> listcard=new LinkedList<PlayerCardInterface>();
+		
+		g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
+	/*LinkedList<PlayerCardInterface> listcard=new LinkedList<PlayerCardInterface>();
 		Player p=new Player();
 		PropagationDeck pdeck=null;
 		PropagationDeck propdefauss=null;
 		 */
 
+
 		g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
+
+		//g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
+
 
 		//g.loop();
 		/*
@@ -1001,6 +1038,7 @@ public class GameEngine implements GameInterface{
 			System.out.println("City Degree : " +liste.get(i).getDegree());
 			System.out.println("City Neighbours :			 " +liste.get(i).getNeighbours_s());
 		}*/
+
 
 	}
 

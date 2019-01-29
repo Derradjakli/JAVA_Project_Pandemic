@@ -12,6 +12,7 @@ import fr.dauphine.ja.pandemiage.common.Disease;
 import fr.dauphine.ja.pandemiage.common.GameInterface;
 import fr.dauphine.ja.pandemiage.common.PlayerCardInterface;
 import fr.dauphine.ja.pandemiage.common.PlayerInterface;
+import fr.dauphine.ja.pandemiage.common.UnauthorizedActionException;
 
 public class Ai implements AiInterface{
 	/**
@@ -24,9 +25,66 @@ public class Ai implements AiInterface{
 	@Override
 	public void playTurn(GameInterface g, PlayerInterface p) {
 		// TODO Auto-generated method stub
+		Action a=Action.NotDefined;
 		Long start=System.nanoTime();
 		Long finishTime=System.nanoTime();
 		int i=(int) (finishTime-start);
+		int actionleft=0;
+		int [] tab=new int[2];
+		double scoreNeighbours=0.0; // Score of the action moveTo
+		double scoreCard=0.0; // Score of actions Flyto and FlytoCharter 
+		int indice;
+		ArrayList<Double> tri=new ArrayList<Double>();
+		while(((Player)p).getActionLeft()>0) {
+			tab=GameEngine.scoreOfMyLocation((Player)p);
+			scoreNeighbours=(double)tab[1]/(double)tab[0];
+			for(PlayerCardInterface c: p.playerHand()) {
+				tri.add(((Player)p).scoreOfTheCard(c));
+			}
+			scoreCard=(double)max(tri).get(0);
+			indice =(int)max(tri).get(1);
+			PlayerCardInterface pci=p.playerHand().get(indice);
+
+			if(scoreCard>scoreNeighbours) {
+				if(pci.getCityName().equals(((Player)p).getCurrentCity().getName())) {// If i can use flytocharter
+					try {
+						p.flyToCharter(GameEngine.chooseCityMostInfected(GameEngine.getListCity()).getName());
+					}catch(UnauthorizedActionException e) {
+						System.err.println("Exception in AI FlytoCharter");
+						e.printStackTrace();
+					}
+				}
+				else {
+					try {
+						p.flyTo(pci.getCityName());
+					}catch(UnauthorizedActionException e) {
+						System.err.println("Exception in AI FlytoCharter");
+						e.printStackTrace();
+					}
+				}
+				
+			}
+			else {
+				City city=GameEngine.chooseCityMostInfected(((Player)p).getListCity());
+				City current=((Player)p).getCurrentCity();
+				int nbCubeCity=city.getNbCubes(Disease.BLACK)+city.getNbCubes(Disease.RED)+city.getNbCubes(Disease.YELLOW)+city.getNbCubes(Disease.BLUE);
+				int nbCubeCurrent=current.getNbCubes(Disease.BLACK)+current.getNbCubes(Disease.RED)+current.getNbCubes(Disease.YELLOW)+current.getNbCubes(Disease.BLUE);
+				
+				if(nbCubeCity>nbCubeCurrent){
+					try {
+						p.moveTo(city.getName());
+					}catch(UnauthorizedActionException e) {
+						System.err.println("Exception in AI FlytoCharter");
+						e.printStackTrace();
+					}
+					
+				}
+				else {
+					current.setCubesChoiceDiseaseToCure();
+				}
+			}
+
+		}
 		//if(g.turnDuration()>i){
 	}
 	/**
@@ -40,20 +98,14 @@ public class Ai implements AiInterface{
 	@Override
 	public List<PlayerCardInterface> discard(GameInterface g, PlayerInterface p, int maxHandSize, int nbEpidemicCards) {
 		List<PlayerCardInterface> listeR=new ArrayList<PlayerCardInterface>();
-		while(p.playerHand().size()>maxHandSize) { // Tant que j'ai pas defaussé les cartes en trop
+		while(p.playerHand().size()>maxHandSize) { // While im not with the correct size
 			ArrayList<Double> tri=new ArrayList<Double>();
 			for(PlayerCardInterface c:p.playerHand()) {
 				tri.add(((Player)p).scoreOfTheCard(c));
 			}
-			Double tmp=tri.get(0);
-			int indice=0;
-			for(int i=1;i<tri.size();i++) {
-				if(tri.get(i)<tmp) {
-					tmp=tri.get(i);
-					indice=i;
-				}
-			}
-			
+
+			ArrayList r=min(tri);
+			int indice=(int)r.get(1);
 			PlayerCardInterface def=p.playerHand().get(indice);
 			PlayerCard.addToDefauss(def);
 			p.playerHand().remove(indice);
@@ -62,6 +114,37 @@ public class Ai implements AiInterface{
 
 
 		return listeR;
+	}
+
+
+
+	public ArrayList max(ArrayList<Double> tri) {
+		Double tmp=tri.get(0);
+		ArrayList res=new ArrayList();
+		int indice=0;
+		for(int i=1;i<tri.size();i++) {
+			if(tri.get(i)>tmp) {
+				tmp=tri.get(i);
+				indice=i;
+			}
+		}
+		res.add(tmp);
+		res.add(indice);
+		return res;
+	}
+	public ArrayList min(ArrayList<Double> tri) {
+		Double tmp=tri.get(0);
+		ArrayList res=new ArrayList();
+		int indice=0;
+		for(int i=1;i<tri.size();i++) {
+			if(tri.get(i)<tmp) {
+				tmp=tri.get(i);
+				indice=i;
+			}
+		}
+		res.add(tmp);
+		res.add(indice);
+		return res;
 	}
 
 }
