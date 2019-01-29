@@ -1,19 +1,19 @@
 package fr.dauphine.ja.student.pandemiage.gameengine;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import fr.dauphine.ja.pandemiage.common.Disease;
 
 public class PropagationDeck {
-	private static LinkedList<PropagationCard> propagationdeck;
+	private LinkedList<PropagationCard> propagationdeck;
 
 	public PropagationDeck(){
 		propagationdeck=new LinkedList<PropagationCard>();
 	}
  
-	public static void lastDeckCard(PropagationDeck propdefauss){
+	public void lastDeckCard(PropagationDeck propdefauss){
 		//PropagationCard pc= propagationdeck.remove(propagationdeck.size()-1);
 		//PropagationCard pc= propdefauss.getPropagationdeck().remove(propdefauss.getPropagationdeck().size()-1);
 		PropagationCard pc= propdefauss.getPropagationdeck().remove(0);
@@ -44,22 +44,23 @@ public class PropagationDeck {
 			pc.getCity().setEclosion(true, d);
 			GameEngine.Outbreaks(pc.getCity(), d);
 		}
-		getPropagationdeck().add(pc);
+		propagationdeck.add(pc);
 	}
 
-	public static List<PropagationCard> getPropagationdeck() {
+	public List<PropagationCard> getPropagationdeck() {
 		return propagationdeck;
 	}
 
-	public static void setPropagationdeck(List<PropagationCard> propagationdeck) {
-		PropagationDeck.propagationdeck = (LinkedList)propagationdeck;
+	public void setPropagationdeck(LinkedList<PropagationCard> propagationdeckk) {
+		propagationdeck = propagationdeckk;
 	}
 	
-	public static PropagationCard getFirstPropagationcard() {
-		return PropagationDeck.propagationdeck.removeFirst();
+	public PropagationCard getFirstPropagationcard() {
+		return propagationdeck.removeFirst();
 	}
-	public static PropagationCard getLastPropagationcard() {
-		return PropagationDeck.propagationdeck.removeLast();
+	public PropagationCard getLastPropagationcard() {
+		return propagationdeck.removeLast();
+		//return PropagationDeck.propagationdeck.removeLast();
 	}
 	
 

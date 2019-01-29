@@ -30,7 +30,7 @@ public class GameEngine implements GameInterface{
 	private static int vit_prop;// vitesse de propagation actuelle du jeu
 	private static int nb_epidcard=0;// nombre de carte epidemie tiré
 	private static int marqueur_prog=1;
-	private static Map<Disease,Integer> reserve=new HashMap<Disease,Integer>();
+	private static  Map<Disease,Integer> reserve=new HashMap<Disease,Integer>();
 	private static boolean bool;
 	private static int[] vitprop= {2,2,3,3,4,4};
 	private static int cptprop=0;
@@ -41,8 +41,8 @@ public class GameEngine implements GameInterface{
 	private static Map<Disease,Boolean> remedes = new HashMap<Disease,Boolean>();
 	private static int cptOutbreaks=0;
 	private static List<PlayerCardInterface>listcard;
-	private static PropagationDeck pdeck;
-	private static PropagationDeck propdefauss;
+	private  PropagationDeck pdeck;
+	private  PropagationDeck propdefauss;
 
 	// Do not change!
 	private void setDefeated(String msg, DefeatReason dr) {		
@@ -262,7 +262,7 @@ public class GameEngine implements GameInterface{
 			lc.addAll(t6);
 
 		}
-		System.out.println("taille de lc"+lc.size());
+		System.out.println("taille de lc "+lc.size());
 		return lc;
 	}
 		/*
@@ -340,17 +340,20 @@ public class GameEngine implements GameInterface{
 		// Create the player Card
 		//List<PlayerCardInterface> listcard=new LinkedList<PlayerCardInterface>();
 		//listcard=new LinkedList<PlayerCardInterface>();
-		int cpt=0;
+		int cpt;
 		for(int i=0;i<48;i++) {
 			if(list.get(i).getName().equals("Delhi")) {
 				System.out.println("j'ai trouvé la carte");
 				cpt=i;
 			}
 			listcard.add(new CitiesCard(list.get(i)));
-			PropagationDeck.getPropagationdeck().add(new PropagationCard(list.get(i)));
+			pdeck.getPropagationdeck().add(new PropagationCard(list.get(i)));
 		}
-
+		
 		Shuffle(listcard);
+		System.out.println("taille de la pdeck "+pdeck.getPropagationdeck().size());
+		System.out.println("taille de la propdefauss "+propdefauss.getPropagationdeck().size());
+
 		Collections.shuffle(propdefauss.getPropagationdeck());
 		System.out.println("shuffle ok");
 
@@ -360,9 +363,12 @@ public class GameEngine implements GameInterface{
 		while(j>0){
 
 
-			PlayerCardInterface card=listcard.remove(listcard.size()-1);
+			PlayerCardInterface card=listcard.get(listcard.size()-1);
+			listcard.remove(listcard.size()-1);
 			p.addToPlayerHand(card);
 			System.out.println("playerhand ok");
+			System.out.println("taille de la listcard "+listcard.size());
+
 			
 			if(((PlayerCard)card).isEpidemic()){
 				compteurEpidemic++;
@@ -380,9 +386,7 @@ public class GameEngine implements GameInterface{
 		int tour2=3;
 		int tour3=3;
 		while(tour1>0){
-			System.out.println("ahgars");
-
-			PropagationCard pc=PropagationDeck.getLastPropagationcard();
+			PropagationCard pc=pdeck.getLastPropagationcard();
 			if(AvalaibleBLocks(3,pc.getDisease())){
 				GiveMeBlockFromReserve(pc.getDisease(),3);
 				propdefauss.getPropagationdeck().add(pc);
@@ -393,7 +397,7 @@ public class GameEngine implements GameInterface{
 			}
 		}
 		while(tour2>0){
-			PropagationCard pc=PropagationDeck.getLastPropagationcard();
+			PropagationCard pc=pdeck.getLastPropagationcard();
 			if(AvalaibleBLocks(3,pc.getDisease())){
 				GiveMeBlockFromReserve(pc.getDisease(),2);
 				propdefauss.getPropagationdeck().add(pc);
@@ -405,7 +409,7 @@ public class GameEngine implements GameInterface{
 			}
 		}
 		while(tour3>0){
-			PropagationCard pc=PropagationDeck.getLastPropagationcard();
+			PropagationCard pc=pdeck.getLastPropagationcard();
 			if(AvalaibleBLocks(3,pc.getDisease())){
 				GiveMeBlockFromReserve(pc.getDisease(),1);
 				propdefauss.getPropagationdeck().add(pc);
@@ -417,8 +421,10 @@ public class GameEngine implements GameInterface{
 			}
 		}
 
-		System.out.println("taille de mon deck de cartes "+pdeck.getPropagationdeck().size());
+		System.out.println("taille de mon deck de cartes propagation "+pdeck.getPropagationdeck().size());
 		System.out.println("taille de la main du joueur "+p.playerHand().size());
+		System.out.println("taille de la listcard est "+listcard.size());
+
 	}
 
 	public void Tour(AiInterface ai,Player p,LinkedList<PlayerCardInterface> listcard,PropagationDeck pdeck,PropagationDeck propdefauss){
@@ -559,7 +565,7 @@ public class GameEngine implements GameInterface{
 			}
 
 			while (vit_prop>0){
-				PropagationCard pc=PropagationDeck.getLastPropagationcard();
+				PropagationCard pc=pdeck.getLastPropagationcard();
 				if(AvalaibleBLocks(1,pc.getDisease())){
 					pc.Propagation();
 					if(cptOutbreaks==8){
