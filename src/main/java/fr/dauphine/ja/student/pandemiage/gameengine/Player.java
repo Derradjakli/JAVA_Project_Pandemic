@@ -1,7 +1,11 @@
 package fr.dauphine.ja.student.pandemiage.gameengine;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import fr.dauphine.ja.pandemiage.common.DefeatReason;
 import fr.dauphine.ja.pandemiage.common.Disease;
@@ -202,12 +206,32 @@ public class Player implements PlayerInterface{
 	}
 	
 	public int scoreOfEachCardInMove(PlayerCardInterface c) {
+		int incrementation=0;
+		Map<Disease,Integer> m=new HashMap<Disease,Integer>();
+		Set<Disease> c2=m.keySet();
+		Iterator<Disease> it = c2.iterator();
+		 
+		Disease cle = it.next(); // tu peux typer plus finement ici
+		Disease tmp1=cle;
+		Integer tmp = m.get(cle); // tu peux typer plus finement ici
+		while (it.hasNext()){
+			 cle = it.next(); // tu peux typer plus finement ici
+			 Integer valeur = m.get(cle); // tu peux typer plus finement ici
+			  
+			 if(tmp<valeur) {
+				 tmp=valeur;
+				 tmp1=cle;
+			 }
+		}
+		if(c.getDisease()==tmp1) {
+			incrementation=2;
+		}
 		if(c.getCityName().equals(currentCity.getName()))
 			return 10;
 		else {
 			for(City c1:currentCity.getNeighbours()) {
 				if(c1.getName().equals(c.getCityName())) {
-					return 7;
+					return 6+incrementation;
 				}
 			}
 		}
