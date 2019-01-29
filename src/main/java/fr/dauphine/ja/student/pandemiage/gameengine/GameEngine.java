@@ -349,7 +349,7 @@ public class GameEngine implements GameInterface{
 		
 		
 	public void Initialisation(List<PlayerCardInterface>listcard,Player p,PropagationDeck pdeck,PropagationDeck propdefauss){
-		System.out.println("Loading AI Jar file " + aiJar);		
+		//System.out.println("Loading AI Jar file " + aiJar);		
 		//AiInterface ai = AiLoader.loadAi(aiJar);	
 		//City c=this.getCity("Atlanta");
 		//Player p=new Player(c,list);
@@ -607,6 +607,10 @@ public class GameEngine implements GameInterface{
 	public void loop() throws UnauthorizedActionException  {
 		// Load Ai from Jar file
 		System.out.println("Loading AI Jar file " + aiJar);		
+		AiInterface ai = AiLoader.loadAi("C:/Users/derra/OneDrive/Bureau/aijar.jar");
+		/**
+		// Load Ai from Jar file
+		System.out.println("Loading AI Jar file " + aiJar);		
 		//AiInterface ai = AiLoader.loadAi(aiJar);	
 		City c=this.getCity("Atlanta");
 		Player p=new Player(c,list);
@@ -668,9 +672,8 @@ public class GameEngine implements GameInterface{
 				setDefeated("Game not implemented.", DefeatReason.UNKN);
 			else
 				setVictorious();			
-			 */
-
-		}		
+			 
+		}	**/	
 	}						
 
 
