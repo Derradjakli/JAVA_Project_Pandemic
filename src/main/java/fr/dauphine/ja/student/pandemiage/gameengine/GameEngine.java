@@ -7,6 +7,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
 import fr.dauphine.ja.pandemiage.common.AiInterface;
 import fr.dauphine.ja.pandemiage.common.AiLoader;
 import fr.dauphine.ja.pandemiage.common.DefeatReason;
@@ -16,6 +23,8 @@ import fr.dauphine.ja.pandemiage.common.GameStatus;
 import fr.dauphine.ja.pandemiage.common.PlayerCardInterface;
 import fr.dauphine.ja.pandemiage.common.PlayerInterface;
 import fr.dauphine.ja.pandemiage.common.UnauthorizedActionException;
+import fr.dauphine.ja.student.pandemiage.ai.AiMethods;
+import fr.dauphine.ja.student.pandemiage.ui.Cli;
 import java.util.Collections;
 /**
  * Empty GameEngine implementing GameInterface
@@ -43,6 +52,13 @@ public class GameEngine implements GameInterface{
 	private static List<PlayerCardInterface>listcard;
 	private static PropagationDeck pdeck;
 	private static PropagationDeck propdefauss;
+	
+	//For the options when using cmd line 
+	public static final String DEFAULT_AIJAR = "./target/pandemiage-1.0-SNAPSHOT-ai.jar"; 
+	public static final String DEFAULT_CITYGRAPH_FILE = "./pandemic.graphml";
+	public static final int DEFAULT_TURN_DURATION = 1;	//in seconds
+	public static final int DEFAULT_DIFFICULTY = 0; // Normal
+	public static final int DEFAULT_HAND_SIZE = 9;
 
 	// Do not change!
 	private void setDefeated(String msg, DefeatReason dr) {		
@@ -622,28 +638,11 @@ public class GameEngine implements GameInterface{
 		for(PlayerCardInterface c2:p.playerHand()) {
 			System.out.println(c2.getCityName()+" - "+c2.getDisease());
 		}
+		AiMethods imed = new AiMethods(list.get(5),list);
+		System.out.println(imed.getCurrentCity().getName());
+		imed.dijkstra(list.get(5));
 		//p.SeeCards();
 		//PlayerCardInterface c2=p.playerHand().get(1);
-
-		System.out.println("Card ville "+((PlayerCard)c1).getCity().getName());
-		p.flyTo(((PlayerCard)c1).getCity().getName());
-		System.out.println(p.getCurrentCity().getName());
-		System.out.println("action left "+p.getActionLeft());
-		System.out.println(p.getCurrentCity().getNeighbours_s());
-		p.moveTo(p.getCurrentCity().getNeighbours().get(1).getName());
-		System.out.println(p.getCurrentCity().getName());
-
-		p.addToPlayerHand(listcard.get(cpt));
-		System.out.println("Mes cartes en main");
-		for(PlayerCardInterface c2:p.playerHand()) {
-			System.out.println(c2.getCityName()+" - "+c2.getDisease());
-		}
-
-		System.out.println("je suis a "+p.getCurrentCity().getName());
-		p.flyToCharter("Algiers");
-		System.out.println(p.getCurrentCity().getName());
-
-
 
 		// Very basic game loop
 		while(gameStatus == GameStatus.ONGOING) {
@@ -897,13 +896,64 @@ public class GameEngine implements GameInterface{
 
 
 	public static void main(String [] args) throws IOException, UnauthorizedActionException   {
-		/*
-		ArrayList<City> liste = new ArrayList<City>();
-		liste = GMLReader.readGML("");
-		System.out.println(liste.size());
-		 */
-		// Faire rentrer en paramètre le nom du graph, le jar et le niveau de difficulté
-		GameEngine g=new GameEngine("pandemic.graphml","");
+		
+		
+		
+		String aijar = DEFAULT_AIJAR; 
+		String cityGraphFile = DEFAULT_CITYGRAPH_FILE; 
+		int difficulty = DEFAULT_DIFFICULTY; 
+		int turnDuration = DEFAULT_TURN_DURATION;
+		int handSize = DEFAULT_HAND_SIZE;
+		
+		Options options = new Options();
+		CommandLineParser parser = new DefaultParser();
+
+		options.addOption("a", "aijar", true, "use <FILE> as player Ai.");
+		options.addOption("d", "difficulty", true, "Difficulty level. 0 (Introduction), 1 (Normal) or 3 (Heroic).");
+		options.addOption("c", "citygraph", true, "City graph filename.");
+		options.addOption("t", "turnduration", true, "Number of seconds allowed to play a turn.");
+		options.addOption("s", "handsize", true, "Maximum size of a player hand.");
+		options.addOption("h", "help", false, "Display this help");
+		
+		try {
+			CommandLine cmd = parser.parse( options, args);
+			
+			if(cmd.hasOption("a")) {
+				aijar = cmd.getOptionValue("a");				
+			}
+			
+			if(cmd.hasOption("g")) {
+				cityGraphFile = cmd.getOptionValue("c");
+			}
+
+			if(cmd.hasOption("d")) {
+				difficulty = Integer.parseInt(cmd.getOptionValue("d"));
+			}
+			
+			if(cmd.hasOption("t")) {
+				turnDuration = Integer.parseInt(cmd.getOptionValue("t"));
+			}
+			if(cmd.hasOption("s")) {
+				handSize = Integer.parseInt(cmd.getOptionValue("s"));
+			}
+
+			/* ... */ 
+			
+			if(cmd.hasOption("h")) {
+				HelpFormatter formatter = new HelpFormatter();
+				formatter.printHelp( "pandemiage", options );
+				System.exit(0);
+			}			
+			
+		} catch (ParseException e) {
+			System.err.println("Error: invalid command line format.");
+			HelpFormatter formatter = new HelpFormatter();
+			formatter.printHelp( "pandemiage", options );
+			System.exit(1);
+	    }
+		System.out.println("aijar : "+aijar+"cityGraphFile : "+ cityGraphFile +"difficulty : "+ difficulty + "turnDuration : " + turnDuration + "handSize  :"+handSize   );
+		
+		GameEngine g=new GameEngine(cityGraphFile, aijar);
 
 		/*LinkedList<PlayerCardInterface> listcard=new LinkedList<PlayerCardInterface>();
 		Player p=new Player();
@@ -911,9 +961,9 @@ public class GameEngine implements GameInterface{
 		PropagationDeck propdefauss=null;
 		 */
 
-		g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
+		//g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
 
-		//g.loop();
+		g.loop();
 		/*
 		for(int i = 0; i < liste.size(); i++) {
 			System.out.println("City Name : " +liste.get(i).getName());
