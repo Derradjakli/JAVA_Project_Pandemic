@@ -39,7 +39,7 @@ public class PropagationCard {
 			
 	}
 	
-	public Disease getDisease() {
+	public  Disease getDisease() {
 		if(city.getR()==183 && city.getG()==18 && city.getB()==21){// TODO Auto-generated method stub
 			city.setDisease(Disease.RED);
 		}else if (city.getR()==107 && city.getG()==112 && city.getB()==184){
