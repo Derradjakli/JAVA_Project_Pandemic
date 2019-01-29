@@ -31,10 +31,13 @@ public class EpidemicCard extends PlayerCard {
 		System.out.println("apres shuffle");
 		if(!propdefauss.getPropagationdeck().isEmpty()){
 			while(!propdefauss.getPropagationdeck().isEmpty()){
-				PropagationCard pc=propdefauss.getPropagationdeck().remove(0);
-				System.out.println("carte supprimée est "+pc.getCity().getName());
+				PropagationCard pc=propdefauss.getPropagationdeck().get(0);
+				propdefauss.getPropagationdeck().remove(0);
+				System.out.println(propdefauss.getPropagationdeck().size());
+				//System.out.println("premiere carte de propdefauss est "+propdefauss.getPropagationdeck().get(0).getCity().getName());
+				//System.out.println("carte supprimée est "+pc.getCity().getName());
 
-				pc1.getPropagationdeck().add(pc);
+				//pc1.getPropagationdeck().add(pc);
 			}
 		}
 		System.out.println("apres le while");

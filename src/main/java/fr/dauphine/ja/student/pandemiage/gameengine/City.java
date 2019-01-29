@@ -19,7 +19,7 @@ public class City {
 	private double eigenvector_Centrality;
 	private String edge_ID;
 	private String edge_Label;
-	private int degree; //    Neighbours number
+	private int degree;  //Neighbours number
 	private boolean isOutBreaks=false;
 
 	private   Map<Disease,Integer> m=new HashMap<Disease,Integer>(); // Permet de recuperer le nombre de cube sur chaque ville et sr chaque malade

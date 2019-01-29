@@ -7,6 +7,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
 import fr.dauphine.ja.pandemiage.common.AiInterface;
 import fr.dauphine.ja.pandemiage.common.AiLoader;
 import fr.dauphine.ja.pandemiage.common.DefeatReason;
@@ -16,6 +23,8 @@ import fr.dauphine.ja.pandemiage.common.GameStatus;
 import fr.dauphine.ja.pandemiage.common.PlayerCardInterface;
 import fr.dauphine.ja.pandemiage.common.PlayerInterface;
 import fr.dauphine.ja.pandemiage.common.UnauthorizedActionException;
+import fr.dauphine.ja.student.pandemiage.ai.AiMethods;
+import fr.dauphine.ja.student.pandemiage.ui.Cli;
 import java.util.Collections;
 /**
  * Empty GameEngine implementing GameInterface
@@ -30,7 +39,7 @@ public class GameEngine implements GameInterface{
 	private static int vit_prop;// vitesse de propagation actuelle du jeu
 	private static int nb_epidcard=0;// nombre de carte epidemie tiré
 	private static int marqueur_prog=1;
-	private static Map<Disease,Integer> reserve=new HashMap<Disease,Integer>();
+	private static  Map<Disease,Integer> reserve=new HashMap<Disease,Integer>();
 	private static boolean bool;
 	private static int[] vitprop= {2,2,3,3,4,4};
 	private static int cptprop=0;
@@ -41,8 +50,18 @@ public class GameEngine implements GameInterface{
 	private static Map<Disease,Boolean> remedes = new HashMap<Disease,Boolean>();
 	private static int cptOutbreaks=0;
 	private static List<PlayerCardInterface>listcard;
-	private static PropagationDeck pdeck;
-	private static PropagationDeck propdefauss;
+
+	private  PropagationDeck pdeck;
+	private  PropagationDeck propdefauss;
+	
+	
+	//For the options when using cmd line 
+	public static final String DEFAULT_AIJAR = "./target/pandemiage-1.0-SNAPSHOT-ai.jar"; 
+	public static final String DEFAULT_CITYGRAPH_FILE = "./pandemic.graphml";
+	public static final int DEFAULT_TURN_DURATION = 1;	//in seconds
+	public static final int DEFAULT_DIFFICULTY = 0; // Normal
+	public static final int DEFAULT_HAND_SIZE = 9;
+
 
 	// Do not change!
 	private void setDefeated(String msg, DefeatReason dr) {		
@@ -264,7 +283,7 @@ public class GameEngine implements GameInterface{
 			lc.addAll(t6);
 
 		}
-		System.out.println("taille de lc"+lc.size());
+		System.out.println("taille de lc "+lc.size());
 		return lc;
 	}
 		/*
@@ -342,17 +361,20 @@ public class GameEngine implements GameInterface{
 		// Create the player Card
 		//List<PlayerCardInterface> listcard=new LinkedList<PlayerCardInterface>();
 		//listcard=new LinkedList<PlayerCardInterface>();
-		int cpt=0;
+		int cpt;
 		for(int i=0;i<48;i++) {
 			if(list.get(i).getName().equals("Delhi")) {
 				System.out.println("j'ai trouvé la carte");
 				cpt=i;
 			}
 			listcard.add(new CitiesCard(list.get(i)));
-			PropagationDeck.getPropagationdeck().add(new PropagationCard(list.get(i)));
+			pdeck.getPropagationdeck().add(new PropagationCard(list.get(i)));
 		}
-
+		
 		Shuffle(listcard);
+		System.out.println("taille de la pdeck "+pdeck.getPropagationdeck().size());
+		System.out.println("taille de la propdefauss "+propdefauss.getPropagationdeck().size());
+
 		Collections.shuffle(propdefauss.getPropagationdeck());
 		System.out.println("shuffle ok");
 
@@ -362,9 +384,12 @@ public class GameEngine implements GameInterface{
 		while(j>0){
 
 
-			PlayerCardInterface card=listcard.remove(listcard.size()-1);
+			PlayerCardInterface card=listcard.get(listcard.size()-1);
+			listcard.remove(listcard.size()-1);
 			p.addToPlayerHand(card);
 			System.out.println("playerhand ok");
+			System.out.println("taille de la listcard "+listcard.size());
+
 			
 			if(((PlayerCard)card).isEpidemic()){
 				compteurEpidemic++;
@@ -382,9 +407,7 @@ public class GameEngine implements GameInterface{
 		int tour2=3;
 		int tour3=3;
 		while(tour1>0){
-			System.out.println("ahgars");
-
-			PropagationCard pc=PropagationDeck.getLastPropagationcard();
+			PropagationCard pc=pdeck.getLastPropagationcard();
 			if(AvalaibleBLocks(3,pc.getDisease())){
 				GiveMeBlockFromReserve(pc.getDisease(),3);
 				propdefauss.getPropagationdeck().add(pc);
@@ -395,7 +418,7 @@ public class GameEngine implements GameInterface{
 			}
 		}
 		while(tour2>0){
-			PropagationCard pc=PropagationDeck.getLastPropagationcard();
+			PropagationCard pc=pdeck.getLastPropagationcard();
 			if(AvalaibleBLocks(3,pc.getDisease())){
 				GiveMeBlockFromReserve(pc.getDisease(),2);
 				propdefauss.getPropagationdeck().add(pc);
@@ -407,7 +430,7 @@ public class GameEngine implements GameInterface{
 			}
 		}
 		while(tour3>0){
-			PropagationCard pc=PropagationDeck.getLastPropagationcard();
+			PropagationCard pc=pdeck.getLastPropagationcard();
 			if(AvalaibleBLocks(3,pc.getDisease())){
 				GiveMeBlockFromReserve(pc.getDisease(),1);
 				propdefauss.getPropagationdeck().add(pc);
@@ -419,8 +442,10 @@ public class GameEngine implements GameInterface{
 			}
 		}
 
-		System.out.println("taille de mon deck de cartes "+pdeck.getPropagationdeck().size());
+		System.out.println("taille de mon deck de cartes propagation "+pdeck.getPropagationdeck().size());
 		System.out.println("taille de la main du joueur "+p.playerHand().size());
+		System.out.println("taille de la listcard est "+listcard.size());
+
 	}
 
 	public void Tour(AiInterface ai,Player p,LinkedList<PlayerCardInterface> listcard,PropagationDeck pdeck,PropagationDeck propdefauss){
@@ -561,7 +586,7 @@ public class GameEngine implements GameInterface{
 			}
 
 			while (vit_prop>0){
-				PropagationCard pc=PropagationDeck.getLastPropagationcard();
+				PropagationCard pc=pdeck.getLastPropagationcard();
 				if(AvalaibleBLocks(1,pc.getDisease())){
 					pc.Propagation();
 					if(cptOutbreaks==8){
@@ -624,28 +649,11 @@ public class GameEngine implements GameInterface{
 		for(PlayerCardInterface c2:p.playerHand()) {
 			System.out.println(c2.getCityName()+" - "+c2.getDisease());
 		}
+		AiMethods imed = new AiMethods(list.get(5),list);
+		System.out.println(imed.getCurrentCity().getName());
+		imed.dijkstra(list.get(5));
 		//p.SeeCards();
 		//PlayerCardInterface c2=p.playerHand().get(1);
-
-		System.out.println("Card ville "+((PlayerCard)c1).getCity().getName());
-		p.flyTo(((PlayerCard)c1).getCity().getName());
-		System.out.println(p.getCurrentCity().getName());
-		System.out.println("action left "+p.getActionLeft());
-		System.out.println(p.getCurrentCity().getNeighbours_s());
-		p.moveTo(p.getCurrentCity().getNeighbours().get(1).getName());
-		System.out.println(p.getCurrentCity().getName());
-
-		p.addToPlayerHand(listcard.get(cpt));
-		System.out.println("Mes cartes en main");
-		for(PlayerCardInterface c2:p.playerHand()) {
-			System.out.println(c2.getCityName()+" - "+c2.getDisease());
-		}
-
-		System.out.println("je suis a "+p.getCurrentCity().getName());
-		p.flyToCharter("Algiers");
-		System.out.println(p.getCurrentCity().getName());
-
-
 
 		// Very basic game loop
 		while(gameStatus == GameStatus.ONGOING) {
@@ -928,13 +936,88 @@ public class GameEngine implements GameInterface{
 
 	public static void main(String [] args) throws IOException, UnauthorizedActionException   {
 		
+
 		// Faire rentrer en paramètre le nom du graph, le jar et le niveau de difficulté
-		GameEngine g=new GameEngine("pandemic.graphml","");
+		
+
+		
+		
+		String aijar = DEFAULT_AIJAR; 
+		String cityGraphFile = DEFAULT_CITYGRAPH_FILE; 
+		int difficulty = DEFAULT_DIFFICULTY; 
+		int turnDuration = DEFAULT_TURN_DURATION;
+		int handSize = DEFAULT_HAND_SIZE;
+		
+		Options options = new Options();
+		CommandLineParser parser = new DefaultParser();
+
+		options.addOption("a", "aijar", true, "use <FILE> as player Ai.");
+		options.addOption("d", "difficulty", true, "Difficulty level. 0 (Introduction), 1 (Normal) or 3 (Heroic).");
+		options.addOption("c", "citygraph", true, "City graph filename.");
+		options.addOption("t", "turnduration", true, "Number of seconds allowed to play a turn.");
+		options.addOption("s", "handsize", true, "Maximum size of a player hand.");
+		options.addOption("h", "help", false, "Display this help");
+		
+		try {
+			CommandLine cmd = parser.parse( options, args);
+			
+			if(cmd.hasOption("a")) {
+				aijar = cmd.getOptionValue("a");				
+			}
+			
+			if(cmd.hasOption("g")) {
+				cityGraphFile = cmd.getOptionValue("c");
+			}
+
+			if(cmd.hasOption("d")) {
+				difficulty = Integer.parseInt(cmd.getOptionValue("d"));
+			}
+			
+			if(cmd.hasOption("t")) {
+				turnDuration = Integer.parseInt(cmd.getOptionValue("t"));
+			}
+			if(cmd.hasOption("s")) {
+				handSize = Integer.parseInt(cmd.getOptionValue("s"));
+			}
+
+			/* ... */ 
+			
+			if(cmd.hasOption("h")) {
+				HelpFormatter formatter = new HelpFormatter();
+				formatter.printHelp( "pandemiage", options );
+				System.exit(0);
+			}			
+			
+		} catch (ParseException e) {
+			System.err.println("Error: invalid command line format.");
+			HelpFormatter formatter = new HelpFormatter();
+			formatter.printHelp( "pandemiage", options );
+			System.exit(1);
+	    }
+		System.out.println("aijar : "+aijar+"cityGraphFile : "+ cityGraphFile +"difficulty : "+ difficulty + "turnDuration : " + turnDuration + "handSize  :"+handSize   );
+		
+		GameEngine g=new GameEngine(cityGraphFile, aijar);
 
 		
 		g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
+	/*LinkedList<PlayerCardInterface> listcard=new LinkedList<PlayerCardInterface>();
+		Player p=new Player();
+		PropagationDeck pdeck=null;
+		PropagationDeck propdefauss=null;
+		 */
 
-	
+		//g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
+
+
+		g.loop();
+		/*
+		for(int i = 0; i < liste.size(); i++) {
+			System.out.println("City Name : " +liste.get(i).getName());
+			System.out.println("City Degree : " +liste.get(i).getDegree());
+			System.out.println("City Neighbours :			 " +liste.get(i).getNeighbours_s());
+		}*/
+
+
 	}
 
 }
