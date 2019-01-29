@@ -50,12 +50,10 @@ public class GameEngine implements GameInterface{
 	private static Map<Disease,Boolean> remedes = new HashMap<Disease,Boolean>();
 	private static int cptOutbreaks=0;
 	private static List<PlayerCardInterface>listcard;
-<<<<<<< HEAD
+
 	private  PropagationDeck pdeck;
 	private  PropagationDeck propdefauss;
-=======
-	private static PropagationDeck pdeck;
-	private static PropagationDeck propdefauss;
+	
 	
 	//For the options when using cmd line 
 	public static final String DEFAULT_AIJAR = "./target/pandemiage-1.0-SNAPSHOT-ai.jar"; 
@@ -63,7 +61,7 @@ public class GameEngine implements GameInterface{
 	public static final int DEFAULT_TURN_DURATION = 1;	//in seconds
 	public static final int DEFAULT_DIFFICULTY = 0; // Normal
 	public static final int DEFAULT_HAND_SIZE = 9;
->>>>>>> refs/remotes/origin/master
+
 
 	// Do not change!
 	private void setDefeated(String msg, DefeatReason dr) {		
