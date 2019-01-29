@@ -16,7 +16,14 @@ public class PropagationDeck {
 	public void lastDeckCard(PropagationDeck propdefauss){
 		//PropagationCard pc= propagationdeck.remove(propagationdeck.size()-1);
 		//PropagationCard pc= propdefauss.getPropagationdeck().remove(propdefauss.getPropagationdeck().size()-1);
-		PropagationCard pc= propdefauss.getPropagationdeck().remove(0);
+		System.out.println("je rentre dans infection");
+		System.out.println(propdefauss.getPropagationdeck().size());
+
+		//PropagationCard pc= propdefauss.getPropagationdeck().remove(0);
+		PropagationCard pc= this.getPropagationdeck().get(0);
+		this.getPropagationdeck().remove(0);
+		propdefauss.getPropagationdeck().add(pc);
+		System.out.println("j'ai chopé la premiere carte");
 
 		Disease d=pc.getDisease();
 		

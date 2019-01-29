@@ -53,8 +53,8 @@ public class GameEngine implements GameInterface{
 
 	private  PropagationDeck pdeck;
 	private  PropagationDeck propdefauss;
-	
-	
+
+
 	//For the options when using cmd line 
 	public static final String DEFAULT_AIJAR = "./target/pandemiage-1.0-SNAPSHOT-ai.jar"; 
 	public static final String DEFAULT_CITYGRAPH_FILE = "./pandemic.graphml";
@@ -126,13 +126,12 @@ public class GameEngine implements GameInterface{
 		throw new UnsupportedOperationException("Name "+name+" for a city doesn't exist in the Map");
 	}
 	public static void Outbreaks(City city, Disease d){
+		System.out.println("OUTBREAKS "+city.getName());
 		cptOutbreaks++;
 		for(City c : city.getNeighbours()){
 			if(!c.isEclosion(d)){
 				if(c.getNbCubes(d)==3){
-
 					Outbreaks(c,d);
-
 				}
 				else{
 					c.setNbCubes(c.getNbCubes(city.getDisease())+1, city.getDisease());
@@ -161,11 +160,9 @@ public class GameEngine implements GameInterface{
 		if(level.equals(GameLevel.Easy)) {
 			j=4;
 		}
-
 		if(level.equals(GameLevel.Medium)) {
 			j=5;
 		}
-
 		if(level.equals(GameLevel.Hard)) {
 			j=6;
 		}
@@ -175,7 +172,6 @@ public class GameEngine implements GameInterface{
 		ArrayList<PlayerCardInterface>t4=new ArrayList<>();
 		ArrayList<PlayerCardInterface>t5=new ArrayList<>();
 		ArrayList<PlayerCardInterface>t6=new ArrayList<>();
-		
 		if(j==4){
 			while(!lc.isEmpty()){
 				if(!lc.isEmpty()){
@@ -204,8 +200,8 @@ public class GameEngine implements GameInterface{
 			lc.addAll(t2);
 			lc.addAll(t3);
 			lc.addAll(t4);
-	
 		}
+		
 		if(j==5){
 			while(!lc.isEmpty()){
 				if(!lc.isEmpty()){
@@ -229,7 +225,6 @@ public class GameEngine implements GameInterface{
 					lc.remove(lc.size()-1);
 				}
 			}
-
 			t1.add(new EpidemicCard());Collections.shuffle(t1);
 			t2.add(new EpidemicCard());Collections.shuffle(t2);
 			t3.add(new EpidemicCard());Collections.shuffle(t3);
@@ -240,7 +235,6 @@ public class GameEngine implements GameInterface{
 			lc.addAll(t3);
 			lc.addAll(t4);
 			lc.addAll(t5);
-		
 		}
 		if(j==6){
 			while(!lc.isEmpty()){
@@ -281,12 +275,14 @@ public class GameEngine implements GameInterface{
 			lc.addAll(t4);
 			lc.addAll(t5);
 			lc.addAll(t6);
-
 		}
 		System.out.println("taille de lc "+lc.size());
+		System.out.println("premiere carte est "+lc.get(0).getCityName());
+		System.out.println("derniere carte est "+lc.get(lc.size()-1).getCityName());
+
 		return lc;
 	}
-		/*
+	/*
 		for(int i=0;i<(lc.size())/4;i++){
 			t1.add(lc.get(i));
 			lc.remove(i);
@@ -303,7 +299,7 @@ public class GameEngine implements GameInterface{
 			t4.add(lc.get(i));
 			lc.remove(i);
 		}
-		 
+
 
 		int j=4;
 
@@ -345,9 +341,7 @@ public class GameEngine implements GameInterface{
 
 		return lc;
 	}
-*/
-		
-		
+	 */
 	public void Initialisation(List<PlayerCardInterface>listcard,Player p,PropagationDeck pdeck,PropagationDeck propdefauss){
 		//System.out.println("Loading AI Jar file " + aiJar);		
 		//AiInterface ai = AiLoader.loadAi(aiJar);	
@@ -370,27 +364,23 @@ public class GameEngine implements GameInterface{
 			listcard.add(new CitiesCard(list.get(i)));
 			pdeck.getPropagationdeck().add(new PropagationCard(list.get(i)));
 		}
-		
+
 		Shuffle(listcard);
 		System.out.println("taille de la pdeck "+pdeck.getPropagationdeck().size());
 		System.out.println("taille de la propdefauss "+propdefauss.getPropagationdeck().size());
-
-		Collections.shuffle(propdefauss.getPropagationdeck());
+		Collections.shuffle(pdeck.getPropagationdeck());
 		System.out.println("shuffle ok");
 
 		int j=5;
 		int compteurEpidemic=0;
 
 		while(j>0){
-
-
 			PlayerCardInterface card=listcard.get(listcard.size()-1);
 			listcard.remove(listcard.size()-1);
 			p.addToPlayerHand(card);
 			System.out.println("playerhand ok");
 			System.out.println("taille de la listcard "+listcard.size());
 
-			
 			if(((PlayerCard)card).isEpidemic()){
 				compteurEpidemic++;
 				((EpidemicCard)card).Acceleration();
@@ -399,7 +389,7 @@ public class GameEngine implements GameInterface{
 				System.out.println("infection ok");
 				((EpidemicCard)card).Intensification(pdeck, propdefauss);
 				System.out.println("intensification ok");
-				
+
 			}
 			j--;
 		}
@@ -409,21 +399,37 @@ public class GameEngine implements GameInterface{
 		while(tour1>0){
 			PropagationCard pc=pdeck.getLastPropagationcard();
 			if(AvalaibleBLocks(3,pc.getDisease())){
-				GiveMeBlockFromReserve(pc.getDisease(),3);
-				propdefauss.getPropagationdeck().add(pc);
-				tour1--;
+				if(pc.getCity().getNbCubes(pc.getDisease())>0){
+					//city.setEclosion(true, d);
+					//GameEngine.Outbreaks(city,d);
+					pc.getCity().setEclosion(true, pc.getDisease());
+					Outbreaks(pc.getCity(),pc.getDisease());
+				}
+				else{
+					GiveMeBlockFromReserve(pc.getDisease(),3);
+					pc.getCity().setNbCubes(pc.getCity().getNbCubes(pc.getDisease())+3,pc.getDisease());
+					propdefauss.getPropagationdeck().add(pc);
+					tour1--;
+				}
 			}
 			else{
 				setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
 			}
 		}
+
 		while(tour2>0){
 			PropagationCard pc=pdeck.getLastPropagationcard();
-			if(AvalaibleBLocks(3,pc.getDisease())){
-				GiveMeBlockFromReserve(pc.getDisease(),2);
-				propdefauss.getPropagationdeck().add(pc);
-				tour2--;
-
+			if(AvalaibleBLocks(2,pc.getDisease())){
+				if(pc.getCity().getNbCubes(pc.getDisease())>1){
+					pc.getCity().setEclosion(true, pc.getDisease());
+					Outbreaks(pc.getCity(),pc.getDisease());
+				}
+				else{
+					GiveMeBlockFromReserve(pc.getDisease(),2);
+					pc.getCity().setNbCubes(pc.getCity().getNbCubes(pc.getDisease())+2,pc.getDisease());
+					propdefauss.getPropagationdeck().add(pc);
+					tour2--;
+				}
 			}
 			else{
 				setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
@@ -431,11 +437,17 @@ public class GameEngine implements GameInterface{
 		}
 		while(tour3>0){
 			PropagationCard pc=pdeck.getLastPropagationcard();
-			if(AvalaibleBLocks(3,pc.getDisease())){
-				GiveMeBlockFromReserve(pc.getDisease(),1);
-				propdefauss.getPropagationdeck().add(pc);
-				tour3--;
-
+			if(AvalaibleBLocks(1,pc.getDisease())){
+				if(pc.getCity().getNbCubes(pc.getDisease())>2){
+					pc.getCity().setEclosion(true, pc.getDisease());
+					Outbreaks(pc.getCity(),pc.getDisease());
+				}
+				else{
+					GiveMeBlockFromReserve(pc.getDisease(),1);
+					pc.getCity().setNbCubes(pc.getCity().getNbCubes(pc.getDisease())+1,pc.getDisease());
+					propdefauss.getPropagationdeck().add(pc);
+					tour3--;
+				}
 			}
 			else{
 				setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
@@ -445,13 +457,23 @@ public class GameEngine implements GameInterface{
 		System.out.println("taille de mon deck de cartes propagation "+pdeck.getPropagationdeck().size());
 		System.out.println("taille de la main du joueur "+p.playerHand().size());
 		System.out.println("taille de la listcard est "+listcard.size());
+		System.out.println("taille de la propdefauss est "+ propdefauss.getPropagationdeck().size());
 
+		for(City c : list ){
+			for(Disease d: Disease.values()){
+				System.out.println(c.getName()+" - "+c.getNbCubes(d)+" "+d);
+			}
+		}
+
+		System.out.println("------------------------------------");
+		System.out.println("FIN INITIALISATION");
+		System.out.println("-------------------------------------");
 	}
 
+
+
 	public void Tour(AiInterface ai,Player p,LinkedList<PlayerCardInterface> listcard,PropagationDeck pdeck,PropagationDeck propdefauss){
-
 		while(gameStatus == GameStatus.ONGOING) {
-
 			if(listcard.isEmpty()){
 				setDefeated("No more PlayerCards available",DefeatReason.NO_MORE_PLAYER_CARDS);
 			}
@@ -938,19 +960,16 @@ public class GameEngine implements GameInterface{
 
 
 	public static void main(String [] args) throws IOException, UnauthorizedActionException   {
-		
+
 
 		// Faire rentrer en paramètre le nom du graph, le jar et le niveau de difficulté
-		
-
-		
 		
 		String aijar = DEFAULT_AIJAR; 
 		String cityGraphFile = DEFAULT_CITYGRAPH_FILE; 
 		int difficulty = DEFAULT_DIFFICULTY; 
 		int turnDuration = DEFAULT_TURN_DURATION;
 		int handSize = DEFAULT_HAND_SIZE;
-		
+
 		Options options = new Options();
 		CommandLineParser parser = new DefaultParser();
 
@@ -960,14 +979,14 @@ public class GameEngine implements GameInterface{
 		options.addOption("t", "turnduration", true, "Number of seconds allowed to play a turn.");
 		options.addOption("s", "handsize", true, "Maximum size of a player hand.");
 		options.addOption("h", "help", false, "Display this help");
-		
+
 		try {
 			CommandLine cmd = parser.parse( options, args);
-			
+
 			if(cmd.hasOption("a")) {
 				aijar = cmd.getOptionValue("a");				
 			}
-			
+
 			if(cmd.hasOption("g")) {
 				cityGraphFile = cmd.getOptionValue("c");
 			}
@@ -975,7 +994,7 @@ public class GameEngine implements GameInterface{
 			if(cmd.hasOption("d")) {
 				difficulty = Integer.parseInt(cmd.getOptionValue("d"));
 			}
-			
+
 			if(cmd.hasOption("t")) {
 				turnDuration = Integer.parseInt(cmd.getOptionValue("t"));
 			}
@@ -984,21 +1003,21 @@ public class GameEngine implements GameInterface{
 			}
 
 			/* ... */ 
-			
+
 			if(cmd.hasOption("h")) {
 				HelpFormatter formatter = new HelpFormatter();
 				formatter.printHelp( "pandemiage", options );
 				System.exit(0);
 			}			
-			
+
 		} catch (ParseException e) {
 			System.err.println("Error: invalid command line format.");
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp( "pandemiage", options );
 			System.exit(1);
-	    }
+		}
 		System.out.println("aijar : "+aijar+"cityGraphFile : "+ cityGraphFile +"difficulty : "+ difficulty + "turnDuration : " + turnDuration + "handSize  :"+handSize   );
-		
+
 		GameEngine g=new GameEngine(cityGraphFile, aijar);
 
 		
@@ -1009,10 +1028,13 @@ public class GameEngine implements GameInterface{
 		PropagationDeck propdefauss=null;
 		 */
 
+
+		g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
+
 		//g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
 
 
-		g.loop();
+		//g.loop();
 		/*
 		for(int i = 0; i < liste.size(); i++) {
 			System.out.println("City Name : " +liste.get(i).getName());
