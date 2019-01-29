@@ -14,9 +14,12 @@ public class PropagationCard {
 		this.r=c.getR();
 		this.g=c.getG();
 		this.b=c.getB();
+		/*
 		for(Disease d : Disease.values()){
 		city.setNbCubes(0, d);
+		
 		}
+		*/
 	}
  
 	public void Propagation(){
@@ -36,7 +39,6 @@ public class PropagationCard {
 			city.setNbCubes(city.getNbCubes(d)+1,d);
 		System.out.println("nb de cubes dans la ville APRES propagation "+city.getNbCubes(d));
 			}
-			
 	}
 	
 	public  Disease getDisease() {
@@ -53,8 +55,6 @@ public class PropagationCard {
 		}
 		return city.getDisease();
 	}
-
-
 
 	public City getCity() {
 		return city;
