@@ -14,7 +14,9 @@ public class PropagationCard {
 		this.r=c.getR();
 		this.g=c.getG();
 		this.b=c.getB();
-		
+		for(Disease d : Disease.values()){
+		city.setNbCubes(0, d);
+		}
 	}
  
 	public void Propagation(){

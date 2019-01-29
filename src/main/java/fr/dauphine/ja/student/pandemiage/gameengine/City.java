@@ -22,7 +22,7 @@ public class City {
 	private int degree; //    Neighbours number
 	private boolean isOutBreaks=false;
 
-	private static Map<Disease,Integer> m=new HashMap<Disease,Integer>(); // Permet de recuperer le nombre de cube sur chaque ville et sr chaque malade
+	private static  Map<Disease,Integer> m=new HashMap<Disease,Integer>(); // Permet de recuperer le nombre de cube sur chaque ville et sr chaque malade
 	private static Map<Disease,Boolean> m_ec=new HashMap<Disease,Boolean>();// Permet de recuperer quelle maladie a eclos sur une ville
 
 	private Disease disease;
@@ -44,9 +44,11 @@ public class City {
 		this.edge_Label=edge_Label;
 		this.degree=degree; // Neighbours number
 		this.list=list;
-
-
-
+		for(Disease d: Disease.values()) {
+			this.m.put(d,0);
+			System.out.println(CityName+" - "+m.get(d));
+		}
+		
 	}
 
 	public String getName() {
@@ -119,6 +121,15 @@ public class City {
 	public void setDegree(int d) {
 		this.degree=d;
 	}
+	
+	public static Map<Disease, Integer> getM() {
+		return m;
+	}
+
+	public static void setM(Map<Disease, Integer> m) {
+		City.m = m;
+	}
+
 	public int getNbCubes(Disease d) {
 		return m.get(d);
 	}

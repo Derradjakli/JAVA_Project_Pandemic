@@ -22,7 +22,7 @@ public class EpidemicCard extends PlayerCard {
 	}
 	
 	public void Infection(PropagationDeck pc,PropagationDeck propdefauss) {
-		pc.lastDeckCard(propdefauss);
+		PropagationDeck.lastDeckCard(propdefauss);
 	}
 	
 	public void Intensification(PropagationDeck pc1,PropagationDeck propdefauss) {
