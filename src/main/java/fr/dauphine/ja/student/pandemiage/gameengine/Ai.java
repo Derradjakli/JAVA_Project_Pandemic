@@ -36,6 +36,7 @@ public class Ai implements AiInterface{
 		int indice;
 		ArrayList<Double> tri=new ArrayList<Double>();
 		while(((Player)p).getActionLeft()>0) {
+		
 			tab=GameEngine.scoreOfMyLocation((Player)p);
 			scoreNeighbours=(double)tab[1]/(double)tab[0];
 			for(PlayerCardInterface c: p.playerHand()) {
@@ -48,7 +49,10 @@ public class Ai implements AiInterface{
 			if(scoreCard>scoreNeighbours) {
 				if(pci.getCityName().equals(((Player)p).getCurrentCity().getName())) {// If i can use flytocharter
 					try {
-						p.flyToCharter(GameEngine.chooseCityMostInfected(GameEngine.getListCity()).getName());
+						String name=GameEngine.chooseCityMostInfected(GameEngine.getListCity()).getName();
+						System.out.println("JE fais effectué une action, jeter la carte de la ville"+pci.getCityName()+" et FlyToCharter à la ville "+name);
+						
+						p.flyToCharter(name);
 					}catch(UnauthorizedActionException e) {
 						System.err.println("Exception in AI FlytoCharter");
 						e.printStackTrace();
@@ -56,6 +60,8 @@ public class Ai implements AiInterface{
 				}
 				else {
 					try {
+						System.out.println("JE fais effectué une action, jeter la carte de la ville"+pci.getCityName()+" et FlyTo à la ville "+pci.getCityName());
+						
 						p.flyTo(pci.getCityName());
 					}catch(UnauthorizedActionException e) {
 						System.err.println("Exception in AI FlytoCharter");
@@ -72,6 +78,8 @@ public class Ai implements AiInterface{
 				
 				if(nbCubeCity>nbCubeCurrent){
 					try {
+						System.out.println("JE fais effectué une action,  MoveTo à la ville "+city.getName());
+						
 						p.moveTo(city.getName());
 					}catch(UnauthorizedActionException e) {
 						System.err.println("Exception in AI FlytoCharter");
@@ -80,6 +88,7 @@ public class Ai implements AiInterface{
 					
 				}
 				else {
+					System.out.println("je vais Cure ma current Ville "+current.getName()+" et lui enlever un Cube");
 					current.setCubesChoiceDiseaseToCure();
 				}
 			}
@@ -107,6 +116,7 @@ public class Ai implements AiInterface{
 			ArrayList r=min(tri);
 			int indice=(int)r.get(1);
 			PlayerCardInterface def=p.playerHand().get(indice);
+			System.out.println("je vais jeter la carte "+def.getCityName()+" de maladie "+def.getDisease());
 			PlayerCard.addToDefauss(def);
 			p.playerHand().remove(indice);
 			listeR.add(def);

@@ -346,7 +346,7 @@ public class GameEngine implements GameInterface{
 	}
 	 */
 	public void Initialisation(List<PlayerCardInterface>listcard,Player p,PropagationDeck pdeck,PropagationDeck propdefauss){
-		System.out.println("Loading AI Jar file " + aiJar);		
+		//System.out.println("Loading AI Jar file " + aiJar);		
 		//AiInterface ai = AiLoader.loadAi(aiJar);	
 		//City c=this.getCity("Atlanta");
 		//Player p=new Player(c,list);
@@ -637,6 +637,24 @@ public class GameEngine implements GameInterface{
 
 
 
+	public void loop() throws UnauthorizedActionException  {
+		// Load Ai from Jar file
+		System.out.println("Loading AI Jar file " + aiJar);		
+		AiInterface ai = AiLoader.loadAi("C:/Users/derra/OneDrive/Bureau/aijar.jar");
+		/**
+		// Load Ai from Jar file
+		System.out.println("Loading AI Jar file " + aiJar);		
+		//AiInterface ai = AiLoader.loadAi(aiJar);	
+		City c=this.getCity("Atlanta");
+		Player p=new Player(c,list);
+		System.out.println("Je suis dans "+p.getCurrentCity().getName());
+		p.moveTo(p.getCurrentCity().getNeighbours().get(0).getName());
+		System.out.println("Je suis dans "+p.getCurrentCity().getName());
+		System.out.println(p.playerHand());
+		PropagationDeck pdeck=new PropagationDeck();
+		// Create the player Card
+		List<PlayerCardInterface> listcard=new ArrayList<PlayerCardInterface>();
+
 public void loop() throws UnauthorizedActionException  {
 	// Load Ai from Jar file
 	System.out.println("Loading AI Jar file " + aiJar);		
@@ -704,7 +722,12 @@ public void loop() throws UnauthorizedActionException  {
 		 */
 
 	}		
-}						
+			
+
+
+//}	
+//}						
+
 
 
 
@@ -1037,7 +1060,7 @@ public static void main(String [] args) throws IOException, UnauthorizedActionEx
 	 */
 
 
-	g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
+	//g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
 
 	//g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
 
