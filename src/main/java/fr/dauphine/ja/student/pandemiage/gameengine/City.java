@@ -23,7 +23,7 @@ public class City {
 	private boolean isOutBreaks=false;
 
 	private   Map<Disease,Integer> m=new HashMap<Disease,Integer>(); // Permet de recuperer le nombre de cube sur chaque ville et sr chaque malade
-	private static Map<Disease,Boolean> m_ec=new HashMap<Disease,Boolean>();// Permet de recuperer quelle maladie a eclos sur une ville
+	private Map<Disease,Boolean> m_ec=new HashMap<Disease,Boolean>();// Permet de recuperer quelle maladie a eclos sur une ville
 
 	private Disease disease;
 	private static Map<Disease,Boolean> m_cure=new HashMap<Disease,Boolean>(); // Permet de savoir pour chaque maladie si l'entidote a été decouvert
@@ -44,21 +44,40 @@ public class City {
 		this.edge_Label=edge_Label;
 		this.degree=degree; // Neighbours number
 		this.list=list;
+		if(r==183 && g==18 && b==21){// TODO Auto-generated method stub
+			disease=Disease.RED;
+		}else if (r==107 && g==112 && b==184){
+			disease=Disease.BLUE;
+		}
+		else if (r==153 && g==153 & b==153){
+			disease=Disease.BLACK;		}
+		else{
+			disease=Disease.YELLOW;		}
 		for(Disease d: Disease.values()) {
-			this.m.put(d,0);
+			this.m.put(d,new Integer(0));
+			this.m_ec.put(d, false);
+			this.m_cure.put(d, false);
 			//System.out.println(CityName+" - "+m.get(d));
 		}
+	//	System.out.println("\n\n**********************************************ma liste d'eclosion est à "+m_ec+"******************\n\n");
+		
 		
 	}
 
 	public String getName() {
 		return CityName;
 	}
+	public float getX() {
+		return this.x;
+	}
+	public float getY() {
+		return this.y;
+	}
 	public List<City> getNeighbours(){
 		return this.list;
 	}
 
-	public void setCubesChoiceDiseaseToCure() {// 
+	public boolean setCubesChoiceDiseaseToCure() {// return true if the city was cured, false otherwise
 		int diseaseToCure=this.getNbCubes(Disease.BLACK);
 		Disease d=Disease.BLACK;
 		if(diseaseToCure<this.getNbCubes(Disease.RED)) {
@@ -76,7 +95,11 @@ public class City {
 			
 			diseaseToCure=this.getNbCubes(Disease.BLUE);
 		}
-		this.setNbCubes(diseaseToCure-1, d);
+		if(diseaseToCure>0) {
+			this.setNbCubes(diseaseToCure-1, d);
+			return true;
+		}
+		return false;
 	}
 	
 	public List<String> getNeighbours_s(){
@@ -153,6 +176,7 @@ public class City {
 	}
 
 	public int getNbCubes(Disease d) {
+		//System.out.println("je suis dans get nbcubes de city et m est a "+m+" et d "+d+" et m.get(d) "+m.get(d));
 		return m.get(d);
 	}
 
@@ -161,6 +185,7 @@ public class City {
 	}
 
 	public boolean isEclosion(Disease d) {
+		//System.out.println("je suis dans iseclosion de city et m est a "+m_ec+" et d "+d+" et m.get(d) "+m_ec.get(d));
 		return this.m_ec.get(d);
 	}
 

@@ -31,9 +31,11 @@ public class Player implements PlayerInterface{
 	@Override
 	public void moveTo(String cityName) throws UnauthorizedActionException {
 		if(!switchturn) {
+			System.out.println("je suis dans switchturn");
 			for(City i:currentCity.getNeighbours()) {
 				if(i.getName().equals(cityName)) {
 					this.currentCity=i;
+					System.out.println("ma current ville est mtn a "+currentCity.getName());
 					action--;
 					if(action==0) {
 						switchturn=true;
@@ -41,9 +43,10 @@ public class Player implements PlayerInterface{
 					return;
 				}
 			}
-		}
-		else {
+		
+		
 			throw new UnauthorizedActionException("I can't moveTo"+cityName+"Cause it's not my Neighbour");
+		
 		}
 
 	}
@@ -185,7 +188,9 @@ public class Player implements PlayerInterface{
 		int[] tab=new int[2];
 		
 		tab=GameEngine.scoreOfEachRegion(c.getDisease(),GameEngine.getListCityWithDisease(c.getDisease()));
-		double res=(double)(tab[1])/(double)(tab[0]);
+		double res=0.0;
+		if(tab[0]!=0)
+			res=(double)(tab[1])/(double)(tab[0]);
 		return res;
 	}
 	public int scoreOfEachCardInCure(PlayerCardInterface c1) {
@@ -207,7 +212,7 @@ public class Player implements PlayerInterface{
 	
 	public int scoreOfEachCardInMove(PlayerCardInterface c) {
 		int incrementation=0;
-		Map<Disease,Integer> m=new HashMap<Disease,Integer>();
+		/*Map<Disease,Integer> m=new HashMap<Disease,Integer>();
 		Set<Disease> c2=m.keySet();
 		Iterator<Disease> it = c2.iterator();
 		 
@@ -225,7 +230,7 @@ public class Player implements PlayerInterface{
 		}
 		if(c.getDisease()==tmp1) {
 			incrementation=2;
-		}
+		}*/
 		if(c.getCityName().equals(currentCity.getName()))
 			return 10;
 		else {
@@ -239,9 +244,16 @@ public class Player implements PlayerInterface{
 	}
 	
 	public double scoreOfTheCard(PlayerCardInterface c) {
+		//System.out.println("probleme dans move");
 		double move=scoreOfEachCardInMove(c);
+		//System.out.println("probleme dans Cure");
+		
 		double cure=scoreOfEachCardInCure(c);
+		//System.out.println("probleme dans Region");
+		
 		double region=scoreOfEachCardInRegion(c);
+		//System.out.println("aucun prob");
+		
 		return move+cure+region*3;
 		
 	}
