@@ -16,25 +16,25 @@ public class PropagationDeck {
 	public void lastDeckCard(PropagationDeck propdefauss){
 		//PropagationCard pc= propagationdeck.remove(propagationdeck.size()-1);
 		//PropagationCard pc= propdefauss.getPropagationdeck().remove(propdefauss.getPropagationdeck().size()-1);
-		System.out.println("je rentre dans infection");
-		System.out.println(propdefauss.getPropagationdeck().size());
+		//System.out.println("je rentre dans infection");
+		//System.out.println(propdefauss.getPropagationdeck().size());
 
 		//PropagationCard pc= propdefauss.getPropagationdeck().remove(0);
 		PropagationCard pc= this.getPropagationdeck().get(0);
 		this.getPropagationdeck().remove(0);
 		propdefauss.getPropagationdeck().add(pc);
-		System.out.println("j'ai chopé la premiere carte");
+		//System.out.println("j'ai chopé la premiere carte");
 
 		Disease d=pc.getDisease();
 		
-		System.out.println(pc.getCity().getName());
-		System.out.println(pc.getCity().getM().containsKey(d));
-		System.out.println(pc.getCity().getDisease());
+		//System.out.println(pc.getCity().getName());
+		//System.out.println(pc.getCity().getM().containsKey(d));
+		//System.out.println(pc.getCity().getDisease());
 
 		if(pc.getCity().getNbCubes(d)==0){
 		//if(pc.getCity().getM().get(d)==0){
 	
-			System.out.println("dans le if de lastdeckcard");
+			//System.out.println("dans le if de lastdeckcard");
 
 			if(GameEngine.AvalaibleBLocks(3,d)) {
 				GameEngine.GiveMeBlockFromReserve(d,3);
@@ -45,7 +45,7 @@ public class PropagationDeck {
 			}
 		}
 		else{
-			System.out.println("dans le else de lastdeckcard");
+//			System.out.println("dans le else de lastdeckcard");
 
 			pc.getCity().setNbCubes(3, d);
 			pc.getCity().setEclosion(true, d);
