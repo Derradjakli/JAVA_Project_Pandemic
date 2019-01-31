@@ -10,6 +10,7 @@ import fr.dauphine.ja.pandemiage.common.Disease;
 public class City {
 	private static int[][] tableauPositionGraphic=new int[48][3];
 	
+	private int id;
 	private String CityName;
 	private int r;// The Red color of RGB
 	private int g;// The GREEN color of RGB
@@ -34,7 +35,12 @@ public class City {
 	private List<City> list; // list of neighbours
 
 
-	public City(String CityName, int r	,int g, int b, double weight, float x, float y, float size,double eigenvector_Centrality	,String edge_ID,String edge_Label	, int degree , List<City> list) {
+	public City(int id, String CityName, int r	,int g, int b, double weight, float x, float y, float size,double eigenvector_Centrality	,String edge_ID,String edge_Label	, int degree , List<City> list) {
+		
+		if(this.id <40)
+			this.id = id;
+		else
+			this.id = id-3;
 		this.CityName=CityName;
 		this.r=r;// The Red color of RGB
 		this.g=g;// The GREEN color of RGB
@@ -313,6 +319,9 @@ public class City {
 		return s;
 
 
+	}
+	public int getId() {
+		return this.id;
 	}
 
 	public int getR() {
