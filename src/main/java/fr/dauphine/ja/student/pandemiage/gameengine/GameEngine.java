@@ -1287,7 +1287,7 @@ public void loop() throws UnauthorizedActionException  {
 		//g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
 		System.out.println("je suis a "+g.p.getCurrentCity().getName()+" au coordonnée "+g.p.getCurrentCity().getX()+" : "+g.p.getCurrentCity().getY());
 
-		JFrame fenetre= new Fenetre();
+		//JFrame fenetre= new Fenetre();
 		//fenetre.setLocation(200, 400);
 		//fenetre.setResizable(false);
 		//fenetre.setSize(600, 100);
@@ -1295,7 +1295,7 @@ public void loop() throws UnauthorizedActionException  {
 		//fenetre.setLocation(1000, 400);
 		System.out.println("undercorated");
 		//fenetre.setUndecorated(true);
-		//g.loop();
+		g.loop();
 		/*
 		for(int i = 0; i < liste.size(); i++) {
 			System.out.println("City Name : " +liste.get(i).getName());

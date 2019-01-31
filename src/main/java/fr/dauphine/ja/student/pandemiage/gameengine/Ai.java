@@ -37,8 +37,10 @@ public class Ai implements AiInterface{
 		ArrayList<Double> tri=new ArrayList<Double>();
 		while(((Player)p).getActionLeft()>0) {
 		
-			tab=GameEngine.scoreOfMyLocation((Player)p);
-			scoreNeighbours=(double)tab[1]/(double)tab[0];
+			///tab=GameEngine.scoreOfMyLocation((Player)p);
+			//scoreNeighbours=(double)tab[1]/(double)tab[0];
+			scoreNeighbours=GameEngine.scoreOfMyLocation((Player)p);
+			
 			for(PlayerCardInterface c: p.playerHand()) {
 				tri.add(((Player)p).scoreOfTheCard(c));
 			}
@@ -78,7 +80,7 @@ public class Ai implements AiInterface{
 				
 				if(nbCubeCity>nbCubeCurrent){
 					try {
-						System.out.println("JE fais effectué une action,  MoveTo à la ville "+city.getName());
+						System.out.println("JE fais effectué une action,  MoveTo à la ville "+city.getName()+" cette ville à un nbcube a "+city.getNbCubes(city.getDisease())+" \net ma current a "+current.getNbCubes(current.getDisease()));
 						
 						p.moveTo(city.getName());
 					}catch(UnauthorizedActionException e) {

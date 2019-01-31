@@ -52,7 +52,7 @@ public class GMLReader {
 	    while (verticesIterator.hasNext()) {
 	    	 
 	        Vertex vertex = verticesIterator.next();
-	        id = (int)vertex.getId();
+	        id = Integer.parseInt((String)vertex.getId());
 	        label = (String) vertex.getProperty("label");
 	          eigencentrality = (double)vertex.getProperty("Eigenvector Centrality");
 	          degree = (int)vertex.getProperty("Degree");
@@ -94,7 +94,7 @@ public class GMLReader {
 	}
 	
 	public static City vertexToCity(Vertex vertex) {
-		int id = (int)vertex.getId();
+		int id = Integer.parseInt((String)vertex.getId());
 		String label = (String) vertex.getProperty("label");
         double eigencentrality = (double)vertex.getProperty("Eigenvector Centrality");
         int degree = (int)vertex.getProperty("Degree");
