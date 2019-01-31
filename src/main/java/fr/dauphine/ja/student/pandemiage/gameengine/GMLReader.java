@@ -33,7 +33,7 @@ public class GMLReader {
 		//Declaration of City attributes
 		String label;
 		double eigencentrality;
-		int r, g, b, degree;
+		int r, g, b, degree, id;
 		float x, y, size;
 		
 		Graph graph = new TinkerGraph();
@@ -52,6 +52,7 @@ public class GMLReader {
 	    while (verticesIterator.hasNext()) {
 	    	 
 	        Vertex vertex = verticesIterator.next();
+	        id = (int)vertex.getId();
 	        label = (String) vertex.getProperty("label");
 	          eigencentrality = (double)vertex.getProperty("Eigenvector Centrality");
 	          degree = (int)vertex.getProperty("Degree");
@@ -82,7 +83,7 @@ public class GMLReader {
 	        		  
 	        	  
 	          	}
-	          City paris = new City(label, r, g, b, 0.0, x, y, size, eigencentrality	," ", " ", degree , neighboursList);
+	          City paris = new City(id ,label, r, g, b, 0.0, x, y, size, eigencentrality	," ", " ", degree , neighboursList);
 	          cityList.add(paris);
 	       
 	      
@@ -93,6 +94,7 @@ public class GMLReader {
 	}
 	
 	public static City vertexToCity(Vertex vertex) {
+		int id = (int)vertex.getId();
 		String label = (String) vertex.getProperty("label");
         double eigencentrality = (double)vertex.getProperty("Eigenvector Centrality");
         int degree = (int)vertex.getProperty("Degree");
@@ -103,7 +105,7 @@ public class GMLReader {
         float x = (float)vertex.getProperty("x");
         float y = (float)vertex.getProperty("y");
         List<City> neighboursList = new ArrayList<City>();
-        City Oran = new City(label, r, g, b, 0.0, x, y, size, eigencentrality	," ", " ", degree , neighboursList);
+        City Oran = new City(id, label, r, g, b, 0.0, x, y, size, eigencentrality	," ", " ", degree , neighboursList);
         
         
         return Oran;

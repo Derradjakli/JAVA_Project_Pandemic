@@ -1,5 +1,7 @@
 package fr.dauphine.ja.student.pandemiage.ui;
 
+import javax.swing.JFrame;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -70,6 +72,17 @@ public class Cli {
 			formatter.printHelp( "pandemiage", options );
 			System.exit(1);
 	    }
+		
+	
+			JFrame fenetre= new Fenetre();
+			//fenetre.setLocation(200, 400);
+			//fenetre.setResizable(false);
+			//fenetre.setSize(600, 100);
+			//fenetre.setAlwaysOnTop(false);
+			//fenetre.setLocation(1000, 400);
+			System.out.println("undercorated");
+			//fenetre.setUndecorated(true);
+
 		
 		
 	}

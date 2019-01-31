@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JFrame;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -25,6 +27,8 @@ import fr.dauphine.ja.pandemiage.common.PlayerInterface;
 import fr.dauphine.ja.pandemiage.common.UnauthorizedActionException;
 import fr.dauphine.ja.student.pandemiage.ai.AiMethods;
 import fr.dauphine.ja.student.pandemiage.ui.Cli;
+import fr.dauphine.ja.student.pandemiage.ui.Panneau;
+
 import java.util.Collections;
 /**
  * Empty GameEngine implementing GameInterface
@@ -395,7 +399,6 @@ public class GameEngine implements GameInterface{
 				PlayerCard.addToDefauss(card);
 				p.getListCardHand().remove(card);
 				System.out.println("je pose la carte épidemie dans la defausse, ainsi j'ai un nombre de cartes dans ma main égal  à "+p.playerHand().size());
-				
 			}
 			j--;
 			//PlayerCard.addToDefauss(card);
@@ -481,16 +484,22 @@ public class GameEngine implements GameInterface{
 	}
 
 
-
-	public void Tour(AiInterface ai,Player p,LinkedList<PlayerCardInterface> listcard,PropagationDeck pdeck,PropagationDeck propdefauss){
+	public static float getPosx() {
+		return p.getCurrentCity().getX();
+	}
+	public static float getPosY() {
+		return p.getCurrentCity().getY();
+	}
+	public void Tour(Player p,List<PlayerCardInterface> listcard2,PropagationDeck pdeck,PropagationDeck propdefauss) throws InterruptedException{
 		while(gameStatus == GameStatus.ONGOING) {
-			if(listcard.isEmpty()){
+			if(listcard2.isEmpty()){
 				setDefeated("No more PlayerCards available",DefeatReason.NO_MORE_PLAYER_CARDS);
 			}
 
 			for(Disease d :Disease.values()){
 				if(reserve.get(d)<0){
-					setDefeated("Plus de cubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
+					setDefeated("Plus de c"
+							+ "ubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
 				}
 			}
 			/*
@@ -532,11 +541,11 @@ public class GameEngine implements GameInterface{
 
 			while(j>0){
 				if(p.playerHand().size()>9){
-					List<PlayerCardInterface> discardliste=ai.discard(this, p, 9,compteurEpidemic );
+					List<PlayerCardInterface> discardliste=discard(this, p, 9,compteurEpidemic );
 				}
 				else{
 
-					PlayerCardInterface card=listcard.remove(listcard.size()-1);
+					PlayerCardInterface card=listcard2.remove(listcard2.size()-1);
 					p.addToPlayerHand(card);
 					if(((PlayerCard)card).isEpidemic()){
 						compteurEpidemic++;
@@ -634,16 +643,186 @@ public class GameEngine implements GameInterface{
 				setDefeated("No More Avalaible Blocks ",DefeatReason.NO_MORE_BLOCKS);
 			}
 		}
+		playTurn(this,p);
+		
+	}
+
+
+	/****************************************************************************************************************************************************************/
+	/*****************************************************************************************************************************************************************/
+
+	/*****************************************************************************************************************************************************************/
+
+	/*****************************************************************************************************************************************************************/
+	/*****************************************************************************************************************************************************************/
+
+	/**
+	 * @throws InterruptedException ***************************************************************************************************************************************************************/
+	public void playTurn(GameInterface g, PlayerInterface p) throws InterruptedException {
+		// TODO Auto-generated method stub
+		System.out.println("je vais jouer une action");
+		int actionleft=4;
+		int [] tab=new int[2];
+		double scoreNeighbours=0.0; // Score of the action moveTo
+		double scoreCard=0.0; // Score of actions Flyto and FlytoCharter 
+		int indice;
+		ArrayList<Double> tri=new ArrayList<Double>();
+		while(actionleft>0) {//((Player)p).getActionLeft()>0) {
+			System.out.println("je vais scorer ma location");
+			City me=((Player)p).getCurrentCity();
+			if(me.setCubesChoiceDiseaseToCure()) {
+
+			}
+			else {
+				tab=GameEngine.scoreOfMyLocation((Player)p);
+				if(tab[0]!=0)
+					scoreNeighbours=(double)tab[1]/(double)tab[0];
+				System.out.println("score de mes voisin est a "+scoreNeighbours);
+				System.out.println("Mon jeu de carte en mains est à "+p.playerHand());
+				for(PlayerCardInterface c: p.playerHand()) {
+					tri.add(((Player)p).scoreOfTheCard(c));
+				}
+				//System.out.println("j'ai fini le parcours de ma liste");
+				if(tri.size()!=0) {
+					scoreCard=(double)max(tri).get(0);
+
+					System.out.println("score de ma meilleur carte est a "+scoreCard);
+
+					indice =(int)max(tri).get(1);
+					PlayerCardInterface pci=p.playerHand().get(indice);
+
+					if(scoreCard>scoreNeighbours) {
+						if(pci.getCityName().equals(((Player)p).getCurrentCity().getName())) {// If i can use flytocharter
+							try {
+								String name=GameEngine.chooseCityMostInfected(GameEngine.getListCity()).getName();
+								System.out.println("JE fais effectué une action, jeter la carte de la ville"+pci.getCityName()+" et FlyToCharter à la ville "+name);
+
+								p.flyToCharter(name);
+								actionleft--;
+							}catch(UnauthorizedActionException e) {
+								System.err.println("Exception in AI FlytoCharter");
+								e.printStackTrace();
+							}
+						}
+						else {
+							try {
+								System.out.println("JE fais effectué une action, je suis à "+((Player)p).getCurrentCity().getName()+" jeter la carte de la ville "+pci.getCityName()+" et FlyTo à la ville "+pci.getCityName());
+
+								p.flyTo(pci.getCityName());
+								actionleft--;
+							}catch(UnauthorizedActionException e) {
+								System.err.println("Exception in AI FlytoCharter");
+								e.printStackTrace();
+							}
+						}
+
+					}
+				}
+				else {
+					City city=GameEngine.chooseCityMostInfected(((Player)p).getCurrentCity().getNeighbours());
+					City current=((Player)p).getCurrentCity();
+					int nbCubeCity=city.getNbCubes(Disease.BLACK)+city.getNbCubes(Disease.RED)+city.getNbCubes(Disease.YELLOW)+city.getNbCubes(Disease.BLUE);
+					int nbCubeCurrent=current.getNbCubes(Disease.BLACK)+current.getNbCubes(Disease.RED)+current.getNbCubes(Disease.YELLOW)+current.getNbCubes(Disease.BLUE);
+
+					if(nbCubeCity>nbCubeCurrent){
+						try {
+							System.out.println("JE fais effectué une action,  MoveTo à la ville "+city.getName()+" et ma current est à "+current.getName());
+
+							p.moveTo(city.getName());
+							actionleft--;
+						}catch(UnauthorizedActionException e) {
+							System.err.println("Exception in AI FlytoCharter");
+							e.printStackTrace();
+						}
+
+					}
+					else {
+						System.out.println("je vais Cure ma current Ville "+current.getName()+" et lui enlever un Cube");
+						current.setCubesChoiceDiseaseToCure();
+						actionleft--;
+					}
+				}
+			}
+			Thread.sleep(1000);
+		}
+
+		//if(g.turnDuration()>i){
+	}
+	/**
+	 * Once the player finished its actions and received Player Cards, he must discards to fit to the maximum hand size 
+	 * @param g	Interface with the game
+	 * @param p Interface with the actions
+	 * @param maxHandSize maximum size of the player hand
+	 * @param nbEpidemicCards number of epidemic cards that were picked by the player during this turn.
+	 * @return The list of discarded cards
+	 */
+
+	public List<PlayerCardInterface> discard(GameInterface g, PlayerInterface p, int maxHandSize, int nbEpidemicCards) {
+		List<PlayerCardInterface> listeR=new ArrayList<PlayerCardInterface>();
+		while(p.playerHand().size()>maxHandSize) { // While im not with the correct size
+			ArrayList<Double> tri=new ArrayList<Double>();
+			for(PlayerCardInterface c:p.playerHand()) {
+				tri.add(((Player)p).scoreOfTheCard(c));
+			}
+
+			ArrayList r=min(tri);
+			int indice=(int)r.get(1);
+			PlayerCardInterface def=p.playerHand().get(indice);
+			System.out.println("je vais jeter la carte "+def.getCityName()+" de maladie "+def.getDisease());
+			PlayerCard.addToDefauss(def);
+			p.playerHand().remove(indice);
+			listeR.add(def);
+		}
+
+
+		return listeR;
 	}
 
 
 
+	public ArrayList max(ArrayList<Double> tri) {
+		Double tmp=tri.get(0);
+		ArrayList res=new ArrayList();
+		int indice=0;
+		for(int i=1;i<tri.size();i++) {
+			if(tri.get(i)>tmp) {
+				tmp=tri.get(i);
+				indice=i;
+			}
+		}
+		res.add(tmp);
+		res.add(indice);
+		return res;
+	}
+	public ArrayList min(ArrayList<Double> tri) {
+		Double tmp=tri.get(0);
+		ArrayList res=new ArrayList();
+		int indice=0;
+		for(int i=1;i<tri.size();i++) {
+			if(tri.get(i)<tmp) {
+				tmp=tri.get(i);
+				indice=i;
+			}
+		}
+		res.add(tmp);
+		res.add(indice);
+		return res;
+	}
 
 
-	public void loop() throws UnauthorizedActionException  {
+	/*****************************************************************************************************************************************************************/
+	/*****************************************************************************************************************************************************************/
+	/*****************************************************************************************************************************************************************/
+
+	/**
+	 * @throws InterruptedException ***************************************************************************************************************************************************************/
+	public void loop() throws UnauthorizedActionException, InterruptedException  {
 		// Load Ai from Jar file
+
 		System.out.println("Loading AI Jar file " + aiJar);		
-		AiInterface ai = AiLoader.loadAi("C:/Users/derra/OneDrive/Bureau/aijar.jar");
+		//AiInterface ai = AiLoader.loadAi("C:/Users/derra/OneDrive/Bureau/aijar.jar");
+		System.out.println("gotta playturn");
+		Tour(p, listcard, pdeck, propdefauss);
 		/**
 		// Load Ai from Jar file
 		System.out.println("Loading AI Jar file " + aiJar);		
@@ -725,351 +904,365 @@ public void loop() throws UnauthorizedActionException  {
 		 */
 
 	}		
-			
-
-
-//}	
-//}						
 
 
 
+	//}	
+	//}						
 
-@Override
-public List<String> allCityNames() {
 
 
-	ArrayList<String> s=new ArrayList<String>();
-	int n=list.size();
 
-	for(int i=0;i<n;i++) {
-		s.add(list.get(i).getName());
-	}
-	return s;
-	//throw new UnsupportedOperationException(); 
+	@Override
+	public List<String> allCityNames() {
 
-	// TODO
 
-	//	throw new UnsupportedOperationException(); 
-}
+		ArrayList<String> s=new ArrayList<String>();
+		int n=list.size();
 
-@Override
-public List<String> neighbours(String cityName) {
-	// TODO
-
-	int n=list.size();
-	for(int i=0;i<n;i++) {
-		if(list.get(i).getName().equals(cityName)) {
-			return list.get(i).getNeighbours_s();
+		for(int i=0;i<n;i++) {
+			s.add(list.get(i).getName());
 		}
-	}
-	throw new UnsupportedOperationException(); 
-}
+		return s;
+		//throw new UnsupportedOperationException(); 
 
-@Override
-public int infectionLevel(String cityName, Disease d) {
-	// TODO
+		// TODO
 
-	int n=this.list.size();
-	for(int i=0;i<n;i++) {
-		if(list.get(i).getName().equals(cityName)) {
-			return list.get(i).getNbCubes(d);
-		}
+		//	throw new UnsupportedOperationException(); 
 	}
 
+	@Override
+	public List<String> neighbours(String cityName) {
+		// TODO
 
-	throw new UnsupportedOperationException(); 
-}
-
-@Override
-public boolean isCured(Disease d) {
-	for(City c: list) {
-		if(c.isCure(d)) {
-			return true;
+		int n=list.size();
+		for(int i=0;i<n;i++) {
+			if(list.get(i).getName().equals(cityName)) {
+				return list.get(i).getNeighbours_s();
+			}
 		}
-	}
-	return false;
-	//throw new UnsupportedOperationException(); 
-}
-
-@Override
-public int infectionRate() {
-	// TODO
-	return vitprop[cptprop];
-	//throw new UnsupportedOperationException(); 
-}
-
-public City getCity(String cityName) {
-	for(City c:list) {
-		if(c.getName().equals(cityName)) 
-			return c;
-
-	}
-	throw new UnsupportedOperationException("There is no city for the name "+cityName);
-}
-@Override
-public GameStatus gameStatus() {
-	// TODO
-	return this.gameStatus;
-	//throw new UnsupportedOperationException(); 
-}
-
-@Override 
-public int turnDuration() {
-	// TODO
-	return this.turnduration;
-	//throw new UnsupportedOperationException(); 
-}
-
-@Override
-public boolean isEradicated(Disease d) {
-	// TODO
-	int n=list.size();
-	for(int i=0;i<n;i++) {
-		if(list.get(i).getNbCubes(d)!=0) {
-			return false;
-		}
-	}
-	return true;
-	//throw new UnsupportedOperationException(); 
-}
-
-@Override
-public int getNbOutbreaks() {
-	// TODO 
-	return this.marqueur_prog;
-	//throw new UnsupportedOperationException(); 
-}
-
-@Override
-public int getNbPlayerCardsLeft() {
-	// TODO 
-	return p.playerHand().size();
-	//throw new UnsupportedOperationException(); 
-}
-
-public static Map<Disease, Integer> getReserve() {
-	return reserve;
-}
-
-public static void setReserve(Map<Disease, Integer> reserve) {
-	GameEngine.reserve = reserve;
-}
-
-public static boolean isBool() {
-	return bool;
-}
-
-public static void setBool(boolean bool) {
-	GameEngine.bool = bool;
-}
-public static int getVit_prop() {
-	return vit_prop;
-}
-
-public static void setVit_prop(int vit_prop) {
-	GameEngine.vit_prop = vit_prop;
-}
-
-public static int getNb_epidcard() {
-	return nb_epidcard;
-}
-
-public static void setNb_epidcard(int nb_epidcard) {
-	GameEngine.nb_epidcard = nb_epidcard;
-}
-
-public static int indice (int[] tab){
-
-	return 0;
-}
-public static int[] getVitprop() {
-	return vitprop;
-}
-
-public static void setVitprop(int[] vitprop) {
-	GameEngine.vitprop = vitprop;
-}
-
-public static int getCptprop() {
-	return cptprop;
-}
-
-public static void setCptprop(int cptprop) {
-	GameEngine.cptprop = cptprop;
-}
-
-
-
-/**Return for each Disease, the number of cubes associated in the map**/
-public Map<Disease,Integer> scoreOfEachDisease(){
-	Map<Disease,Integer> m=new HashMap<Disease,Integer>();
-	for(City c:list) {
-		if(c.getDisease()==Disease.BLACK) {
-			m.put(Disease.BLACK, m.get(Disease.BLACK)+c.getNbCubes(Disease.BLACK));
-		}
-		if(c.getDisease()==Disease.BLUE) {
-			m.put(Disease.BLUE, m.get(Disease.BLUE)+c.getNbCubes(Disease.BLUE));
-		}
-		if(c.getDisease()==Disease.RED) {
-			m.put(Disease.RED, m.get(Disease.RED)+c.getNbCubes(Disease.RED));
-		}
-		if(c.getDisease()==Disease.YELLOW) {
-			m.put(Disease.YELLOW, m.get(Disease.YELLOW)+c.getNbCubes(Disease.YELLOW));
-		}
+		throw new UnsupportedOperationException(); 
 	}
 
-	return m;
-}
+	@Override
+	public int infectionLevel(String cityName, Disease d) {
+		// TODO
 
-public static int[] scoreOfMyLocation(Player p) {
-	City c=p.getCurrentCity();
-	return scoreOfEachRegion(c.getDisease(),c.getNeighbours());
-}
+		int n=this.list.size();
+		for(int i=0;i<n;i++) {
+			if(list.get(i).getName().equals(cityName)) {
+				return list.get(i).getNbCubes(d);
+			}
+		}
 
-public static List<City> getListCityWithDisease(Disease d){
-	List<City> res =new ArrayList<City>();
-	for(City c: list) {
-		if(c.getDisease()==d)
-			res.add(c);
+
+		throw new UnsupportedOperationException(); 
 	}
-	return res;
-}
 
-public static City chooseCityMostInfected(List <City> liste) {
-	for(City c:liste) {
-		if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=7) {
-			return c;
+	@Override
+	public boolean isCured(Disease d) {
+		for(City c: list) {
+			if(c.isCure(d)) {
+				return true;
+			}
 		}
-		if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=6) {
-			return c;
-		}
-		if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=5) {
-			return c;
-		}
-		if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=4) {
-			return c;
-		}
-		if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=3) {
-			return c;
-		}
-		if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=2) {
-			return c;
-		}
-		if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=1) {
-			return c;
-		}
+		return false;
+		//throw new UnsupportedOperationException(); 
 	}
-	return liste.get((int)(Math.random()*liste.size()));
 
-}
-
-/**Return the number of eclosion for the disease d in the same turn. Take the list of the region**/
-public static int[] scoreOfEachRegion(Disease d,List<City> liste) {
-	int cpt=0;
-	int nbcubes=0;
-	int[] tab=new int[2];
-	for(City c:liste) {
-		if(c.getNbCubes(d)>0) {
-			if(c.isEclosion(d)) 
-				nbcubes+=3;
-
-			if(c.getNbCubes(d)==3) 
-				nbcubes+=3;
-
-			if(c.getNbCubes(d)==2) 
-				nbcubes+=2;
-
-			if(c.getNbCubes(d)==1) 
-				nbcubes+=1;
-			cpt++;
-		}
+	@Override
+	public int infectionRate() {
+		// TODO
+		return vitprop[cptprop];
+		//throw new UnsupportedOperationException(); 
 	}
-	tab[0]=cpt;
-	tab[1]=nbcubes;
-	return tab;
-}
+
+	public City getCity(String cityName) {
+		for(City c:list) {
+			if(c.getName().equals(cityName)) 
+				return c;
+
+		}
+		throw new UnsupportedOperationException("There is no city for the name "+cityName);
+	}
+	@Override
+	public GameStatus gameStatus() {
+		// TODO
+		return this.gameStatus;
+		//throw new UnsupportedOperationException(); 
+	}
+
+	@Override 
+	public int turnDuration() {
+		// TODO
+		return this.turnduration;
+		//throw new UnsupportedOperationException(); 
+	}
+
+	@Override
+	public boolean isEradicated(Disease d) {
+		// TODO
+		int n=list.size();
+		for(int i=0;i<n;i++) {
+			if(list.get(i).getNbCubes(d)!=0) {
+				return false;
+			}
+		}
+		return true;
+		//throw new UnsupportedOperationException(); 
+	}
+
+	@Override
+	public int getNbOutbreaks() {
+		// TODO 
+		return this.marqueur_prog;
+		//throw new UnsupportedOperationException(); 
+	}
+
+	@Override
+	public int getNbPlayerCardsLeft() {
+		// TODO 
+		return p.playerHand().size();
+		//throw new UnsupportedOperationException(); 
+	}
+
+	public static Map<Disease, Integer> getReserve() {
+		return reserve;
+	}
+
+	public static void setReserve(Map<Disease, Integer> reserve) {
+		GameEngine.reserve = reserve;
+	}
+
+	public static boolean isBool() {
+		return bool;
+	}
+
+	public static void setBool(boolean bool) {
+		GameEngine.bool = bool;
+	}
+	public static int getVit_prop() {
+		return vit_prop;
+	}
+
+	public static void setVit_prop(int vit_prop) {
+		GameEngine.vit_prop = vit_prop;
+	}
+
+	public static int getNb_epidcard() {
+		return nb_epidcard;
+	}
+
+	public static void setNb_epidcard(int nb_epidcard) {
+		GameEngine.nb_epidcard = nb_epidcard;
+	}
+
+	public static int indice (int[] tab){
+
+		return 0;
+	}
+	public static int[] getVitprop() {
+		return vitprop;
+	}
+
+	public static void setVitprop(int[] vitprop) {
+		GameEngine.vitprop = vitprop;
+	}
+
+	public static int getCptprop() {
+		return cptprop;
+	}
+
+	public static void setCptprop(int cptprop) {
+		GameEngine.cptprop = cptprop;
+	}
 
 
 
-
-
-public static void main(String [] args) throws IOException, UnauthorizedActionException   {
-
-
-	// Faire rentrer en paramètre le nom du graph, le jar et le niveau de difficulté
-
-	String aijar = DEFAULT_AIJAR; 
-	String cityGraphFile = DEFAULT_CITYGRAPH_FILE; 
-	int difficulty = DEFAULT_DIFFICULTY; 
-	int turnDuration = DEFAULT_TURN_DURATION;
-	int handSize = DEFAULT_HAND_SIZE;
-
-	Options options = new Options();
-	CommandLineParser parser = new DefaultParser();
-
-	options.addOption("a", "aijar", true, "use <FILE> as player Ai.");
-	options.addOption("d", "difficulty", true, "Difficulty level. 0 (Introduction), 1 (Normal) or 3 (Heroic).");
-	options.addOption("c", "citygraph", true, "City graph filename.");
-	options.addOption("t", "turnduration", true, "Number of seconds allowed to play a turn.");
-	options.addOption("s", "handsize", true, "Maximum size of a player hand.");
-	options.addOption("h", "help", false, "Display this help");
-
-	try {
-		CommandLine cmd = parser.parse( options, args);
-
-		if(cmd.hasOption("a")) {
-			aijar = cmd.getOptionValue("a");				
+	/**Return for each Disease, the number of cubes associated in the map**/
+	public Map<Disease,Integer> scoreOfEachDisease(){
+		Map<Disease,Integer> m=new HashMap<Disease,Integer>();
+		for(City c:list) {
+			if(c.getDisease()==Disease.BLACK) {
+				m.put(Disease.BLACK, m.get(Disease.BLACK)+c.getNbCubes(Disease.BLACK));
+			}
+			if(c.getDisease()==Disease.BLUE) {
+				m.put(Disease.BLUE, m.get(Disease.BLUE)+c.getNbCubes(Disease.BLUE));
+			}
+			if(c.getDisease()==Disease.RED) {
+				m.put(Disease.RED, m.get(Disease.RED)+c.getNbCubes(Disease.RED));
+			}
+			if(c.getDisease()==Disease.YELLOW) {
+				m.put(Disease.YELLOW, m.get(Disease.YELLOW)+c.getNbCubes(Disease.YELLOW));
+			}
 		}
 
-		if(cmd.hasOption("g")) {
-			cityGraphFile = cmd.getOptionValue("c");
-		}
+		return m;
+	}
 
-		if(cmd.hasOption("d")) {
-			difficulty = Integer.parseInt(cmd.getOptionValue("d"));
-		}
+	public static int[] scoreOfMyLocation(Player p) {
+		//System.out.println("je suis dans scoreofmylocation");
+		City c=p.getCurrentCity();
 
-		if(cmd.hasOption("t")) {
-			turnDuration = Integer.parseInt(cmd.getOptionValue("t"));
-		}
-		if(cmd.hasOption("s")) {
-			handSize = Integer.parseInt(cmd.getOptionValue("s"));
-		}
+		//System.out.println("j'ai recuperer la city c à "+c+" et j'appelle score of eachregion et c.getdisease est a "+c.getDisease());
+		return scoreOfEachRegion(c.getDisease(),c.getNeighbours());
+	}
 
-		/* ... */ 
+	public static List<City> getListCityWithDisease(Disease d){
+		List<City> res =new ArrayList<City>();
+		for(City c: list) {
+			if(c.getDisease()==d)
+				res.add(c);
+		}
+		return res;
+	}
 
-		if(cmd.hasOption("h")) {
+	public static City chooseCityMostInfected(List <City> liste) {
+		for(City c:liste) {
+			if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=7) {
+				return c;
+			}
+			if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=6) {
+				return c;
+			}
+			if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=5) {
+				return c;
+			}
+			if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=4) {
+				return c;
+			}
+			if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=3) {
+				return c;
+			}
+			if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=2) {
+				return c;
+			}
+			if(c.getNbCubes(Disease.BLACK)+c.getNbCubes(Disease.BLUE)+c.getNbCubes(Disease.RED)+c.getNbCubes(Disease.YELLOW)>=1) {
+				return c;
+			}
+		}
+		return liste.get((int)(Math.random()*liste.size()));
+
+	}
+
+	/**Return the number of eclosion for the disease d in the same turn. Take the list of the region**/
+	public static int[] scoreOfEachRegion(Disease d,List<City> liste) {
+		//System.out.println("je suis dans score of eachregion");
+		int cpt=0;
+		int nbcubes=0;
+		int[] tab=new int[2];
+		for(City c:liste) {
+			//System.out.println(liste);
+			//System.out.println("je parcours la liste pour scoreofeachregion et c est à "+c);
+			if(c.getNbCubes(d)>0) {
+				if(c.isEclosion(d)) 
+					nbcubes+=3;
+
+				if(c.getNbCubes(d)==3) 
+					nbcubes+=3;
+
+				if(c.getNbCubes(d)==2) 
+					nbcubes+=2;
+
+				if(c.getNbCubes(d)==1) 
+					nbcubes+=1;
+				cpt++;
+			}
+		}
+		tab[0]=cpt;
+		tab[1]=nbcubes;
+		return tab;
+	}
+
+
+
+
+
+	public static void main(String [] args) throws IOException, UnauthorizedActionException, InterruptedException   {
+
+
+		// Faire rentrer en paramètre le nom du graph, le jar et le niveau de difficulté
+
+		String aijar = DEFAULT_AIJAR; 
+		String cityGraphFile = DEFAULT_CITYGRAPH_FILE; 
+		int difficulty = DEFAULT_DIFFICULTY; 
+		int turnDuration = DEFAULT_TURN_DURATION;
+		int handSize = DEFAULT_HAND_SIZE;
+
+		Options options = new Options();
+		CommandLineParser parser = new DefaultParser();
+
+		options.addOption("a", "aijar", true, "use <FILE> as player Ai.");
+		options.addOption("d", "difficulty", true, "Difficulty level. 0 (Introduction), 1 (Normal) or 3 (Heroic).");
+		options.addOption("c", "citygraph", true, "City graph filename.");
+		options.addOption("t", "turnduration", true, "Number of seconds allowed to play a turn.");
+		options.addOption("s", "handsize", true, "Maximum size of a player hand.");
+		options.addOption("h", "help", false, "Display this help");
+
+		try {
+			CommandLine cmd = parser.parse( options, args);
+
+			if(cmd.hasOption("a")) {
+				aijar = cmd.getOptionValue("a");				
+			}
+
+			if(cmd.hasOption("g")) {
+				cityGraphFile = cmd.getOptionValue("c");
+			}
+
+			if(cmd.hasOption("d")) {
+				difficulty = Integer.parseInt(cmd.getOptionValue("d"));
+			}
+
+			if(cmd.hasOption("t")) {
+				turnDuration = Integer.parseInt(cmd.getOptionValue("t"));
+			}
+			if(cmd.hasOption("s")) {
+				handSize = Integer.parseInt(cmd.getOptionValue("s"));
+			}
+
+			/* ... */ 
+
+			if(cmd.hasOption("h")) {
+				HelpFormatter formatter = new HelpFormatter();
+				formatter.printHelp( "pandemiage", options );
+				System.exit(0);
+			}			
+
+		} catch (ParseException e) {
+			System.err.println("Error: invalid command line format.");
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp( "pandemiage", options );
-			System.exit(0);
-		}			
+			System.exit(1);
+		}
+		System.out.println("aijar : "+aijar+"cityGraphFile : "+ cityGraphFile +"difficulty : "+ difficulty + "turnDuration : " + turnDuration + "handSize  :"+handSize   );
 
-	} catch (ParseException e) {
-		System.err.println("Error: invalid command line format.");
-		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp( "pandemiage", options );
-		System.exit(1);
-	}
-	System.out.println("aijar : "+aijar+"cityGraphFile : "+ cityGraphFile +"difficulty : "+ difficulty + "turnDuration : " + turnDuration + "handSize  :"+handSize   );
+		GameEngine g=new GameEngine(cityGraphFile, aijar);
 
-	GameEngine g=new GameEngine(cityGraphFile, aijar);
-
-	g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
-	//g.Tour(ai, g.p, g.listcard, g.pdeck, g.propdefauss);
-	/*LinkedList<PlayerCardInterface> listcard=new LinkedList<PlayerCardInterface>();
+		g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
+		//g.Tour(ai, g.p, g.listcard, g.pdeck, g.propdefauss);
+		/*LinkedList<PlayerCardInterface> listcard=new LinkedList<PlayerCardInterface>();
 		Player p=new Player();
 		PropagationDeck pdeck=null;
 		PropagationDeck propdefauss=null;
-	 */
+		 */
 
 
-	//g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
+		//g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
 
-	//g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
+		//g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
+		System.out.println("je suis a "+g.p.getCurrentCity().getName()+" au coordonnée "+g.p.getCurrentCity().getX()+" : "+g.p.getCurrentCity().getY());
 
-
-	//g.loop();
-	/*
+		//JFrame fenetre= new Fenetre();
+		//fenetre.setLocation(200, 400);
+		//fenetre.setResizable(false);
+		//fenetre.setSize(600, 100);
+		//fenetre.setAlwaysOnTop(false);
+		//fenetre.setLocation(1000, 400);
+		System.out.println("undercorated");
+		//fenetre.setUndecorated(true);
+		g.loop();
+		/*
 		for(int i = 0; i < liste.size(); i++) {
 			System.out.println("City Name : " +liste.get(i).getName());
 			System.out.println("City Degree : " +liste.get(i).getDegree());
@@ -1077,7 +1270,7 @@ public static void main(String [] args) throws IOException, UnauthorizedActionEx
 		}*/
 
 
-}
+	}
 
 }
 
