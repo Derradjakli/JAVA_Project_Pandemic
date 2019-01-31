@@ -60,15 +60,31 @@ public class Player implements PlayerInterface{
 
 	@Override
 	public void flyTo(String cityName) throws UnauthorizedActionException {
+		System.out.println("switch turn dans fly to est a "+switchturn);
 		if(!switchturn) {
+			//System.out.println("je rentre dans le if de flyto");
 			int n=listCardHand.size();
+			PlayerCardInterface card;
+			System.out.println("Dans flyto ma liste de carte est mtn a ");
+			for(PlayerCardInterface carde:listCardHand)
+				System.out.println("la carte "+carde.getCityName());
+		
 			for(int i=0;i<n;i++) {
-				if(listCardHand.get(i).getCityName().equals(cityName)) {
-
-					this.currentCity=((PlayerCard) (listCardHand.get(i))).getCity(); // a voir comment recuperer la ville a partir du nom
-					PlayerCard.addToDefauss(listCardHand.get(i));
+				card=listCardHand.get(i);
+				System.out.println("j'ai la carte "+listCardHand.get(i).getCityName()+" et mon nombre de carte est a "+n);
+			//	if(listCardHand.get(i).getCityName().equals(cityName)) {
+				if(card.getCityName()==cityName) {
+					
+					
+					System.out.println("j'ai trouvé la ville pour me deplacer");
+					this.currentCity=((PlayerCard) (card)).getCity(); // a voir comment recuperer la ville a partir du nom
+					System.out.println("ma ville courante mtn est a "+currentCity.getName());
+					PlayerCard.addToDefauss(card);
 					listCardHand.remove(i);// listcarddefaussé.add(
-
+					System.out.println("ma mise a jour de liste de carte est mtn a ");
+					for(PlayerCardInterface carde:listCardHand)
+						System.out.println("la carte "+carde.getCityName());
+				
 					action--;
 					if(action==0)
 						switchturn=true;
@@ -78,6 +94,7 @@ public class Player implements PlayerInterface{
 				i++;
 			}
 		}
+		else
 		throw new UnauthorizedActionException("I can't FlyTo"+cityName+"Cause there's no card in my hand of this city or no more action left");
 
 
@@ -91,13 +108,17 @@ public class Player implements PlayerInterface{
 		if(!switchturn) {
 			int n=listCardHand.size();
 			for(int i=0;i<n;i++)  {
-				if(listCardHand.get(i).getCityName().equals(this.currentCity.getName())) {
+			//	if(listCardHand.get(i).getCityName().equals(this.currentCity.getName())) {
+				if(listCardHand.get(i).getCityName()==this.currentCity.getName()) {
+						
 					for(City ci:listCity) {
 						if(ci.getName().equals(cityName)) {
 							this.currentCity=ci;
 							action--;
 							PlayerCard.addToDefauss(listCardHand.get(i));// Add my card to the discarded cards list
 							listCardHand.remove(i);// remove the card from my hand
+							for(PlayerCardInterface carde:listCardHand)
+								System.out.println("ma liste de carte est mtn a "+carde.getCityName());
 							if(action==0)
 								switchturn=true;
 							return;
@@ -179,10 +200,7 @@ public class Player implements PlayerInterface{
 			pc.getCityName();
 		}
 	}
-	public int[] scoreOfEachCard(PlayerCardInterface c) {
-		return null;
-	
-	}
+
 	public double scoreOfEachCardInRegion(PlayerCardInterface c) {
 
 		int[] tab=new int[2];
@@ -191,6 +209,7 @@ public class Player implements PlayerInterface{
 		double res=0.0;
 		if(tab[0]!=0)
 			res=(double)(tab[1])/(double)(tab[0]);
+		System.out.println("Ici j'ai fini de calculer le score de la carte");
 		return res;
 	}
 	public int scoreOfEachCardInCure(PlayerCardInterface c1) {
