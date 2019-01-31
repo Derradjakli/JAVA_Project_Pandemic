@@ -392,12 +392,15 @@ public class GameEngine implements GameInterface{
 				System.out.println("infection ok");
 				((EpidemicCard)card).Intensification(pdeck, propdefauss);
 				System.out.println("intensification ok");
-
+				PlayerCard.addToDefauss(card);
+				p.getListCardHand().remove(card);
+				System.out.println("je pose la carte épidemie dans la defausse, ainsi j'ai un nombre de cartes dans ma main égal  à "+p.playerHand().size());
+				
 			}
 			j--;
-			PlayerCard.addToDefauss(card);
-			p.getListCardHand().remove(card);
-			System.out.println("je pose la carte épidemie dans la defausse, ainsi j'ai un nombre de cartes dans ma main égal  à "+p.playerHand().size());
+			//PlayerCard.addToDefauss(card);
+			//p.getListCardHand().remove(card);
+			//System.out.println("je pose la carte épidemie dans la defausse, ainsi j'ai un nombre de cartes dans ma main égal  à "+p.playerHand().size());
 		}
 		//p.setListCardHand(p.getListCardHand().remove(card));
 		int tour1=3;
