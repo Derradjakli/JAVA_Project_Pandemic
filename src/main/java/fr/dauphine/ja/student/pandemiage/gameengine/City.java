@@ -119,6 +119,9 @@ public class City {
 
 
 	}
+	public int getId() {
+		return this.id;
+	}
 
 	public int getR() {
 		return r;
