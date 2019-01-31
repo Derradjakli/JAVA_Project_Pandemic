@@ -497,8 +497,7 @@ public class GameEngine implements GameInterface{
 
 			for(Disease d :Disease.values()){
 				if(reserve.get(d)<0){
-					setDefeated("Plus de c"
-							+ "ubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
+					setDefeated("Plus de c"+ "ubes disponibles.",DefeatReason.NO_MORE_BLOCKS);
 				}
 			}
 			/*
@@ -534,10 +533,10 @@ public class GameEngine implements GameInterface{
 					cc.setEclosion(false, d);
 				}
 			}
-			System.out.println(p.playerHand().size());
+			//System.out.println(p.playerHand().size());
 			int j=2;
 			int compteurEpidemic=0;
-
+			playTurn(this,p);
 			while(j>0){
 				if(p.playerHand().size()>9){
 					List<PlayerCardInterface> discardliste=discard(this, p, 9,compteurEpidemic );
@@ -564,7 +563,7 @@ public class GameEngine implements GameInterface{
 			}
 		}
 
-		System.out.println(p.playerHand().size());
+		//System.out.println(p.playerHand().size());
 		for(PlayerCardInterface c2:p.playerHand()) {
 			System.out.println(c2.getCityName()+" - "+c2.getDisease());
 		}
@@ -596,6 +595,8 @@ public class GameEngine implements GameInterface{
 					PlayerCard.addToDefauss(pci);
 				}
 			}
+			System.out.println("j'ai trouvé le remede "+Disease.RED);
+			
 			remedes.replace(Disease.RED, true);
 		}
 		if(cptblack==5){
@@ -605,6 +606,7 @@ public class GameEngine implements GameInterface{
 					PlayerCard.addToDefauss(pci);
 				}
 			}
+			System.out.println("j'ai trouvé le remede "+Disease.BLACK);
 			remedes.replace(Disease.BLACK, true);
 		}
 		if(cptyellow==5){
@@ -614,6 +616,8 @@ public class GameEngine implements GameInterface{
 					PlayerCard.addToDefauss(pci);
 				}
 			}
+			System.out.println("j'ai trouvé le remede "+Disease.YELLOW);
+			
 			remedes.replace(Disease.YELLOW, true);
 		}
 		if(cptblue==5){
@@ -623,6 +627,8 @@ public class GameEngine implements GameInterface{
 					PlayerCard.addToDefauss(pci);
 				}
 			}
+			System.out.println("j'ai trouvé le remede "+Disease.BLUE);
+			
 			remedes.replace(Disease.BLUE, true);
 		}
 		if(remedes.get(Disease.BLACK) & remedes.get(Disease.BLUE) & remedes.get(Disease.RED) & remedes.get(Disease.YELLOW)){
@@ -642,7 +648,8 @@ public class GameEngine implements GameInterface{
 				setDefeated("No More Avalaible Blocks ",DefeatReason.NO_MORE_BLOCKS);
 			}
 		}
-		playTurn(this,p);
+		System.out.println("\n\n je vais faire play \n\n");
+		//playTurn(this,p);
 		
 	}
 
@@ -661,35 +668,40 @@ public class GameEngine implements GameInterface{
 		// TODO Auto-generated method stub
 		System.out.println("je vais jouer une action");
 		int actionleft=4;
-		int [] tab=new int[2];
+		
 		double scoreNeighbours=0.0; // Score of the action moveTo
 		double scoreCard=0.0; // Score of actions Flyto and FlytoCharter 
 		int indice;
-		ArrayList<Double> tri=new ArrayList<Double>();
+		
 		while(actionleft>0) {//((Player)p).getActionLeft()>0) {
 			System.out.println("je vais scorer ma location");
 			City me=((Player)p).getCurrentCity();
 			if(me.setCubesChoiceDiseaseToCure()) {
-
+				System.out.println("j'ai traité ma ville courante "+me.getName());
+				actionleft--;
 			}
 			else {
-				tab=GameEngine.scoreOfMyLocation((Player)p);
-				if(tab[0]!=0)
-					scoreNeighbours=(double)tab[1]/(double)tab[0];
+				scoreNeighbours=GameEngine.scoreOfMyLocation((Player)p);
 				System.out.println("score de mes voisin est a "+scoreNeighbours);
-				System.out.println("Mon jeu de carte en mains est à "+p.playerHand());
+				System.out.println("Mon jeu de carte en mains est à \n");
+				for(PlayerCardInterface card: p.playerHand())
+					System.out.println("La carte "+card.getCityName());
+				ArrayList<Double> tri=new ArrayList<Double>();
 				for(PlayerCardInterface c: p.playerHand()) {
 					tri.add(((Player)p).scoreOfTheCard(c));
 				}
 				//System.out.println("j'ai fini le parcours de ma liste");
 				if(tri.size()!=0) {
-					scoreCard=(double)max(tri).get(0);
+					ArrayList<Double> res=new ArrayList();
+					res=max(tri);
+					scoreCard=res.get(0);
 
 					System.out.println("score de ma meilleur carte est a "+scoreCard);
 
-					indice =(int)max(tri).get(1);
+					indice =res.get(1).intValue();
+					System.out.println("j'ai recuperer l'indice "+indice );
 					PlayerCardInterface pci=p.playerHand().get(indice);
-
+					System.out.println("j'ai recuperer la carte de l'indince");
 					if(scoreCard>scoreNeighbours) {
 						if(pci.getCityName().equals(((Player)p).getCurrentCity().getName())) {// If i can use flytocharter
 							try {
@@ -710,7 +722,7 @@ public class GameEngine implements GameInterface{
 								p.flyTo(pci.getCityName());
 								actionleft--;
 							}catch(UnauthorizedActionException e) {
-								System.err.println("Exception in AI FlytoCharter");
+								System.err.println("Exception in AI Flyto");
 								e.printStackTrace();
 							}
 						}
@@ -725,8 +737,9 @@ public class GameEngine implements GameInterface{
 
 					if(nbCubeCity>nbCubeCurrent){
 						try {
-							System.out.println("JE fais effectué une action,  MoveTo à la ville "+city.getName()+" et ma current est à "+current.getName());
-
+							//System.out.println("JE fais effectué une action,  MoveTo à la ville "+city.getName()+" et ma current est à "+current.getName());
+							System.out.println("JE fais effectué une action,  MoveTo à la ville "+city.getName()+" cette ville à un nbcube a "+city.getNbCubes(city.getDisease())+" \net ma current a "+current.getNbCubes(current.getDisease()));
+							
 							p.moveTo(city.getName());
 							actionleft--;
 						}catch(UnauthorizedActionException e) {
@@ -764,8 +777,9 @@ public class GameEngine implements GameInterface{
 				tri.add(((Player)p).scoreOfTheCard(c));
 			}
 
-			ArrayList r=min(tri);
-			int indice=(int)r.get(1);
+			ArrayList<Double> r=min(tri);
+			//System.out.println("score de la pire carte est a "+r.get(0));
+			int indice=r.get(1).intValue();
 			PlayerCardInterface def=p.playerHand().get(indice);
 			System.out.println("je vais jeter la carte "+def.getCityName()+" de maladie "+def.getDisease());
 			PlayerCard.addToDefauss(def);
@@ -779,23 +793,25 @@ public class GameEngine implements GameInterface{
 
 
 
-	public ArrayList max(ArrayList<Double> tri) {
+	public ArrayList<Double> max(ArrayList<Double> tri) {
 		Double tmp=tri.get(0);
-		ArrayList res=new ArrayList();
+		ArrayList<Double> res=new ArrayList();
 		int indice=0;
+		//System.out.println("\n\nLa taille de tri est a "+tri.size()+"\n\n");
 		for(int i=1;i<tri.size();i++) {
 			if(tri.get(i)>tmp) {
 				tmp=tri.get(i);
 				indice=i;
 			}
 		}
+		
 		res.add(tmp);
-		res.add(indice);
+		res.add((double)indice);
 		return res;
 	}
-	public ArrayList min(ArrayList<Double> tri) {
+	public ArrayList<Double> min(ArrayList<Double> tri) {
 		Double tmp=tri.get(0);
-		ArrayList res=new ArrayList();
+		ArrayList<Double> res=new ArrayList();
 		int indice=0;
 		for(int i=1;i<tri.size();i++) {
 			if(tri.get(i)<tmp) {
@@ -803,8 +819,9 @@ public class GameEngine implements GameInterface{
 				indice=i;
 			}
 		}
+		
 		res.add(tmp);
-		res.add(indice);
+		res.add((double)indice);
 		return res;
 	}
 
@@ -1099,12 +1116,27 @@ public void loop() throws UnauthorizedActionException  {
 		return m;
 	}
 
-	public static int[] scoreOfMyLocation(Player p) {
+	public static double scoreOfMyLocation(Player p) {
 		//System.out.println("je suis dans scoreofmylocation");
 		City c=p.getCurrentCity();
-
+		int[] tab=new int[2];
+		double resultat=0.0;
+		int n=c.getNeighbours().size();
+		System.out.println("le nombre de mes voisins est a"+n);
+		for(int i=0;i<n;i++) {
+//		for(City parcours: c.getNeighbours()) {
+			System.out.println("liste de voisin de mes voisins est "+c.getNeighbours().get(i).getNeighbours()+" son nom est à "+c.getNeighbours().get(i).getName());
+			tab=scoreOfEachRegion(c.getNeighbours().get(i).getDisease(),c.getNeighbours().get(i).getNeighbours());
+			if(tab[0]!=0)
+				resultat+=(double)tab[1]/(double)tab[0];
+			System.out.println("le resultat de mylocation est pour l'instant a "+resultat);
+		}
+		tab=scoreOfEachRegion(c.getDisease(),c.getNeighbours());
+		if(tab[0]!=0)
+			resultat+=(double)tab[1]/(double)tab[0];
 		//System.out.println("j'ai recuperer la city c à "+c+" et j'appelle score of eachregion et c.getdisease est a "+c.getDisease());
-		return scoreOfEachRegion(c.getDisease(),c.getNeighbours());
+		System.out.println("je vais renvoyer resultat = "+resultat+" pour ma location");
+		return resultat;
 	}
 
 	public static List<City> getListCityWithDisease(Disease d){
@@ -1155,21 +1187,23 @@ public void loop() throws UnauthorizedActionException  {
 			//System.out.println("je parcours la liste pour scoreofeachregion et c est à "+c);
 			if(c.getNbCubes(d)>0) {
 				if(c.isEclosion(d)) 
-					nbcubes+=3;
+					nbcubes+=6;
 
 				if(c.getNbCubes(d)==3) 
-					nbcubes+=3;
+					nbcubes+=6;
 
 				if(c.getNbCubes(d)==2) 
-					nbcubes+=2;
+					nbcubes+=4;
 
 				if(c.getNbCubes(d)==1) 
-					nbcubes+=1;
+					nbcubes+=2;
+				System.out.println(" Le score est pour l'instant de "+nbcubes+" pour cpt a "+cpt);
 				cpt++;
 			}
 		}
 		tab[0]=cpt;
 		tab[1]=nbcubes;
+		System.out.println("j'ai fini ce traitement");
 		return tab;
 	}
 
@@ -1252,7 +1286,7 @@ public void loop() throws UnauthorizedActionException  {
 		//g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
 		System.out.println("je suis a "+g.p.getCurrentCity().getName()+" au coordonnée "+g.p.getCurrentCity().getX()+" : "+g.p.getCurrentCity().getY());
 
-		//JFrame fenetre= new Fenetre();
+		JFrame fenetre= new Fenetre();
 		//fenetre.setLocation(200, 400);
 		//fenetre.setResizable(false);
 		//fenetre.setSize(600, 100);
@@ -1260,7 +1294,7 @@ public void loop() throws UnauthorizedActionException  {
 		//fenetre.setLocation(1000, 400);
 		System.out.println("undercorated");
 		//fenetre.setUndecorated(true);
-		g.loop();
+		//g.loop();
 		/*
 		for(int i = 0; i < liste.size(); i++) {
 			System.out.println("City Name : " +liste.get(i).getName());
