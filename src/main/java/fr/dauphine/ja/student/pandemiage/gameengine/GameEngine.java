@@ -27,7 +27,7 @@ import fr.dauphine.ja.pandemiage.common.PlayerInterface;
 import fr.dauphine.ja.pandemiage.common.UnauthorizedActionException;
 import fr.dauphine.ja.student.pandemiage.ai.AiMethods;
 import fr.dauphine.ja.student.pandemiage.ui.Cli;
-import fr.dauphine.ja.student.pandemiage.ui.Panneau;
+
 
 import java.util.Collections;
 /**
@@ -45,7 +45,7 @@ public class GameEngine implements GameInterface{
 	private static int marqueur_prog=1;
 	private static  Map<Disease,Integer> reserve=new HashMap<Disease,Integer>();
 	private static boolean bool;
-	private static int[] vitprop= {2,2,3,3,4,4};
+	private static int[] vitprop= {2,2,2,3,3,4,4};
 	private static int cptprop=0;
 	private static Player p;
 	private static GameLevel level=GameLevel.Easy;
@@ -53,7 +53,7 @@ public class GameEngine implements GameInterface{
 	private int turnduration=0;
 	private static Map<Disease,Boolean> remedes = new HashMap<Disease,Boolean>();
 	private static int cptOutbreaks=0;
-	private static List<PlayerCardInterface>listcard;
+	private static List<PlayerCardInterface> listcard;
 
 	public  PropagationDeck pdeck;
 	private  PropagationDeck propdefauss;
@@ -484,14 +484,29 @@ public class GameEngine implements GameInterface{
 	}
 
 
-	public static float getPosx() {
-		return getP().getCurrentCity().getX();
+
+	public static int getPosX() {
+		return getP().getCurrentCity().getPosX();
 	}
-	public static float getPosY() {
-		return getP().getCurrentCity().getY();
+	public static int getPosY() {
+		return getP().getCurrentCity().getPosY();
+	}
+
+	public static Player getPlayer() {
+		return p;
 	}
 	public void Tour(Player p,List<PlayerCardInterface> listcard2,PropagationDeck pdeck,PropagationDeck propdefauss) throws InterruptedException{
+		JFrame fenetre= new Fenetre();
 		while(gameStatus == GameStatus.ONGOING) {
+
+			fenetre.repaint();
+			//fenetre.setLocation(200, 400);
+			//fenetre.setResizable(false);
+			//fenetre.setSize(600, 100);
+			//fenetre.setAlwaysOnTop(false);
+			//fenetre.setLocation(1000, 400);
+			System.out.println("undercorated");
+			Thread.sleep(1000);
 			if(listcard2.isEmpty()){
 				setDefeated("No more PlayerCards available",DefeatReason.NO_MORE_PLAYER_CARDS);
 			}
@@ -544,114 +559,129 @@ public class GameEngine implements GameInterface{
 				}
 				else{
 
-					PlayerCardInterface card=listcard2.remove(listcard2.size()-1);
-					p.addToPlayerHand(card);
-					if(((PlayerCard)card).isEpidemic()){
-						compteurEpidemic++;
-						((EpidemicCard)card).Acceleration();
-						((EpidemicCard)card).Infection(pdeck,propdefauss);
-						if(cptOutbreaks==8){
-							setDefeated("number of Outbreaks too high",DefeatReason.TOO_MANY_OUTBREAKS);
+					if(listcard2.size()!=0) {
+						PlayerCardInterface card; card=listcard2.remove(listcard2.size()-1);
+						p.addToPlayerHand(card);
+						if(((PlayerCard)card).isEpidemic()){
+							compteurEpidemic++;
+							((EpidemicCard)card).Acceleration();
+							((EpidemicCard)card).Infection(pdeck,propdefauss);
+							if(cptOutbreaks==8){
+								setDefeated("number of Outbreaks too high",DefeatReason.TOO_MANY_OUTBREAKS);
+							}
+							((EpidemicCard)card).Intensification(pdeck, propdefauss);
+							PlayerCard.addToDefauss(card);
+							p.getListCardHand().remove(card);
+							System.out.println("je pose la carte épidemie dans la defausse, ainsi j'ai un nombre de cartes dans ma main égal  à "+p.playerHand().size());
 						}
-						((EpidemicCard)card).Intensification(pdeck, propdefauss);
-						PlayerCard.addToDefauss(card);
-						p.getListCardHand().remove(card);
-						System.out.println("je pose la carte épidemie dans la defausse, ainsi j'ai un nombre de cartes dans ma main égal  à "+p.playerHand().size());
-					}
 
+					}
+					else 
+						setDefeated("Plus de carte joueur",DefeatReason.NO_MORE_PLAYER_CARDS);
 				}
 				j--;
 			}
-		}
-
-		//System.out.println(p.playerHand().size());
-		for(PlayerCardInterface c2:p.playerHand()) {
-			System.out.println(c2.getCityName()+" - "+c2.getDisease());
-		}
-
-		int cptyellow=0;
-		int cptred=0;
-		int cptblack=0;
-		int cptblue=0;
-		for(PlayerCardInterface pci : p.playerHand()){
-			if(pci.getDisease().equals(Disease.BLACK)){
-				cptblack++;
-			}
-			if(pci.getDisease().equals(Disease.BLUE)){
-				cptblue++;
-			}
-			if(pci.getDisease().equals(Disease.YELLOW)){
-				cptyellow++;
-			}
-			if(pci.getDisease().equals(Disease.RED)){
-				cptred++;
-			}
-		}
 
 
-		if(cptred==5){
-			for(PlayerCardInterface pci : p.playerHand()){
-				if(pci.getDisease().equals(Disease.RED)){
-					p.playerHand().remove(pci);
-					PlayerCard.addToDefauss(pci);
-				}
+
+			//System.out.println(p.playerHand().size());
+			for(PlayerCardInterface c2:p.playerHand()) {
+				System.out.println(c2.getCityName()+" - "+c2.getDisease());
 			}
-			System.out.println("j'ai trouvé le remede "+Disease.RED);
-			
-			remedes.replace(Disease.RED, true);
-		}
-		if(cptblack==5){
+
+			int cptyellow=0;
+			int cptred=0;
+			int cptblack=0;
+			int cptblue=0;
 			for(PlayerCardInterface pci : p.playerHand()){
 				if(pci.getDisease().equals(Disease.BLACK)){
-					p.playerHand().remove(pci);
-					PlayerCard.addToDefauss(pci);
+					cptblack++;
 				}
-			}
-			System.out.println("j'ai trouvé le remede "+Disease.BLACK);
-			remedes.replace(Disease.BLACK, true);
-		}
-		if(cptyellow==5){
-			for(PlayerCardInterface pci : p.playerHand()){
-				if(pci.getDisease().equals(Disease.YELLOW)){
-					p.playerHand().remove(pci);
-					PlayerCard.addToDefauss(pci);
-				}
-			}
-			System.out.println("j'ai trouvé le remede "+Disease.YELLOW);
-			
-			remedes.replace(Disease.YELLOW, true);
-		}
-		if(cptblue==5){
-			for(PlayerCardInterface pci : p.playerHand()){
 				if(pci.getDisease().equals(Disease.BLUE)){
-					p.playerHand().remove(pci);
-					PlayerCard.addToDefauss(pci);
+					cptblue++;
+				}
+				if(pci.getDisease().equals(Disease.YELLOW)){
+					cptyellow++;
+				}
+				if(pci.getDisease().equals(Disease.RED)){
+					cptred++;
 				}
 			}
-			System.out.println("j'ai trouvé le remede "+Disease.BLUE);
-			
-			remedes.replace(Disease.BLUE, true);
-		}
-		if(remedes.get(Disease.BLACK) & remedes.get(Disease.BLUE) & remedes.get(Disease.RED) & remedes.get(Disease.YELLOW)){
-			setVictorious();
-		}
 
-		while (vit_prop>0){
-			PropagationCard pc=pdeck.getLastPropagationcard();
-			if(AvalaibleBLocks(1,pc.getDisease())){
-				pc.Propagation();
-				if(cptOutbreaks==8){
-					setDefeated("number of Outbreaks too high",DefeatReason.TOO_MANY_OUTBREAKS);
+
+			if(cptred==5){
+				int n=p.playerHand().size();
+				for(int i=0;i<p.playerHand().size();i++) {
+					//for(PlayerCardInterface pci : p.playerHand()){
+					if(p.playerHand().get(i).getDisease().equals(Disease.RED)){
+						PlayerCard.addToDefauss(p.playerHand().get(i));
+						p.playerHand().remove(p.playerHand().get(i));
+					}
 				}
-				vit_prop--;
+				System.out.println("j'ai trouvé le remede "+Disease.RED);
+
+				remedes.replace(Disease.RED, true);
 			}
-			else{
-				setDefeated("No More Avalaible Blocks ",DefeatReason.NO_MORE_BLOCKS);
+			if(cptblack==5){
+				int n=p.playerHand().size();
+				for(int i=0;i<p.playerHand().size();i++) {
+					//for(PlayerCardInterface pci : p.playerHand()){
+					if(p.playerHand().get(i).getDisease().equals(Disease.BLACK)){
+						PlayerCard.addToDefauss(p.playerHand().get(i));
+						p.playerHand().remove(p.playerHand().get(i));
+
+					}
+				}
+				System.out.println("j'ai trouvé le remede "+Disease.BLACK);
+				remedes.replace(Disease.BLACK, true);
 			}
+			if(cptyellow==5){
+				int n=p.playerHand().size();
+				for(int i=0;i<p.playerHand().size();i++) {
+					//for(PlayerCardInterface pci : p.playerHand()){
+					if(p.playerHand().get(i).getDisease().equals(Disease.YELLOW)){
+						PlayerCard.addToDefauss(p.playerHand().get(i));
+						p.playerHand().remove(p.playerHand().get(i));
+					}
+				}
+				System.out.println("j'ai trouvé le remede "+Disease.YELLOW);
+
+				remedes.replace(Disease.YELLOW, true);
+			}
+			if(cptblue==5){
+				int n=p.playerHand().size();
+				for(int i=0;i<p.playerHand().size();i++) {
+					//for(PlayerCardInterface pci : p.playerHand()){
+					if(p.playerHand().get(i).getDisease().equals(Disease.BLUE)){
+						PlayerCard.addToDefauss(p.playerHand().get(i));
+						p.playerHand().remove(p.playerHand().get(i));
+					}
+				}
+				System.out.println("j'ai trouvé le remede "+Disease.BLUE);
+
+				remedes.replace(Disease.BLUE, true);
+			}
+			if(remedes.get(Disease.BLACK) & remedes.get(Disease.BLUE) & remedes.get(Disease.RED) & remedes.get(Disease.YELLOW)){
+				setVictorious();
+			}
+
+			while (vit_prop>0){
+				PropagationCard pc=pdeck.getLastPropagationcard();
+				if(AvalaibleBLocks(1,pc.getDisease())){
+					pc.Propagation();
+					if(cptOutbreaks==8){
+						setDefeated("number of Outbreaks too high",DefeatReason.TOO_MANY_OUTBREAKS);
+					}
+					vit_prop--;
+				}
+				else{
+					setDefeated("No More Avalaible Blocks ",DefeatReason.NO_MORE_BLOCKS);
+				}
+			}
+			System.out.println("\n\n je vais faire play \n\n");
+			//playTurn(this,p);
+
 		}
-		System.out.println("\n\n je vais faire play \n\n");
-		//playTurn(this,p);
-		
 	}
 
 
@@ -669,11 +699,11 @@ public class GameEngine implements GameInterface{
 		// TODO Auto-generated method stub
 		System.out.println("je vais jouer une action");
 		int actionleft=4;
-		
+
 		double scoreNeighbours=0.0; // Score of the action moveTo
 		double scoreCard=0.0; // Score of actions Flyto and FlytoCharter 
 		int indice;
-		
+
 		while(actionleft>0) {//((Player)p).getActionLeft()>0) {
 			System.out.println("je vais scorer ma location");
 			City me=((Player)p).getCurrentCity();
@@ -740,7 +770,7 @@ public class GameEngine implements GameInterface{
 						try {
 							//System.out.println("JE fais effectué une action,  MoveTo à la ville "+city.getName()+" et ma current est à "+current.getName());
 							System.out.println("JE fais effectué une action,  MoveTo à la ville "+city.getName()+" cette ville à un nbcube a "+city.getNbCubes(city.getDisease())+" \net ma current a "+current.getNbCubes(current.getDisease()));
-							
+
 							p.moveTo(city.getName());
 							actionleft--;
 						}catch(UnauthorizedActionException e) {
@@ -756,7 +786,7 @@ public class GameEngine implements GameInterface{
 					}
 				}
 			}
-			Thread.sleep(1000);
+			//Thread.sleep(1000);
 		}
 
 		//if(g.turnDuration()>i){
@@ -805,7 +835,7 @@ public class GameEngine implements GameInterface{
 				indice=i;
 			}
 		}
-		
+
 		res.add(tmp);
 		res.add((double)indice);
 		return res;
@@ -820,7 +850,7 @@ public class GameEngine implements GameInterface{
 				indice=i;
 			}
 		}
-		
+
 		res.add(tmp);
 		res.add((double)indice);
 		return res;
@@ -1117,19 +1147,27 @@ public void loop() throws UnauthorizedActionException  {
 		return m;
 	}
 
+
 	public static double scoreOfMyLocation(Player p) {
 		//System.out.println("je suis dans scoreofmylocation");
 		City c=p.getCurrentCity();
 		int[] tab=new int[2];
 		double resultat=0.0;
 		int n=c.getNeighbours().size();
+		City tmp;
 		System.out.println("le nombre de mes voisins est a"+n);
 		for(int i=0;i<n;i++) {
-//		for(City parcours: c.getNeighbours()) {
-			System.out.println("liste de voisin de mes voisins est "+c.getNeighbours().get(i).getNeighbours()+" son nom est à "+c.getNeighbours().get(i).getName());
-			tab=scoreOfEachRegion(c.getNeighbours().get(i).getDisease(),c.getNeighbours().get(i).getNeighbours());
+			tmp=c.getNeighbours().get(i);
+			//		for(City parcours: c.getNeighbours()) {
+			for(int j=0;j<list.size();j++) {
+				if(c.getNeighbours().get(i).getName()==list.get(j).getName())
+					tmp=list.get(j);
+			}
+
+			System.out.println("liste de voisin de mes voisins est "+tmp.getNeighbours()+" son nom est à "+tmp.getName());
+			tab=scoreOfEachRegion(tmp.getDisease(),tmp.getNeighbours());
 			if(tab[0]!=0)
-				resultat+=(double)tab[1]/(double)tab[0];
+				resultat+=(double)tab[1];///(double)tab[0];
 			System.out.println("le resultat de mylocation est pour l'instant a "+resultat);
 		}
 		tab=scoreOfEachRegion(c.getDisease(),c.getNeighbours());
@@ -1183,7 +1221,9 @@ public void loop() throws UnauthorizedActionException  {
 		int cpt=0;
 		int nbcubes=0;
 		int[] tab=new int[2];
+		System.out.println("je vais rentrer dans le for");
 		for(City c:liste) {
+			System.out.println("je suis rentré dans le for");
 			//System.out.println(liste);
 			//System.out.println("je parcours la liste pour scoreofeachregion et c est à "+c);
 			if(c.getNbCubes(d)>0) {
@@ -1236,7 +1276,7 @@ public void loop() throws UnauthorizedActionException  {
 
 
 
-	
+
 
 }
 

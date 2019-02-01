@@ -11,9 +11,11 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import fr.dauphine.ja.pandemiage.common.Disease;
 public class Panneau extends JPanel {
-	private int posX=-50;
-	private int posY=-50;
+//	private int posX=-50;
+	//private int posY=-50;
 	Image lune, terre,fleche,tetedemort,ok,card,pc;
 
 	Panneau() {
@@ -44,7 +46,7 @@ public class Panneau extends JPanel {
 		 **/
 		
 		try {
-
+			Player p=GameEngine.getPlayer();
 			/**Image img = ImageIO.read(new File("imagejeu.jpg"));
 			Image img1 = ImageIO.read(new File("pionne.jpg"));
 			**/
@@ -55,15 +57,53 @@ public class Panneau extends JPanel {
 			card = ImageIO.read(new File("playercard.png"));
 			pc = ImageIO.read(new File("images.jpg"));
 			g.drawImage(lune, 0, 0, getWidth(), getHeight(), this);
-			g.drawImage(terre, 712, 150, 38, 38, this); // 2.0
-			g.drawImage(terre, 753, 150, 38, 38, this); // 2.1
-			g.drawImage(terre, 794, 150, 38, 38, this); // 2.2
-			g.drawImage(terre, 835, 150, 38, 38, this); // 3.0
-			g.drawImage(terre, 876, 150, 38, 38, this); // 3.1
-			g.drawImage(terre, 916, 150, 38, 38, this); // 4.0
-			g.drawImage(terre, 956, 150, 38, 38, this); // 4.1
-	//		g.drawImage(fleche, GameEngine.getPosx(), GameEngine.getPosY(), 40, 40, this); //testville mexico
-			g.drawImage(fleche, 57, 320, 40, 40, this); //L.A
+				if(GameEngine.getCptprop()==0)
+					g.drawImage(terre, 712, 150, 38, 38, this); // 2.0
+				if(GameEngine.getCptprop()==1)
+					g.drawImage(terre, 753, 150, 38, 38, this);// 2.1
+				if(GameEngine.getCptprop()==2)
+					g.drawImage(terre, 794, 150, 38, 38, this);
+				if(GameEngine.getCptprop()==3)
+					g.drawImage(terre, 835, 150, 38, 38, this);
+				if(GameEngine.getCptprop()==4)
+					g.drawImage(terre, 876, 150, 38, 38, this);
+				
+				if(GameEngine.getCptprop()==5)
+					g.drawImage(terre, 916, 150, 38, 38, this);
+				if(GameEngine.getCptprop()==6)
+					g.drawImage(terre, 956, 150, 38, 38, this);
+				/**switch(Fenetre.getRefresh()) {
+				case 0: g.drawImage(terre, 712, 150, 38, 38, this); Fenetre.setRefresh(1); // 2.0
+				
+				case 1:g.drawImage(terre, 753, 150, 38, 38, this);Fenetre.setRefresh(1); // 2.1
+				case 2:g.drawImage(terre, 794, 150, 38, 38, this);Fenetre.setRefresh(1); // 2.2
+				}
+			}
+			if(GameEngine.getVit_prop()==3) {
+				switch(Fenetre.getRefresh()) {
+				case 3:g.drawImage(terre, 835, 150, 38, 38, this); Fenetre.setRefresh(1);// 3.0
+				case 4: g.drawImage(terre, 876, 150, 38, 38, this);Fenetre.setRefresh(1); // 3.1
+				}
+			}
+			if(GameEngine.getVit_prop()==4) {
+				switch(Fenetre.getRefresh()) {
+			
+				case 5: g.drawImage(terre, 916, 150, 38, 38, this);Fenetre.setRefresh(1); // 4.0
+				case 6 :g.drawImage(terre, 956, 150, 38, 38, this);Fenetre.setRefresh(1); // 4.1
+				}
+			}**/
+			g.drawImage(fleche, GameEngine.getPosX(), GameEngine.getPosY(), 40, 40, this); //testville mexico
+			/**for(int i=0;i<48;i++) {
+				for(City c:GameEngine.getListCity()) {
+					for(Disease d :Disease.values()) {
+						for(int j=0;j<c.getNbCubes(d);j++) {
+							g.drawImage(fleche, c.getPosX(), c.getPosY(), 5, 5, this); //testville mexico
+						}
+					}
+				}
+
+			}**/
+			/**g.drawImage(fleche, 57, 320, 40, 40, this); //L.A
 			g.drawImage(fleche, 132, 345, 40, 40, this); //MEXICO
 			g.drawImage(fleche, 228, 330, 40, 40, this); //MIAMI
 			g.drawImage(fleche, 220, 410, 40, 40, this); //BOGOTA
@@ -114,7 +154,7 @@ public class Panneau extends JPanel {
 			g.drawImage(fleche, 1047, 570, 40, 40, this); //Sydney
 					
 			
-			
+			**/
 			
 
 
@@ -127,9 +167,12 @@ public class Panneau extends JPanel {
 
 			Font font = new Font("Courier", Font.BOLD, 16);
 			g.setFont(font);
-			g.setColor(Color.WHITE);
-			g.drawString("Vous êtes à San Francisco", 350, 50);
+			g.setColor(Color.RED);
+			
+			g.drawString("Vous êtes à "+p.getCurrentCity().getName(), 350, 50);
 			g.drawString("Nombres de Cartes restants : ", 650, 580);
+			g.drawString("Nombres de Cartes en main: "+p.playerHand().size(), 650, 580);
+			
 
 			g.drawImage(ok, 465, 755, 25, 25, this);
 			g.drawImage(ok, 515, 755, 25, 25, this);
@@ -142,7 +185,7 @@ public class Panneau extends JPanel {
 			//g.drawImage(img, 0, 0, this.getWidth(),this.getHeight(),this);
 			System.out.println("taille de la map "+this.getWidth()+" et "+this.getHeight());
 			//img1=img1.getScaledInstance(30, 50, Image.SCALE_DEFAULT);
-			posX=Math.round(GameEngine.getPosx());
+			/*posX=Math.round(GameEngine.getPosx());
 			posY=Math.round(GameEngine.getPosY());
 			if(posX<0)
 				posX=-posX;
@@ -150,7 +193,8 @@ public class Panneau extends JPanel {
 				posY=-posY;
 			
 			System.out.println("posX = "+posX+" posY= "+posY);
-			//g.drawImage(img1, posY-340, posX-380,this);
+			*/
+			 //g.drawImage(img1, posY-340, posX-380,this);
 
 			//Pour une image de fond
 
@@ -165,37 +209,14 @@ public class Panneau extends JPanel {
 		
 
 	}
-	public int getPosX() {
-		return posX;
-	}
-
-
-	public void setPosX(int posX) {
-
-		this.posX = posX;
-
-	}
-
-
-	public int getPosY() {
-
-		return posY;
-
-	}
-
-
-	public void setPosY(int posY) {
-
-		this.posY = posY;
-
-	}    
-
+	
 
 
 	
 }
 class Fenetre extends JFrame{
 	private Panneau pan=new Panneau();
+	private static int refresh=0;// Number of refrech of the window
 	public Fenetre() {
 
 		this.setTitle("Ma premiere fenetre");
@@ -205,152 +226,16 @@ class Fenetre extends JFrame{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 
-		/*JPanel p= new JPanel();
-		p.setLayout(new BoxLayout(p,BoxLayout.LINE_AXIS));
-		p.add(new JButton("premier"));
-
-		JPanel p1= new JPanel();
-		p1.setLayout(new BoxLayout(p1,BoxLayout.LINE_AXIS));
-		p1.add(new JButton("2"));
-		p1.add(new JButton("3"));
-
-
-		JPanel p2= new JPanel();
-		p2.setLayout(new BoxLayout(p2,BoxLayout.LINE_AXIS));
-		p2.add(new JButton("4"));
-		p2.add(new JButton("5"));
-		p2.add(new JButton("6"));
-		JPanel b4 = new JPanel();
-
-	    //On positionne maintenant ces trois lignes en colonne
-
-	    b4.setLayout(new BoxLayout(b4, BoxLayout.PAGE_AXIS));
-
-	    b4.add(p1);
-
-	    b4.add(p);
-
-	    b4.add(p2);
-		this.getContentPane().add(b4);
-		 */
+		
 		this.setVisible(true);
 
-		/*	GridLayout grd=new GridLayout(4,3);
-		grd.setHgap(3);
-		grd.setVgap(4);
-
-		this.setLayout(grd);
-
-		this.getContentPane().add(new JButton("Centre"));
-
-		this.getContentPane().add(new JButton("NORTH"));
-
-		this.getContentPane().add(new JButton("SOUTH"));
-
-		this.getContentPane().add(new JButton("WEST"));
-
-		this.getContentPane().add(new JButton("EST"));*/
-
-
-		//on previent jframe que sa content pan sera notre jpanel
-		//this.setContentPane(pan);
-
-		//go();
+	
 	}
-	/*
-	private void go(){
-
-		//Les coordonn�es de d�part de notre rond
-
-		int x = pan.getPosX(), y = pan.getPosY();
-
-		//Le bool�en pour savoir si l'on recule ou non sur l'axe x
-
-		boolean backX = false;
-
-		//Le bool�en pour savoir si l'on recule ou non sur l'axe y
-
-		boolean backY = false;
-
-
-		//Dans cet exemple, j'utilise une boucle while
-
-		//Vous verrez qu'elle fonctionne tr�s bien
-
-		//while(true){
-
-			//Si la coordonn�e x est inf�rieure � 1, on avance
-
-			if(x < 1)
-
-				backX = false;
-
-
-			//Si la coordonn�e x est sup�rieure � la taille du Panneau moins la taille du rond, on recule
-
-			if(x > pan.getWidth()-50)
-
-				backX = true;
-
-
-			//Idem pour l'axe y
-
-			if(y < 1)
-
-				backY = false;
-
-			if(y > pan.getHeight()-50)
-
-				backY = true;
-
-
-			//Si on avance, on incr�mente la coordonn�e
-
-			//backX est un bool�en, donc !backX revient � �crire
-
-			//if (backX == false)
-
-			if(!backX)
-
-				pan.setPosX(++x);
-
-
-			//Sinon, on d�cr�mente
-
-			else
-
-				pan.setPosX(--x);
-
-
-			//Idem pour l'axe Y
-
-			if(!backY)
-
-				pan.setPosY(++y);
-
-			else
-
-				pan.setPosY(--y);
-
-
-			//On redessine notre Panneau
-
-			pan.repaint();
-
-
-			//Comme on dit : la pause s'impose ! Ici, trois milli�mes de seconde
-
-			try {
-
-				Thread.sleep(3);
-
-			} catch (InterruptedException e) {
-
-				e.printStackTrace();
-
-			}
-
-		//}
-
-	}*/
+	public static int getRefresh(){
+		return refresh;
+	}
+	public static void setRefresh(int i) {
+		refresh+=i;
+	}
+	
 }

@@ -8,7 +8,7 @@ import java.util.Map;
 import fr.dauphine.ja.pandemiage.common.Disease;
 
 public class City {
-	private static int[][] tableauPositionGraphic=new int[48][3];
+	private static int[][] tableauPositionGraphic=new int[49][3]; // Stocks the position of each city in the map for the UI  
 	
 	private int id;
 	private String CityName;
@@ -26,6 +26,7 @@ public class City {
 	private String edge_Label;
 	private int degree;  //Neighbours number
 	private boolean isOutBreaks=false;
+	private boolean tabIsinitialized=false; // Say if the tableauPositionGraphic is initialized
 
 	private   Map<Disease,Integer> m=new HashMap<Disease,Integer>(); // Permet de recuperer le nombre de cube sur chaque ville et sr chaque malade
 	private Map<Disease,Boolean> m_ec=new HashMap<Disease,Boolean>();// Permet de recuperer quelle maladie a eclos sur une ville
@@ -33,7 +34,7 @@ public class City {
 	private Disease disease;
 	private static Map<Disease,Boolean> m_cure=new HashMap<Disease,Boolean>(); // Permet de savoir pour chaque maladie si l'entidote a été decouvert
 	private List<City> list; // list of neighbours
-
+	
 
 	public City(int id, String CityName, int r	,int g, int b, double weight, float x, float y, float size,double eigenvector_Centrality	,String edge_ID,String edge_Label	, int degree , List<City> list) {
 		
@@ -68,8 +69,20 @@ public class City {
 		for(Disease d: Disease.values()) {
 			this.m.put(d,new Integer(0));
 			this.m_ec.put(d, false);
-			this.m_cure.put(d, false);
+			m_cure.put(d, false);
 			//System.out.println(CityName+" - "+m.get(d));
+		}
+		if(!tabIsinitialized) {
+			initializeArrayOfPostion();
+		}
+		System.out.println("Mon ID est a "+id);
+		if(id<49) {
+		posX=tableauPositionGraphic[id][1];
+		posY=tableauPositionGraphic[id][2];
+		}
+		else {
+			posX=0;
+			posY=0;
 		}
 		
 	//	System.out.println("\n\n**********************************************ma liste d'eclosion est à "+m_ec+"******************\n\n");
@@ -80,8 +93,20 @@ public class City {
 	public String getName() {
 		return CityName;
 	}
+	public boolean isOutBreaks() {
+		return this.isOutBreaks;
+	}
+	public double getWeight() {
+		return this.weight;
+	}
 	public float getX() {
 		return this.x;
+	}
+	public int getPosX() {
+		return posX;
+	}
+	public int getPosY() {
+		return posY;
 	}
 	public void initializeArrayOfPostion() {
 		
@@ -276,7 +301,7 @@ public class City {
 		tableauPositionGraphic[48][0]=48;
 		tableauPositionGraphic[48][1]=228;
 		tableauPositionGraphic[48][2]=330;
-		
+		this.tabIsinitialized=true;
 		
 	}
 	public float getY() {
@@ -411,11 +436,8 @@ public class City {
 		this.m_cure.put(d, true);
 	}
 
-	public int getPosX() {
-		
-		return 0;
-	}
 
+	
 
 
 	public Disease getDisease() {
