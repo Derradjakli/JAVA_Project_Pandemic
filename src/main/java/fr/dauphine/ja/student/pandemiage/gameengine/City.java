@@ -38,10 +38,12 @@ public class City {
 
 	public City(int id, String CityName, int r	,int g, int b, double weight, float x, float y, float size,double eigenvector_Centrality	,String edge_ID,String edge_Label	, int degree , List<City> list) {
 		
-		if(this.id <40)
+		if(id <40) {
 			this.id = id;
-		else
+		}
+		else {
 			this.id = id-3;
+		}
 		this.CityName=CityName;
 		this.r=r;// The Red color of RGB
 		this.g=g;// The GREEN color of RGB
