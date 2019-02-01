@@ -27,7 +27,7 @@ public class Player implements PlayerInterface{
 		listCity=listc;
 		listCardHand=new ArrayList<PlayerCardInterface>();
 	}
-	
+
 	@Override
 	public void moveTo(String cityName) throws UnauthorizedActionException {
 		if(!switchturn) {
@@ -43,14 +43,14 @@ public class Player implements PlayerInterface{
 					return;
 				}
 			}
-		
-		
+
+
 			throw new UnauthorizedActionException("I can't moveTo"+cityName+"Cause it's not my Neighbour");
-		
+
 		}
 
 	}
-	
+
 	public City getCurrentCity() {
 		return this.currentCity;
 	}
@@ -68,14 +68,14 @@ public class Player implements PlayerInterface{
 			System.out.println("Dans flyto ma liste de carte est mtn a ");
 			for(PlayerCardInterface carde:listCardHand)
 				System.out.println("la carte "+carde.getCityName());
-		
+
 			for(int i=0;i<n;i++) {
 				card=listCardHand.get(i);
 				System.out.println("j'ai la carte "+listCardHand.get(i).getCityName()+" et mon nombre de carte est a "+n);
-			//	if(listCardHand.get(i).getCityName().equals(cityName)) {
+				//	if(listCardHand.get(i).getCityName().equals(cityName)) {
 				if(card.getCityName()==cityName) {
-					
-					
+
+
 					System.out.println("j'ai trouvé la ville pour me deplacer");
 					this.currentCity=((PlayerCard) (card)).getCity(); // a voir comment recuperer la ville a partir du nom
 					System.out.println("ma ville courante mtn est a "+currentCity.getName());
@@ -84,7 +84,7 @@ public class Player implements PlayerInterface{
 					System.out.println("ma mise a jour de liste de carte est mtn a ");
 					for(PlayerCardInterface carde:listCardHand)
 						System.out.println("la carte "+carde.getCityName());
-				
+
 					action--;
 					if(action==0)
 						switchturn=true;
@@ -95,7 +95,7 @@ public class Player implements PlayerInterface{
 			}
 		}
 		else
-		throw new UnauthorizedActionException("I can't FlyTo"+cityName+"Cause there's no card in my hand of this city or no more action left");
+			throw new UnauthorizedActionException("I can't FlyTo"+cityName+"Cause there's no card in my hand of this city or no more action left");
 
 
 
@@ -108,9 +108,9 @@ public class Player implements PlayerInterface{
 		if(!switchturn) {
 			int n=listCardHand.size();
 			for(int i=0;i<n;i++)  {
-			//	if(listCardHand.get(i).getCityName().equals(this.currentCity.getName())) {
+				//	if(listCardHand.get(i).getCityName().equals(this.currentCity.getName())) {
 				if(listCardHand.get(i).getCityName()==this.currentCity.getName()) {
-						
+
 					for(City ci:listCity) {
 						if(ci.getName().equals(cityName)) {
 							this.currentCity=ci;
@@ -194,7 +194,7 @@ public class Player implements PlayerInterface{
 		// TODO Auto-generated method stub
 		return listCardHand;
 	}
-	
+
 	public void SeeCards(){
 		for(PlayerCardInterface pc: listCardHand){
 			pc.getCityName();
@@ -204,7 +204,7 @@ public class Player implements PlayerInterface{
 	public double scoreOfEachCardInRegion(PlayerCardInterface c) {
 
 		int[] tab=new int[2];
-		
+
 		tab=GameEngine.scoreOfEachRegion(c.getDisease(),GameEngine.getListCityWithDisease(c.getDisease()));
 		double res=0.0;
 		if(tab[0]!=0)
@@ -214,34 +214,40 @@ public class Player implements PlayerInterface{
 	}
 	public int scoreOfEachCardInCure(PlayerCardInterface c1) {
 		int cpt=0;
-		for(PlayerCardInterface c: this.playerHand()) {
-			if(c1.getDisease()==c.getDisease())
-				cpt++;
+
+		if(GameEngine.getRemedes(c1.getDisease())){
+			return 0;
 		}
-		switch(cpt) {
-		case 1: return 1;
-		case 2: return 3;
-		case 3: return 5;
-		case 4: return 8;
-		case 5: return 12;
-		case 6: // voir si on peut faire charter avec ou bien voir si elle peut nous mener a une region blindé de maladie
+		else {
+			for(PlayerCardInterface c: this.playerHand()) {
+				if(c1.getDisease()==c.getDisease())
+					cpt++;
+			}
+			switch(cpt) {
+			case 1: return 1;
+			case 2: return 3;
+			case 3: return 5;
+			case 4: return 8;
+			case 5: return 12;
+			case 6: // voir si on peut faire charter avec ou bien voir si elle peut nous mener a une region blindé de maladie
+			}
 		}
 		return cpt;
 	}
-	
+
 	public int scoreOfEachCardInMove(PlayerCardInterface c) {
 		int incrementation=0;
 		/*Map<Disease,Integer> m=new HashMap<Disease,Integer>();
 		Set<Disease> c2=m.keySet();
 		Iterator<Disease> it = c2.iterator();
-		 
+
 		Disease cle = it.next(); // tu peux typer plus finement ici
 		Disease tmp1=cle;
 		Integer tmp = m.get(cle); // tu peux typer plus finement ici
 		while (it.hasNext()){
 			 cle = it.next(); // tu peux typer plus finement ici
 			 Integer valeur = m.get(cle); // tu peux typer plus finement ici
-			  
+
 			 if(tmp<valeur) {
 				 tmp=valeur;
 				 tmp1=cle;
@@ -261,20 +267,20 @@ public class Player implements PlayerInterface{
 		}
 		return 1;
 	}
-	
+
 	public double scoreOfTheCard(PlayerCardInterface c) {
 		//System.out.println("probleme dans move");
 		double move=scoreOfEachCardInMove(c);
 		//System.out.println("probleme dans Cure");
-		
+
 		double cure=scoreOfEachCardInCure(c);
 		//System.out.println("probleme dans Region");
-		
+
 		double region=scoreOfEachCardInRegion(c);
 		//System.out.println("aucun prob");
-		
+
 		return move+cure+region*3;
-		
+
 	}
 	public void addToPlayerHand(PlayerCardInterface c) {
 		listCardHand.add(c);

@@ -365,7 +365,7 @@ public class GameEngine implements GameInterface{
 		int cpt;
 		for(int i=0;i<48;i++) {
 			if(list.get(i).getName().equals("Delhi")) {
-				System.out.println("j'ai trouvé la carte");
+				//System.out.println("j'ai trouvé la carte");
 				cpt=i;
 			}
 			listcard.add(new CitiesCard(list.get(i)));
@@ -373,10 +373,10 @@ public class GameEngine implements GameInterface{
 		}
 
 		Shuffle(listcard);
-		System.out.println("taille de la pdeck "+pdeck.getPropagationdeck().size());
-		System.out.println("taille de la propdefauss "+propdefauss.getPropagationdeck().size());
+		//System.out.println("taille de la pdeck "+pdeck.getPropagationdeck().size());
+		//System.out.println("taille de la propdefauss "+propdefauss.getPropagationdeck().size());
 		Collections.shuffle(pdeck.getPropagationdeck());
-		System.out.println("shuffle ok");
+		//System.out.println("shuffle ok");
 
 		int j=5;
 		int compteurEpidemic=0;
@@ -385,8 +385,8 @@ public class GameEngine implements GameInterface{
 			PlayerCardInterface card=listcard.get(listcard.size()-1);
 			listcard.remove(listcard.size()-1);
 			p.addToPlayerHand(card);
-			System.out.println("playerhand ok");
-			System.out.println("taille de la listcard "+listcard.size());
+			//System.out.println("playerhand ok");
+			//System.out.println("taille de la listcard "+listcard.size());
 
 			if(((PlayerCard)card).isEpidemic()){
 				compteurEpidemic++;
@@ -484,7 +484,9 @@ public class GameEngine implements GameInterface{
 	}
 
 
-
+	public static void updateReserve(Disease d) {
+		reserve.replace(d, reserve.get(d)+1);
+	}
 	public static int getPosX() {
 		return getP().getCurrentCity().getPosX();
 	}
@@ -697,7 +699,7 @@ public class GameEngine implements GameInterface{
 	 * @throws InterruptedException ***************************************************************************************************************************************************************/
 	public void playTurn(GameInterface g, PlayerInterface p) throws InterruptedException {
 		// TODO Auto-generated method stub
-		System.out.println("je vais jouer une action");
+		//System.out.println("je vais jouer une action");
 		int actionleft=4;
 
 		double scoreNeighbours=0.0; // Score of the action moveTo
@@ -705,16 +707,16 @@ public class GameEngine implements GameInterface{
 		int indice;
 
 		while(actionleft>0) {//((Player)p).getActionLeft()>0) {
-			System.out.println("je vais scorer ma location");
+			//System.out.println("je vais scorer ma location");
 			City me=((Player)p).getCurrentCity();
 			if(me.setCubesChoiceDiseaseToCure()) {
-				System.out.println("j'ai traité ma ville courante "+me.getName());
+				//System.out.println("j'ai traité ma ville courante "+me.getName());
 				actionleft--;
 			}
 			else {
 				scoreNeighbours=GameEngine.scoreOfMyLocation((Player)p);
-				System.out.println("score de mes voisin est a "+scoreNeighbours);
-				System.out.println("Mon jeu de carte en mains est à \n");
+				//System.out.println("score de mes voisin est a "+scoreNeighbours);
+				//System.out.println("Mon jeu de carte en mains est à \n");
 				for(PlayerCardInterface card: p.playerHand())
 					System.out.println("La carte "+card.getCityName());
 				ArrayList<Double> tri=new ArrayList<Double>();
@@ -730,9 +732,9 @@ public class GameEngine implements GameInterface{
 					System.out.println("score de ma meilleur carte est a "+scoreCard);
 
 					indice =res.get(1).intValue();
-					System.out.println("j'ai recuperer l'indice "+indice );
+					//System.out.println("j'ai recuperer l'indice "+indice );
 					PlayerCardInterface pci=p.playerHand().get(indice);
-					System.out.println("j'ai recuperer la carte de l'indince");
+					//System.out.println("j'ai recuperer la carte de l'indince");
 					if(scoreCard>scoreNeighbours) {
 						if(pci.getCityName().equals(((Player)p).getCurrentCity().getName())) {// If i can use flytocharter
 							try {
@@ -759,8 +761,13 @@ public class GameEngine implements GameInterface{
 						}
 
 					}
-				}
+					
+				
 				else {
+					//List<City> listecity=new ArrayList<City>();
+					/*for(int i=0;i<((Player)p).getCurrentCity().getNeighbours().size();i++) {
+						listecity.addAll(((Player)p).getCurrentCity().getNeighbours().get(i).getNeighbours());
+					}*/
 					City city=GameEngine.chooseCityMostInfected(((Player)p).getCurrentCity().getNeighbours());
 					City current=((Player)p).getCurrentCity();
 					int nbCubeCity=city.getNbCubes(Disease.BLACK)+city.getNbCubes(Disease.RED)+city.getNbCubes(Disease.YELLOW)+city.getNbCubes(Disease.BLUE);
@@ -784,6 +791,7 @@ public class GameEngine implements GameInterface{
 						current.setCubesChoiceDiseaseToCure();
 						actionleft--;
 					}
+				}
 				}
 			}
 			//Thread.sleep(1000);
@@ -1008,13 +1016,12 @@ public void loop() throws UnauthorizedActionException  {
 
 	@Override
 	public boolean isCured(Disease d) {
-		for(City c: list) {
-			if(c.isCure(d)) {
-				return true;
-			}
-		}
-		return false;
+		return this.remedes.get(d);
+		
 		//throw new UnsupportedOperationException(); 
+	}
+	public static boolean getRemedes(Disease d) {
+		return remedes.get(d);
 	}
 
 	@Override
@@ -1062,7 +1069,7 @@ public void loop() throws UnauthorizedActionException  {
 	@Override
 	public int getNbOutbreaks() {
 		// TODO 
-		return this.marqueur_prog;
+		return cptOutbreaks;
 		//throw new UnsupportedOperationException(); 
 	}
 
@@ -1175,7 +1182,7 @@ public void loop() throws UnauthorizedActionException  {
 			resultat+=(double)tab[1]/(double)tab[0];
 		//System.out.println("j'ai recuperer la city c à "+c+" et j'appelle score of eachregion et c.getdisease est a "+c.getDisease());
 		System.out.println("je vais renvoyer resultat = "+resultat+" pour ma location");
-		return resultat;
+		return resultat*100;
 	}
 
 	public static List<City> getListCityWithDisease(Disease d){
@@ -1221,11 +1228,13 @@ public void loop() throws UnauthorizedActionException  {
 		int cpt=0;
 		int nbcubes=0;
 		int[] tab=new int[2];
-		System.out.println("je vais rentrer dans le for");
+		//System.out.println("je vais rentrer dans le for");
 		for(City c:liste) {
-			System.out.println("je suis rentré dans le for");
+			//System.out.println("je suis rentré dans le for et ma lsite est a "+liste+"et c est a "+c);
 			//System.out.println(liste);
 			//System.out.println("je parcours la liste pour scoreofeachregion et c est à "+c);
+			//System.out.println("c.getNbCubes(d) = ");
+			//System.out.println("est a "+c.getNbCubes(d));
 			if(c.getNbCubes(d)>0) {
 				if(c.isEclosion(d)) 
 					nbcubes+=6;
@@ -1238,13 +1247,13 @@ public void loop() throws UnauthorizedActionException  {
 
 				if(c.getNbCubes(d)==1) 
 					nbcubes+=2;
-				System.out.println(" Le score est pour l'instant de "+nbcubes+" pour cpt a "+cpt);
+				//System.out.println(" Le score est pour l'instant de "+nbcubes+" pour cpt a "+cpt);
 				cpt++;
 			}
 		}
 		tab[0]=cpt;
 		tab[1]=nbcubes;
-		System.out.println("j'ai fini ce traitement");
+		//System.out.println("j'ai fini ce traitement");
 		return tab;
 	}
 
