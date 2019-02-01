@@ -328,7 +328,10 @@ public class City {
 			diseaseToCure=this.getNbCubes(Disease.BLUE);
 		}
 		if(diseaseToCure>0) {
-			this.setNbCubes(diseaseToCure-1, d);
+			if(isCure(d))
+				setNbCubes(0,d);
+			else
+				setNbCubes(diseaseToCure-1, d);
 			return true;
 		}
 		return false;
