@@ -27,7 +27,7 @@ import fr.dauphine.ja.pandemiage.common.PlayerInterface;
 import fr.dauphine.ja.pandemiage.common.UnauthorizedActionException;
 import fr.dauphine.ja.student.pandemiage.ai.AiMethods;
 import fr.dauphine.ja.student.pandemiage.ui.Cli;
-import fr.dauphine.ja.student.pandemiage.ui.Panneau;
+
 
 import java.util.Collections;
 /**
