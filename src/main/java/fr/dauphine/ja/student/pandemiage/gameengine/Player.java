@@ -28,6 +28,7 @@ public class Player implements PlayerInterface{
 		listCardHand=new ArrayList<PlayerCardInterface>();
 	}
 
+	
 	@Override
 	public void moveTo(String cityName) throws UnauthorizedActionException {
 		if(!switchturn) {
@@ -201,6 +202,12 @@ public class Player implements PlayerInterface{
 		}
 	}
 
+	/**
+	 * Ai's playturn and discard methods call this method to calculate the score of the card.
+	 * This score represent the capacity of the card to make us travel to a region that is infected
+	 * @param c PlayerCardInterface, with which we'll use the method score
+	 * @return the score, which is a double
+	 */
 	public double scoreOfEachCardInRegion(PlayerCardInterface c) {
 
 		int[] tab=new int[2];
@@ -212,6 +219,13 @@ public class Player implements PlayerInterface{
 		System.out.println("Ici j'ai fini de calculer le score de la carte");
 		return res;
 	}
+	
+	/**
+	 * Ai's playturn and discard methods call this method to calculate the score of the card.
+	 * This score represent the capacity of the card to make us discovering a cure for the disease of the card
+	 * @param c PlayerCardInterface, with which we'll use the method score
+	 * @return the score, which is a double
+	 */
 	public int scoreOfEachCardInCure(PlayerCardInterface c1) {
 		int cpt=0;
 
@@ -235,6 +249,12 @@ public class Player implements PlayerInterface{
 		return cpt;
 	}
 
+	/**
+	 * Ai's playturn and discard methods call this method to calculate the score of the card.
+	 * This score represent the capacity of the card to make us moving. For instance, if the city of the card is my currentCity, so i can use FlyToCharter that makes the score getting bigger
+	 * @param c PlayerCardInterface, with which we'll use the method score
+	 * @return the score, which is an Integer
+	 */
 	public int scoreOfEachCardInMove(PlayerCardInterface c) {
 		int incrementation=0;
 		/*Map<Disease,Integer> m=new HashMap<Disease,Integer>();
@@ -268,6 +288,12 @@ public class Player implements PlayerInterface{
 		return 1;
 	}
 
+	/**
+	 * Ai's playturn and discard methods call this method to calculate the score of the card.
+	 * This score represent a linear combination of the three scores
+	 * @param c PlayerCardInterface, with which we'll use the method score
+	 * @return the score, which is a double
+	 */
 	public double scoreOfTheCard(PlayerCardInterface c) {
 		//System.out.println("probleme dans move");
 		double move=scoreOfEachCardInMove(c);
