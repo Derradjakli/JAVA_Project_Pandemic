@@ -660,7 +660,7 @@ public class GameEngine implements GameInterface{
 							for(City other: c.getNeighbours()) {
 								if(other.getName()==finalCity.getName()) {
 									chemin.add(tmp);
-									chemin.add(other);
+									chemin.add(other); 
 								}
 							}
 							if(tmp.getName()==finalCity.getName())
