@@ -15,7 +15,7 @@ public class EpidemicCard extends PlayerCard {
 
 
 	public void Acceleration() { // DONNE LE NOMBRES DE CARTES PROPAGATION QUE JE VAIS TIRER
-		if(GameEngine.getCptprop()<5){
+		if(GameEngine.getCptprop()<7){
 			GameEngine.setCptprop(GameEngine.getCptprop()+1);
 			GameEngine.setVit_prop(GameEngine.getVitprop()[GameEngine.getCptprop()]);
 		}

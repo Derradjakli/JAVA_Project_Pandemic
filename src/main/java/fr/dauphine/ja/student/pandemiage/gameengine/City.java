@@ -412,7 +412,7 @@ public class City {
 
 	public int getNbCubes(Disease d) {
 	//	System.out.println("je suis dans get nbcubes de city et m est a "+m+" et d "+d+" et m.get(d) "+m.get(d));
-		return m.get(d);
+		return getM().get(d);
 	}
 
 	public void setNbCubes(int nbCubes,Disease d) {

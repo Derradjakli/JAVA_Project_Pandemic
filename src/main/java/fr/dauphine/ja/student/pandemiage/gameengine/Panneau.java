@@ -14,9 +14,9 @@ import javax.swing.JPanel;
 
 import fr.dauphine.ja.pandemiage.common.Disease;
 public class Panneau extends JPanel {
-//	private int posX=-50;
+	//	private int posX=-50;
 	//private int posY=-50;
-	Image lune, terre,fleche,tetedemort,ok,card,pc;
+	Image lune, terre,fleche,tetedemort,ok,card,pc,red,blue,black,yellow;
 
 	Panneau() {
 		try {
@@ -26,7 +26,10 @@ public class Panneau extends JPanel {
 			ok = ImageIO.read(new File("ok.png"));
 			card = ImageIO.read(new File("playercard.png"));
 			pc = ImageIO.read(new File("images.jpg"));
-
+			red= ImageIO.read(new File("red.png"));
+			blue= ImageIO.read(new File("blue.png"));
+			black= ImageIO.read(new File("black.png"));
+			yellow= ImageIO.read(new File("yellow.png"));
 
 			//Rectangle vieuxRectangle=new Rectangle(10,10);
 		}
@@ -44,12 +47,12 @@ public class Panneau extends JPanel {
 		g.setColor(Color.BLUE);
 		g.fillRect(posX,posY,50,50);
 		 **/
-		
+
 		try {
 			Player p=GameEngine.getPlayer();
 			/**Image img = ImageIO.read(new File("imagejeu.jpg"));
 			Image img1 = ImageIO.read(new File("pionne.jpg"));
-			**/
+			 **/
 			lune = ImageIO.read(new File("pandemicMap (2).jpg"));
 			terre = ImageIO.read(new File("infection.png"));
 			fleche = ImageIO.read(new File("location-512.png"));
@@ -57,24 +60,24 @@ public class Panneau extends JPanel {
 			card = ImageIO.read(new File("playercard.png"));
 			pc = ImageIO.read(new File("images.jpg"));
 			g.drawImage(lune, 0, 0, getWidth(), getHeight(), this);
-				if(GameEngine.getCptprop()==0)
-					g.drawImage(terre, 712, 150, 38, 38, this); // 2.0
-				if(GameEngine.getCptprop()==1)
-					g.drawImage(terre, 753, 150, 38, 38, this);// 2.1
-				if(GameEngine.getCptprop()==2)
-					g.drawImage(terre, 794, 150, 38, 38, this);
-				if(GameEngine.getCptprop()==3)
-					g.drawImage(terre, 835, 150, 38, 38, this);
-				if(GameEngine.getCptprop()==4)
-					g.drawImage(terre, 876, 150, 38, 38, this);
-				
-				if(GameEngine.getCptprop()==5)
-					g.drawImage(terre, 916, 150, 38, 38, this);
-				if(GameEngine.getCptprop()==6)
-					g.drawImage(terre, 956, 150, 38, 38, this);
-				/**switch(Fenetre.getRefresh()) {
+			if(GameEngine.getCptprop()==0)
+				g.drawImage(terre, 712, 150, 38, 38, this); // 2.0
+			if(GameEngine.getCptprop()==1)
+				g.drawImage(terre, 753, 150, 38, 38, this);// 2.1
+			if(GameEngine.getCptprop()==2)
+				g.drawImage(terre, 794, 150, 38, 38, this);
+			if(GameEngine.getCptprop()==3)
+				g.drawImage(terre, 835, 150, 38, 38, this);
+			if(GameEngine.getCptprop()==4)
+				g.drawImage(terre, 876, 150, 38, 38, this);
+
+			if(GameEngine.getCptprop()==5)
+				g.drawImage(terre, 916, 150, 38, 38, this);
+			if(GameEngine.getCptprop()==6)
+				g.drawImage(terre, 956, 150, 38, 38, this);
+			/**switch(Fenetre.getRefresh()) {
 				case 0: g.drawImage(terre, 712, 150, 38, 38, this); Fenetre.setRefresh(1); // 2.0
-				
+
 				case 1:g.drawImage(terre, 753, 150, 38, 38, this);Fenetre.setRefresh(1); // 2.1
 				case 2:g.drawImage(terre, 794, 150, 38, 38, this);Fenetre.setRefresh(1); // 2.2
 				}
@@ -87,22 +90,41 @@ public class Panneau extends JPanel {
 			}
 			if(GameEngine.getVit_prop()==4) {
 				switch(Fenetre.getRefresh()) {
-			
+
 				case 5: g.drawImage(terre, 916, 150, 38, 38, this);Fenetre.setRefresh(1); // 4.0
 				case 6 :g.drawImage(terre, 956, 150, 38, 38, this);Fenetre.setRefresh(1); // 4.1
 				}
 			}**/
 			g.drawImage(fleche, GameEngine.getPosX(), GameEngine.getPosY(), 40, 40, this); //testville mexico
-			/**for(int i=0;i<48;i++) {
-				for(City c:GameEngine.getListCity()) {
-					for(Disease d :Disease.values()) {
-						for(int j=0;j<c.getNbCubes(d);j++) {
-							g.drawImage(fleche, c.getPosX(), c.getPosY(), 5, 5, this); //testville mexico
-						}
-					}
-				}
 
-			}**/
+
+			for(City c:GameEngine.getListCity()) {
+				//for(Disease d :Disease.values()) {
+				//for(int j=0;j<c.getNbCubes(d);j++) {
+				if(c.getNbCubes(Disease.RED)>0){
+					g.drawImage(red, c.getPosX(), c.getPosY(), 10, 10, this); 
+				}
+				if(c.getNbCubes(Disease.BLUE)>0){
+					g.drawImage(blue, c.getPosX()+2, c.getPosY(), 5, 5, this); 
+				}
+				if(c.getNbCubes(Disease.YELLOW)>0){
+					if(c.getDisease().equals(Disease.RED)){
+						g.drawImage(red, c.getPosX()+30, c.getPosY()+5, 5, 5, this); 
+					}
+					if(c.getDisease().equals(Disease.YELLOW)){
+					
+						g.drawImage(yellow, c.getPosX(), c.getPosY()+2, 5, 5, this); 
+					
+				}
+				if(c.getNbCubes(Disease.BLACK)>0){
+					g.drawImage(black, c.getPosX(), c.getPosY()-2, 5, 5, this); 
+				}
+			}
+			}
+
+
+
+
 			/**g.drawImage(fleche, 57, 320, 40, 40, this); //L.A
 			g.drawImage(fleche, 132, 345, 40, 40, this); //MEXICO
 			g.drawImage(fleche, 228, 330, 40, 40, this); //MIAMI
@@ -152,10 +174,29 @@ public class Panneau extends JPanel {
 			g.drawImage(fleche, 1040, 285, 40, 40, this); //OSAKA
 			g.drawImage(fleche, 1034, 225, 40, 40, this); //Tokyo
 			g.drawImage(fleche, 1047, 570, 40, 40, this); //Sydney
-					
-			
-			**/
-			
+
+
+			 **/
+
+
+
+			//for(Disease d:Disease.values()){
+			if(GameEngine.getRemedes(Disease.RED)){
+				//g.drawImage(ok, 465, 755, 25, 25, this);
+				g.drawImage(ok, 410, 719, 25, 25, this);
+				//g.drawImage(ok, 515, 755, 25, 25, this);
+			}
+			if(GameEngine.getRemedes(Disease.YELLOW)){
+				g.drawImage(ok, 355, 719, 25, 25, this);
+			}
+			if(GameEngine.getRemedes(Disease.BLACK)){
+				g.drawImage(ok, 515, 719, 25, 25, this);
+			}
+			if(GameEngine.getRemedes(Disease.BLUE)){
+				g.drawImage(ok, 465, 719, 25, 25, this);
+			}
+			//g.drawImage(ok, 410, 755, 25, 25, this);
+			//g.drawImage(ok, 355, 755, 25, 25, this);
 
 
 
@@ -168,16 +209,16 @@ public class Panneau extends JPanel {
 			Font font = new Font("Courier", Font.BOLD, 16);
 			g.setFont(font);
 			g.setColor(Color.RED);
-			
-			g.drawString("Vous êtes à "+p.getCurrentCity().getName(), 350, 50);
-			g.drawString("Nombres de Cartes restants : ", 650, 580);
-			g.drawString("Nombres de Cartes en main: "+p.playerHand().size(), 650, 580);
-			
 
-			g.drawImage(ok, 465, 755, 25, 25, this);
-			g.drawImage(ok, 515, 755, 25, 25, this);
-			g.drawImage(ok, 410, 755, 25, 25, this);
-			g.drawImage(ok, 355, 755, 25, 25, this);
+			g.drawString("Vous êtes à "+p.getCurrentCity().getName(), 350, 50);
+			g.drawString("Nombres de Cartes restants : ", 400, 650);
+			g.drawString("Nombres de Cartes en main: "+p.playerHand().size(), 650, 580);
+
+
+			//g.drawImage(ok, 465, 755, 25, 25, this);
+			//g.drawImage(ok, 515, 755, 25, 25, this);
+			//g.drawImage(ok, 410, 755, 25, 25, this);
+			//g.drawImage(ok, 355, 755, 25, 25, this);
 			g.drawImage(card, 663, 585, 140, 181, this);
 			g.drawImage(card, 825, 585, 140, 181, this); //PLAYERCARD DEFAUSS
 			g.drawImage(pc, 670, 17, 181, 130, this);
@@ -191,10 +232,10 @@ public class Panneau extends JPanel {
 				posX=-posX;
 			if(posY<0)
 				posY=-posY;
-			
+
 			System.out.println("posX = "+posX+" posY= "+posY);
-			*/
-			 //g.drawImage(img1, posY-340, posX-380,this);
+			 */
+			//g.drawImage(img1, posY-340, posX-380,this);
 
 			//Pour une image de fond
 
@@ -205,14 +246,14 @@ public class Panneau extends JPanel {
 			e.printStackTrace();
 
 		}      
-		
-		
+
+
 
 	}
-	
 
 
-	
+
+
 }
 class Fenetre extends JFrame{
 	private Panneau pan=new Panneau();
@@ -226,10 +267,10 @@ class Fenetre extends JFrame{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 
-		
+
 		this.setVisible(true);
 
-	
+
 	}
 	public static int getRefresh(){
 		return refresh;
@@ -237,5 +278,5 @@ class Fenetre extends JFrame{
 	public static void setRefresh(int i) {
 		refresh+=i;
 	}
-	
+
 }

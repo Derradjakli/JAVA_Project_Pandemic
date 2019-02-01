@@ -26,15 +26,22 @@ public class CitiesCard extends PlayerCard {
 
 	public Disease getDisease() {
 		if(r==153 && g==18 && b==21){// TODO Auto-generated method stub
-			return Disease.RED;
+			 city.setDisease(Disease.RED);
 		}
 		if (r==107 && g==112 && b==184){
-			return Disease.BLUE;
+			//return Disease.BLUE;
+			 city.setDisease(Disease.BLUE);
 		}
 		if (r==153 && g==153 & b==153){
-			return Disease.BLACK;		}
+			//return Disease.BLACK;
+			 city.setDisease(Disease.BLACK);
+
+			}
 		if (r==242 && g==255 & b==0){
-			return Disease.YELLOW;		}
+			 city.setDisease(Disease.YELLOW);
+
+			//return Disease.YELLOW;
+			 }
 		return city.getDisease();
 	}
 

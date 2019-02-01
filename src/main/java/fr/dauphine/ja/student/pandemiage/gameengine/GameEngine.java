@@ -784,7 +784,6 @@ public class GameEngine implements GameInterface{
 							System.err.println("Exception in AI FlytoCharter");
 							e.printStackTrace();
 						}
-
 					}
 					else {
 						System.out.println("je vais Cure ma current Ville "+current.getName()+" et lui enlever un Cube");
