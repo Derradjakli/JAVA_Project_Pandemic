@@ -61,20 +61,20 @@ public class Panneau extends JPanel {
 			pc = ImageIO.read(new File("images.jpg"));
 			g.drawImage(lune, 0, 0, getWidth(), getHeight(), this);
 			if(GameEngine.getCptprop()==0)
-				g.drawImage(terre, 712, 150, 38, 38, this); // 2.0
+				g.drawImage(terre, 712, 142, 38, 38, this); // 2.0
 			if(GameEngine.getCptprop()==1)
-				g.drawImage(terre, 753, 150, 38, 38, this);// 2.1
+				g.drawImage(terre, 753, 142, 38, 38, this);// 2.1
 			if(GameEngine.getCptprop()==2)
-				g.drawImage(terre, 794, 150, 38, 38, this);
+				g.drawImage(terre, 794, 142, 38, 38, this);
 			if(GameEngine.getCptprop()==3)
-				g.drawImage(terre, 835, 150, 38, 38, this);
+				g.drawImage(terre, 835, 142, 38, 38, this);
 			if(GameEngine.getCptprop()==4)
-				g.drawImage(terre, 876, 150, 38, 38, this);
+				g.drawImage(terre, 876, 142, 38, 38, this);
 
 			if(GameEngine.getCptprop()==5)
-				g.drawImage(terre, 916, 150, 38, 38, this);
+				g.drawImage(terre, 916, 142, 38, 38, this);
 			if(GameEngine.getCptprop()==6)
-				g.drawImage(terre, 956, 150, 38, 38, this);
+				g.drawImage(terre, 956, 142, 38, 38, this);
 			/**switch(Fenetre.getRefresh()) {
 				case 0: g.drawImage(terre, 712, 150, 38, 38, this); Fenetre.setRefresh(1); // 2.0
 
@@ -211,18 +211,18 @@ public class Panneau extends JPanel {
 			g.setColor(Color.RED);
 
 			g.drawString("Vous êtes à "+p.getCurrentCity().getName(), 350, 50);
-			g.drawString("Nombres de Cartes restants : ", 400, 650);
-			g.drawString("Nombres de Cartes en main: "+p.playerHand().size(), 650, 580);
+			//g.drawString("Nombres de Cartes restants : ", 400, 650);
+			g.drawString("Nombres de Cartes en main: "+p.playerHand().size(), 650, 540);
 
 
 			//g.drawImage(ok, 465, 755, 25, 25, this);
 			//g.drawImage(ok, 515, 755, 25, 25, this);
 			//g.drawImage(ok, 410, 755, 25, 25, this);
 			//g.drawImage(ok, 355, 755, 25, 25, this);
-			g.drawImage(card, 663, 585, 140, 181, this);
-			g.drawImage(card, 825, 585, 140, 181, this); //PLAYERCARD DEFAUSS
-			g.drawImage(pc, 670, 17, 181, 130, this);
-			g.drawImage(pc, 865, 17, 181, 130, this); //DEFAUSS PROPAGATION
+			g.drawImage(card, 663, 565, 140, 181, this);
+			g.drawImage(card, 825, 565, 140, 181, this); //PLAYERCARD DEFAUSS
+			g.drawImage(pc, 670, 14, 181, 130, this);
+			g.drawImage(pc, 865, 14, 181, 130, this); //DEFAUSS PROPAGATION
 			//g.drawImage(img, 0, 0, this.getWidth(),this.getHeight(),this);
 			System.out.println("taille de la map "+this.getWidth()+" et "+this.getHeight());
 			//img1=img1.getScaledInstance(30, 50, Image.SCALE_DEFAULT);
@@ -260,7 +260,7 @@ class Fenetre extends JFrame{
 	private static int refresh=0;// Number of refrech of the window
 	public Fenetre() {
 
-		this.setTitle("Ma premiere fenetre");
+		this.setTitle("Pandemic Game");
 		this.setContentPane(pan);
 		//setPreferredSize(new Dimension(1126, 796));
 		this.setSize(1147,820);
