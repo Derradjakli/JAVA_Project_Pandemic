@@ -57,14 +57,16 @@ public class City {
 		this.edge_Label=edge_Label;
 		this.degree=degree; // Neighbours number
 		this.list=list;
-		if(r==183 && g==18 && b==21){// TODO Auto-generated method stub
+		if(r==153 && g==18 && b==21){
+			System.out.println("JE SUIS ROUGE");// TODO Auto-generated method stub
 			disease=Disease.RED;
-		}else if (r==107 && g==112 && b==184){
+		}
+		if (r==107 && g==112 && b==184){
 			disease=Disease.BLUE;
 		}
-		else if (r==153 && g==153 & b==153){
+		if (r==153 && g==153 & b==153){
 			disease=Disease.BLACK;		}
-		else{
+		if (r==242 && g==255 & b==0){
 			disease=Disease.YELLOW;		}
 		for(Disease d: Disease.values()) {
 			this.m.put(d,new Integer(0));
@@ -80,11 +82,6 @@ public class City {
 		posX=tableauPositionGraphic[id][1];
 		posY=tableauPositionGraphic[id][2];
 		}
-		else {
-			posX=0;
-			posY=0;
-		}
-		
 	//	System.out.println("\n\n**********************************************ma liste d'eclosion est à "+m_ec+"******************\n\n");
 		
 		
@@ -315,8 +312,9 @@ public class City {
 		int diseaseToCure=this.getNbCubes(Disease.BLACK);
 		Disease d=Disease.BLACK;
 		if(diseaseToCure<this.getNbCubes(Disease.RED)) {
-			diseaseToCure=this.getNbCubes(Disease.RED);	
 			d=Disease.RED;
+			diseaseToCure=this.getNbCubes(Disease.RED);	
+			
 		}
 		if(diseaseToCure<this.getNbCubes(Disease.YELLOW)) {
 			d=Disease.YELLOW;
@@ -413,12 +411,13 @@ public class City {
 	}
 
 	public int getNbCubes(Disease d) {
-		//System.out.println("je suis dans get nbcubes de city et m est a "+m+" et d "+d+" et m.get(d) "+m.get(d));
+	//	System.out.println("je suis dans get nbcubes de city et m est a "+m+" et d "+d+" et m.get(d) "+m.get(d));
 		return m.get(d);
 	}
 
 	public void setNbCubes(int nbCubes,Disease d) {
 		this.m.put(d, nbCubes);
+		GameEngine.updateReserve(d);
 	}
 
 	public boolean isEclosion(Disease d) {
