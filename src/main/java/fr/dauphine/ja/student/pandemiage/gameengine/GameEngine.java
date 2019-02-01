@@ -55,7 +55,7 @@ public class GameEngine implements GameInterface{
 	private static int cptOutbreaks=0;
 	private static List<PlayerCardInterface>listcard;
 
-	private  PropagationDeck pdeck;
+	public  PropagationDeck pdeck;
 	private  PropagationDeck propdefauss;
 
 
@@ -116,10 +116,10 @@ public class GameEngine implements GameInterface{
 		this.vit_prop=vitprop[cptprop];
 		this.list=GMLReader.readGML(cityGraphFilename);
 		City atlanta=getCityString("Atlanta",list);
-		p=new Player(atlanta,list);
+		setP(new Player(atlanta,list));
 		pdeck=new PropagationDeck();
-		propdefauss =new PropagationDeck();
-		listcard=new LinkedList<PlayerCardInterface>();
+		setPropdefauss(new PropagationDeck());
+		setListcard(new LinkedList<PlayerCardInterface>());
 	}
 
 	public City getCityString(String name,List<City> liste) {
@@ -485,10 +485,10 @@ public class GameEngine implements GameInterface{
 
 
 	public static float getPosx() {
-		return p.getCurrentCity().getX();
+		return getP().getCurrentCity().getX();
 	}
 	public static float getPosY() {
-		return p.getCurrentCity().getY();
+		return getP().getCurrentCity().getY();
 	}
 	public void Tour(Player p,List<PlayerCardInterface> listcard2,PropagationDeck pdeck,PropagationDeck propdefauss) throws InterruptedException{
 		while(gameStatus == GameStatus.ONGOING) {
@@ -839,7 +839,7 @@ public class GameEngine implements GameInterface{
 		System.out.println("Loading AI Jar file " + aiJar);		
 		//AiInterface ai = AiLoader.loadAi("C:/Users/derra/OneDrive/Bureau/aijar.jar");
 		System.out.println("gotta playturn");
-		Tour(p, listcard, pdeck, propdefauss);
+		Tour(getP(), getListcard(), pdeck, getPropdefauss());
 		/**
 		// Load Ai from Jar file
 		System.out.println("Loading AI Jar file " + aiJar);		
@@ -1039,7 +1039,7 @@ public void loop() throws UnauthorizedActionException  {
 	@Override
 	public int getNbPlayerCardsLeft() {
 		// TODO 
-		return p.playerHand().size();
+		return getP().playerHand().size();
 		//throw new UnsupportedOperationException(); 
 	}
 
@@ -1208,103 +1208,35 @@ public void loop() throws UnauthorizedActionException  {
 		return tab;
 	}
 
-
-
-
-
-	public static void main(String [] args) throws IOException, UnauthorizedActionException, InterruptedException   {
-
-
-		// Faire rentrer en paramètre le nom du graph, le jar et le niveau de difficulté
-
-		String aijar = DEFAULT_AIJAR; 
-		String cityGraphFile = DEFAULT_CITYGRAPH_FILE; 
-		int difficulty = DEFAULT_DIFFICULTY; 
-		int turnDuration = DEFAULT_TURN_DURATION;
-		int handSize = DEFAULT_HAND_SIZE;
-
-		Options options = new Options();
-		CommandLineParser parser = new DefaultParser();
-
-		options.addOption("a", "aijar", true, "use <FILE> as player Ai.");
-		options.addOption("d", "difficulty", true, "Difficulty level. 0 (Introduction), 1 (Normal) or 3 (Heroic).");
-		options.addOption("c", "citygraph", true, "City graph filename.");
-		options.addOption("t", "turnduration", true, "Number of seconds allowed to play a turn.");
-		options.addOption("s", "handsize", true, "Maximum size of a player hand.");
-		options.addOption("h", "help", false, "Display this help");
-
-		try {
-			CommandLine cmd = parser.parse( options, args);
-
-			if(cmd.hasOption("a")) {
-				aijar = cmd.getOptionValue("a");				
-			}
-
-			if(cmd.hasOption("g")) {
-				cityGraphFile = cmd.getOptionValue("c");
-			}
-
-			if(cmd.hasOption("d")) {
-				difficulty = Integer.parseInt(cmd.getOptionValue("d"));
-			}
-
-			if(cmd.hasOption("t")) {
-				turnDuration = Integer.parseInt(cmd.getOptionValue("t"));
-			}
-			if(cmd.hasOption("s")) {
-				handSize = Integer.parseInt(cmd.getOptionValue("s"));
-			}
-
-			/* ... */ 
-
-			if(cmd.hasOption("h")) {
-				HelpFormatter formatter = new HelpFormatter();
-				formatter.printHelp( "pandemiage", options );
-				System.exit(0);
-			}			
-
-		} catch (ParseException e) {
-			System.err.println("Error: invalid command line format.");
-			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp( "pandemiage", options );
-			System.exit(1);
-		}
-		System.out.println("aijar : "+aijar+"cityGraphFile : "+ cityGraphFile +"difficulty : "+ difficulty + "turnDuration : " + turnDuration + "handSize  :"+handSize   );
-
-		GameEngine g=new GameEngine(cityGraphFile, aijar);
-
-		g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
-		//g.Tour(ai, g.p, g.listcard, g.pdeck, g.propdefauss);
-		/*LinkedList<PlayerCardInterface> listcard=new LinkedList<PlayerCardInterface>();
-		Player p=new Player();
-		PropagationDeck pdeck=null;
-		PropagationDeck propdefauss=null;
-		 */
-
-
-		//g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
-
-		//g.Initialisation(g.listcard, g.p, g.pdeck, g.propdefauss);
-		System.out.println("je suis a "+g.p.getCurrentCity().getName()+" au coordonnée "+g.p.getCurrentCity().getX()+" : "+g.p.getCurrentCity().getY());
-
-		//JFrame fenetre= new Fenetre();
-		//fenetre.setLocation(200, 400);
-		//fenetre.setResizable(false);
-		//fenetre.setSize(600, 100);
-		//fenetre.setAlwaysOnTop(false);
-		//fenetre.setLocation(1000, 400);
-		System.out.println("undercorated");
-		//fenetre.setUndecorated(true);
-		g.loop();
-		/*
-		for(int i = 0; i < liste.size(); i++) {
-			System.out.println("City Name : " +liste.get(i).getName());
-			System.out.println("City Degree : " +liste.get(i).getDegree());
-			System.out.println("City Neighbours :			 " +liste.get(i).getNeighbours_s());
-		}*/
-
-
+	public static Player getP() {
+		return p;
 	}
+
+	public static void setP(Player p) {
+		GameEngine.p = p;
+	}
+
+	public PropagationDeck getPropdefauss() {
+		return propdefauss;
+	}
+
+	public void setPropdefauss(PropagationDeck propdefauss) {
+		this.propdefauss = propdefauss;
+	}
+
+	public static List<PlayerCardInterface> getListcard() {
+		return listcard;
+	}
+
+	public static void setListcard(List<PlayerCardInterface> listcard) {
+		GameEngine.listcard = listcard;
+	}
+
+
+
+
+
+	
 
 }
 

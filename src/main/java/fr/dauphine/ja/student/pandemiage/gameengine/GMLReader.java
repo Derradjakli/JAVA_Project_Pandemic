@@ -105,10 +105,10 @@ public class GMLReader {
         float x = (float)vertex.getProperty("x");
         float y = (float)vertex.getProperty("y");
         List<City> neighboursList = new ArrayList<City>();
-        City Oran = new City(id, label, r, g, b, 0.0, x, y, size, eigencentrality	," ", " ", degree , neighboursList);
+        City oran = new City(id, label, r, g, b, 0.0, x, y, size, eigencentrality	," ", " ", degree , neighboursList);
         
         
-        return Oran;
+        return oran;
 	}
 	
 	
